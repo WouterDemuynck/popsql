@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>popsql</id>
+    <version>1.0</version>
+    <title>Popsql</title>
+    <authors>Wouter Demuynck</authors>
+    <description>Popsql is a library eliminating the need for magic SQL strings in your code.</description>
+    <language>en-US</language>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <references>
+      <reference file="Popsql.dll" />
+    </references>
+  </metadata>
+  <files>
+    <file src="..\bin\Release\Popsql.dll" target="lib\net45\Popsql.dll" />
+    <file src="..\bin\Release\Popsql.xml" target="lib\net45\Popsql.xml" />
+  </files>
+</package>

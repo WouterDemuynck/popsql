@@ -4,3 +4,9 @@ obj
 
 # mstest test results
 TestResults
+
+# Visual Studio User Data
+*.suo
+
+# NuGet Stuff
+NuGet.exe
