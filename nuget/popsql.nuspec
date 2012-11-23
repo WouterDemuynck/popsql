@@ -7,6 +7,7 @@
     <authors>Wouter Demuynck</authors>
     <description>Popsql is a library eliminating the need for magic SQL strings in your code.</description>
     <language>en-US</language>
+	<iconUrl>https://lh3.googleusercontent.com/oD3UDkwKaxVYvYFiKAMKfPidanUkZppW_hbTANmAUgn9JIkLiKMOv3SiVMDcgWgY8Q_xbhgkMjo</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <references>
       <reference file="Popsql.dll" />

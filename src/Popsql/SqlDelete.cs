@@ -8,7 +8,7 @@ namespace Popsql
     /// <summary>
     /// Represents a SQL DELETE statement.
     /// </summary>
-    public class SqlDelete
+    public class SqlDelete : SqlStatement
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlDelete"/> class.

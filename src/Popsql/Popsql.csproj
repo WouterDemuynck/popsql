@@ -44,11 +44,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sql.cs" />
     <Compile Include="SqlColumn.cs" />
+    <Compile Include="SqlConstant.cs" />
     <Compile Include="SqlDelete.cs" />
     <Compile Include="SqlInsert.cs" />
     <Compile Include="SqlSelect.cs" />
+    <Compile Include="SqlStatement.cs" />
     <Compile Include="SqlTable.cs" />
+    <Compile Include="SqlToken.cs" />
     <Compile Include="SqlUpdate.cs" />
+    <Compile Include="SqlValue.cs" />
     <Compile Include="Text\SqlWriter.cs" />
     <Compile Include="Text\SqlWriterState.cs" />
     <Compile Include="Text\SqlWriterStateManager.cs" />

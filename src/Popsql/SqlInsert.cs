@@ -8,8 +8,10 @@ namespace Popsql
     /// <summary>
     /// Represents a SQL INSERT INTO statement.
     /// </summary>
-    public class SqlInsert
+    public class SqlInsert : SqlStatement
     {
+        private List<IEnumerable<SqlValue>> _values;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlInsert"/> class.
         /// </summary>
@@ -20,10 +22,34 @@ namespace Popsql
         /// <summary>
         /// Gets the table into which this <see cref="SqlInsert" /> inserts data.
         /// </summary>
-        public SqlTable Target
+        public SqlTable TargetTable
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// Gets the collection of columns into which this <see cref="SqlInsert" /> inserts data.
+        /// </summary>
+        public IEnumerable<SqlColumn> TargetColumns
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Gets the collection of values to be inserted by this <see cref="SqlInsert"/>.
+        /// </summary>
+        public IEnumerable<IEnumerable<SqlValue>> InsertValues
+        {
+            get
+            {
+                if (_values == null)
+                {
+                    _values = new List<IEnumerable<SqlValue>>();
+                }
+                return _values.ToArray();
+            }
         }
 
         /// <summary>
@@ -40,9 +66,54 @@ namespace Popsql
         /// </exception>
         public SqlInsert Into(SqlTable table)
         {
+            return Into(table, null);
+        }
+
+        /// <summary>
+        /// Sets the table and columns into which data is inserted.
+        /// </summary>
+        /// <param name="table">
+        /// The table into which data is inserted.
+        /// </param>
+        /// <param name="columns">
+        /// The columns into which data is inserted.
+        /// </param>
+        /// <returns>
+        /// The current instance of the <see cref="SqlInsert"/> class.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when the <paramref name="table"/> argument is <see langword="null"/>.
+        /// </exception>
+        public SqlInsert Into(SqlTable table, params SqlColumn[] columns)
+        {
             if (table == null) throw new ArgumentNullException("table");
 
-            Target = table;
+            TargetTable = table;
+            TargetColumns = columns;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the values inserted into the table.
+        /// </summary>
+        /// <param name="values">
+        /// The values to insert into the table.
+        /// </param>
+        /// <returns>
+        /// The current instance of the <see cref="SqlInsert"/> class.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when the <paramref name="values"/> argument is <see langword="null"/> or
+        /// an empty array.
+        /// </exception>
+        public SqlInsert Values(params SqlValue[] values)
+        {
+            if (values == null || !values.Any()) throw new ArgumentNullException("values");
+            if (_values == null)
+            {
+                _values = new List<IEnumerable<SqlValue>>();
+            }
+            _values.Add(values);
             return this;
         }
     }

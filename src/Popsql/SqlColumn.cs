@@ -8,7 +8,7 @@ namespace Popsql
     /// <summary>
     /// Represents a column in a SQL statement.
     /// </summary>
-    public class SqlColumn
+    public class SqlColumn : SqlToken
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlColumn"/> class using the

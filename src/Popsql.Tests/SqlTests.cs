@@ -28,5 +28,34 @@ namespace Popsql.Tests
             Assert.AreEqual("Name", query.Columns.Skip(1).First().ColumnName);
             Assert.AreEqual("Email", query.Columns.Last().ColumnName);
         }
+
+        [TestMethod]
+        public void Update_WithTable_ReturnsSqlUpdateWithTable()
+        {
+            var query = Sql
+                .Update("Users");
+
+            Assert.IsNotNull(query);
+            Assert.IsNotNull(query.Target);
+            Assert.AreEqual("Users", query.Target.TableName);
+        }
+
+        [TestMethod]
+        public void Insert_WithTable_ReturnsSqlInsertWithTable()
+        {
+            var query = Sql
+                .Insert();
+            
+            Assert.IsNotNull(query);
+        }
+
+        [TestMethod]
+        public void Delete_ReturnsSqlDelete()
+        {
+            var query = Sql
+                .Delete();
+
+            Assert.IsNotNull(query);
+        }
     }
 }

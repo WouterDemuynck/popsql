@@ -43,7 +43,7 @@ namespace Popsql.Tests.Text
             {
                 writer.WriteStartInsert();
                 writer.WriteStartInto();
-                Assert.AreEqual(SqlWriterState.Into, writer.WriteState);
+                Assert.AreEqual(SqlWriterState.StartInto, writer.WriteState);
             }
 
             Assert.AreEqual("INSERT INTO", builder.ToString());
@@ -58,10 +58,53 @@ namespace Popsql.Tests.Text
                 writer.WriteStartInsert();
                 writer.WriteStartInto();
                 writer.WriteTable("Users");
-                Assert.AreEqual(SqlWriterState.Into, writer.WriteState);
+                Assert.AreEqual(SqlWriterState.StartInto, writer.WriteState);
             }
 
             Assert.AreEqual("INSERT INTO [Users]", builder.ToString());
+        }
+
+        [TestMethod]
+        public void WriteColumn_WhenInsertStatement_WritesColumns()
+        {
+            StringBuilder builder = new StringBuilder();
+            using (SqlWriter writer = new SqlWriter(builder))
+            {
+                writer.WriteStartInsert();
+                writer.WriteStartInto();
+                writer.WriteTable("Users");
+                writer.WriteColumn("Id");
+                writer.WriteColumn("UserName");
+                writer.WriteColumn("Email");
+                writer.WriteCloseParenthesis();
+                Assert.AreEqual(SqlWriterState.Into, writer.WriteState);
+            }
+
+            Assert.AreEqual("INSERT INTO [Users] ([Id], [UserName], [Email])", builder.ToString());
+        }
+
+        [TestMethod]
+        public void WriteValue_WhenInsertStatement_WritesValues()
+        {
+            StringBuilder builder = new StringBuilder();
+            using (SqlWriter writer = new SqlWriter(builder))
+            {
+                writer.WriteStartInsert();
+                writer.WriteStartInto();
+                writer.WriteTable("Users");
+                writer.WriteColumn("Id");
+                writer.WriteColumn("UserName");
+                writer.WriteColumn("Email");
+                writer.WriteStartValues();
+                Assert.AreEqual(SqlWriterState.StartValues, writer.WriteState);
+                writer.WriteValue(15);
+                writer.WriteValue("My user name.");
+                writer.WriteValue("myemail@mydomain.local");
+                writer.WriteCloseParenthesis();
+                Assert.AreEqual(SqlWriterState.Values, writer.WriteState);
+            }
+
+            Assert.AreEqual("INSERT INTO [Users] ([Id], [UserName], [Email]) VALUES (15, 'My user name.', 'myemail@mydomain.local')", builder.ToString());
         }
     }
 }

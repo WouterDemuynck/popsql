@@ -9,7 +9,7 @@ namespace Popsql
     /// <summary>
     /// Represents a table in a SQL statement.
     /// </summary>
-    public class SqlTable
+    public class SqlTable : SqlToken
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlTable"/> class using the

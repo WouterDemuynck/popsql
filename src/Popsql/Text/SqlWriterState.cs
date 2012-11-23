@@ -46,7 +46,19 @@ namespace Popsql.Text
         /// <summary>
         /// Indicates that the writer is currently writing a SQL INTO clause.
         /// </summary>
+        StartInto,
+        /// <summary>
+        /// Indicates that the writer is currently writing a SQL INTO clause.
+        /// </summary>
         Into,
+        /// <summary>
+        /// Indicates that the writer is currently writing a SQL VALUES clause of an INSERT statement.
+        /// </summary>
+        StartValues,
+        /// <summary>
+        /// Indicates that the writer is currently writing a SQL VALUES clause of an INSERT statement.
+        /// </summary>
+        Values,
         /// <summary>
         /// Indicates that the start of a SQL DELETE statement has been written.
         /// </summary>

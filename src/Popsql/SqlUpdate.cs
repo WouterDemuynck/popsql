@@ -8,7 +8,7 @@ namespace Popsql
     /// <summary>
     /// Represents a SQL UPDATE statement.
     /// </summary>
-    public class SqlUpdate
+    public class SqlUpdate : SqlStatement
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlUpdate"/> class using

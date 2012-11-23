@@ -14,7 +14,10 @@ namespace Popsql.Text
                 { SqlWriterState.Select,      new[] { SqlWriterState.StartFrom } },
                 { SqlWriterState.StartFrom,   new[] { SqlWriterState.From } },
                 { SqlWriterState.StartDelete, new[] { SqlWriterState.StartFrom } },
-                { SqlWriterState.StartInsert, new[] { SqlWriterState.Into } },
+                { SqlWriterState.StartInsert, new[] { SqlWriterState.StartInto } },
+                { SqlWriterState.Into,        new[] { SqlWriterState.StartValues } },
+                { SqlWriterState.StartInto,   new[] { SqlWriterState.Into, SqlWriterState.StartValues } },
+                { SqlWriterState.StartValues, new[] { SqlWriterState.Values } },
                 { SqlWriterState.StartUpdate, new[] { SqlWriterState.Update } },
             };
 

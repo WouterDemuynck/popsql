@@ -8,7 +8,7 @@ namespace Popsql
     /// <summary>
     /// Represents a SQL SELECT statement.
     /// </summary>
-    public class SqlSelect
+    public class SqlSelect : SqlStatement
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlSelect"/> class using the

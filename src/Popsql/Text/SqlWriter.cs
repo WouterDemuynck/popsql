@@ -19,6 +19,11 @@ namespace Popsql.Text
 
         private readonly SqlWriterStateManager _stateManager;
         private bool _hasPendingSpace;
+        
+        /// <summary>
+        /// Represents the SQL NULL value.
+        /// </summary>
+        public const string SqlNull = "NULL";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
@@ -141,9 +146,16 @@ namespace Popsql.Text
             EnsureNotDisposed();
             if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException("columnName");
 
-            if (WriteState == SqlWriterState.Select)
+            switch (WriteState)
             {
-                WriteRaw(",");
+                case SqlWriterState.Select:
+                case SqlWriterState.Into:
+                    WriteRaw(",");
+                    break;
+
+                case SqlWriterState.StartInto: 
+                    WriteOpenParenthesis();
+                    break;
             }
 
             if (!string.IsNullOrWhiteSpace(tableName))
@@ -168,7 +180,28 @@ namespace Popsql.Text
                 case SqlWriterState.StartSelect:
                     _stateManager.RequestState(SqlWriterState.Select);
                     break;
+
+                case SqlWriterState.StartInto:
+                    _stateManager.RequestState(SqlWriterState.Into);
+                    break;
             }
+        }
+
+        /// <summary>
+        /// Writes an opening parenthesis to the output stream.
+        /// </summary>
+        public void WriteOpenParenthesis()
+        {
+            Write("(");
+            _hasPendingSpace = false;
+        }
+
+        /// <summary>
+        /// Writes an closing parenthesis to the output stream.
+        /// </summary>
+        public void WriteCloseParenthesis()
+        {
+            WriteRaw(")");
         }
 
         /// <summary>
@@ -265,7 +298,18 @@ namespace Popsql.Text
         {
             EnsureNotDisposed();
             Write("INTO");
-            _stateManager.RequestState(SqlWriterState.Into);
+            _stateManager.RequestState(SqlWriterState.StartInto);
+        }
+
+        /// <summary>
+        /// Writes the start of a SQL VALUES clause to the output stream.
+        /// </summary>
+        public void WriteStartValues()
+        {
+            EnsureNotDisposed();
+            WriteCloseParenthesis();
+            Write("VALUES");
+            _stateManager.RequestState(SqlWriterState.StartValues);
         }
 
         /// <summary>
@@ -276,6 +320,71 @@ namespace Popsql.Text
             EnsureNotDisposed();
             Write("DELETE");
             _stateManager.RequestState(SqlWriterState.StartDelete);
+        }
+
+        /// <summary>
+        /// Writes the specified SQL value to the output stream.
+        /// </summary>
+        /// <param name="value">
+        /// The value to write to the output stream.
+        /// </param>
+        public void WriteValue(object value)
+        {
+            EnsureNotDisposed();
+
+            switch (WriteState)
+            {
+                case SqlWriterState.StartValues:
+                    Write("(");
+                    _hasPendingSpace = false;
+                    break;
+
+                case SqlWriterState.Values:
+                    WriteRaw(",");
+                    break;
+            }
+
+            if (value == null)
+            {
+                Write(SqlNull);
+                return;
+            }
+
+            switch (Type.GetTypeCode(value.GetType()))
+            {
+                case TypeCode.String:
+                case TypeCode.Char:
+                    Write(FormatString(Convert.ToString(value, CultureInfo.InvariantCulture)));
+                    break;
+
+                case TypeCode.Byte:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                    Write(Convert.ToString(value, CultureInfo.InvariantCulture));
+                    break;
+
+                case TypeCode.Single:
+                case TypeCode.Double:
+                case TypeCode.Decimal:
+                    Write(Convert.ToString(value, CultureInfo.InvariantCulture));
+                    break;
+
+                default:
+                    Write(FormatString(Convert.ToString(value, CultureInfo.InvariantCulture)));
+                    break;
+            }
+
+            switch (WriteState)
+            {
+                case SqlWriterState.StartValues:
+                    _stateManager.RequestState(SqlWriterState.Values);
+                    break;
+            }
         }
 
         /// <summary>
@@ -305,6 +414,21 @@ namespace Popsql.Text
         protected void WriteRaw(string value)
         {
             _writer.Write(value);
+        }
+
+        /// <summary>
+        /// Formats the specified string for the current SQL dialect. The default implementation 
+        /// returns the table name enclosed in single quotes.
+        /// </summary>
+        /// <param name="value">
+        /// The SQL string to format.
+        /// </param>
+        /// <returns>
+        /// The formatted SQL string.
+        /// </returns>
+        protected virtual string FormatString(string value)
+        {
+            return "'" + value + "'";
         }
 
         /// <summary>
