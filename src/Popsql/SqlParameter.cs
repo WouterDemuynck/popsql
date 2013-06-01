@@ -24,6 +24,7 @@ namespace Popsql
         public SqlParameter(string parameterName, object value)
         {
             if (string.IsNullOrWhiteSpace(parameterName)) throw new ArgumentNullException("parameterName");
+            ParameterName = parameterName;
             Value = value;
         }
 

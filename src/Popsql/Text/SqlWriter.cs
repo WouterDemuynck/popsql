@@ -27,7 +27,7 @@ namespace Popsql.Text
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
-        /// specified <paramref name="StringBuilder"/>.
+        /// specified <see cref="StringBuilder"/>.
         /// </summary>
         /// <param name="builder">
         /// The <see cref="StringBuilder"/> to write to.
@@ -409,7 +409,7 @@ namespace Popsql.Text
         /// <summary>
         /// Writes the specified SQL parameter to the output stream.
         /// </summary>
-        /// <param name="value">
+        /// <param name="parameterName">
         /// The value to write to the output stream.
         /// </param>
         public void WriteParameter(string parameterName)
@@ -501,7 +501,7 @@ namespace Popsql.Text
         /// Formats the specified parameter name for the current SQL dialect. The default implementation 
         /// returns the parameter name prefixed with an 'at' sign ('@').
         /// </summary>
-        /// <param name="tableName">
+        /// <param name="parameterName">
         /// The parameter name to format.
         /// </param>
         /// <returns>

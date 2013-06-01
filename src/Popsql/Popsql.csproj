@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SqlAssign.cs" />
     <Compile Include="SqlParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sql.cs" />

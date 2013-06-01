@@ -24,5 +24,33 @@ namespace Popsql.Tests
             Assert.IsNotNull(update.Target);
             Assert.AreEqual("Users", update.Target.TableName);
         }
+
+        [TestMethod]
+        public void Set_WithNullColumn_ThrowsArgumentNull()
+        {
+            AssertEx.Throws<ArgumentNullException>(() => new SqlUpdate("Users").Set(null, null));
+        }
+
+        [TestMethod]
+        public void Values_WithNullValue_AutomaticallyConvertsToSqlConstantNull()
+        {
+            var update = new SqlUpdate("Users").Set("Id", null);
+            Assert.IsNotNull(update.Values);
+            Assert.AreEqual(1, update.Values.Count());
+            Assert.AreSame(SqlConstant.Null, update.Values.First().Value);
+            Assert.AreEqual("Id", update.Values.First().Column.ColumnName);
+        }
+
+        [TestMethod]
+        public void Values_WithNullValue_AddsToValuesProperty()
+        {
+            var update = new SqlUpdate("Users").Set("Id", "Test" + (SqlConstant)5.0f);
+            Assert.IsNotNull(update.Values);
+            Assert.AreEqual(1, update.Values.Count());
+            Assert.AreEqual("Id", update.Values.First().Column.ColumnName);
+            Assert.IsInstanceOfType(update.Values.First().Value, typeof(SqlParameter));
+            Assert.AreEqual("Test", ((SqlParameter)update.Values.First().Value).ParameterName);
+            Assert.AreEqual(5.0f, ((SqlParameter)update.Values.First().Value).Value);
+        }
     }
 }
