@@ -27,18 +27,18 @@ namespace Popsql
         }
 
         /// <summary>
-        /// Gets the collection of columns selected by this SQL SELECT statement.
+        /// Gets the table from which data is selected by this SQL SELECT statement.
         /// </summary>
-        public IEnumerable<SqlColumn> Columns
+        public SqlTable Table
         {
             get;
             private set;
         }
 
         /// <summary>
-        /// Gets the table from which data is selected by this SQL SELECT statement.
+        /// Gets the collection of columns selected by this SQL SELECT statement.
         /// </summary>
-        public SqlTable Source
+        public IEnumerable<SqlColumn> Columns
         {
             get;
             private set;
@@ -55,7 +55,7 @@ namespace Popsql
         /// </returns>
         public SqlSelect From(SqlTable table)
         {
-            Source = table;
+            Table = table;
             return this;
         }
     }

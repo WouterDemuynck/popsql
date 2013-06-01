@@ -7,6 +7,8 @@ namespace Popsql.Text
 {
     internal class SqlWriterStateManager
     {
+        // This table holds the valid state transitions in the state machine. The key of the dictionary is the starting state and the value
+        // of the dictionary represents the list of valid next states.
         private static readonly Dictionary<SqlWriterState, SqlWriterState[]> _transitions = new Dictionary<SqlWriterState, SqlWriterState[]>
             {
                 { SqlWriterState.Start,       new[] { SqlWriterState.StartSelect, SqlWriterState.StartUpdate, SqlWriterState.StartInsert, SqlWriterState.StartDelete } },
@@ -18,6 +20,8 @@ namespace Popsql.Text
                 { SqlWriterState.Into,        new[] { SqlWriterState.StartValues } },
                 { SqlWriterState.StartInto,   new[] { SqlWriterState.Into, SqlWriterState.StartValues } },
                 { SqlWriterState.StartValues, new[] { SqlWriterState.Values } },
+                { SqlWriterState.Values,      new[] { SqlWriterState.EndValues } },
+                { SqlWriterState.EndValues,   new[] { SqlWriterState.StartValues } },
                 { SqlWriterState.StartUpdate, new[] { SqlWriterState.Update } },
             };
 

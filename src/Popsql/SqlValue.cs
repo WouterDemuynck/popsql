@@ -107,5 +107,33 @@ namespace Popsql
         {
             return new SqlConstant(value);
         }
+
+        /// <summary>
+        /// Implicitly converts a <see cref="DateTime"/> to a <see cref="SqlConstant"/> instance.
+        /// </summary>
+        /// <param name="value">
+        /// The value of the <see cref="SqlConstant"/>.
+        /// </param>
+        /// <returns>
+        /// A <see cref="SqlConstant"/> instance representing the specified value.
+        /// </returns>
+        public static implicit operator SqlValue(DateTime value)
+        {
+            return new SqlConstant(value);
+        }
+
+        /// <summary>
+        /// Implicitly converts a <see cref="DateTimeOffset"/> to a <see cref="SqlConstant"/> instance.
+        /// </summary>
+        /// <param name="value">
+        /// The value of the <see cref="SqlConstant"/>.
+        /// </param>
+        /// <returns>
+        /// A <see cref="SqlConstant"/> instance representing the specified value.
+        /// </returns>
+        public static implicit operator SqlValue(DateTimeOffset value)
+        {
+            return new SqlConstant(value);
+        }
     }
 }

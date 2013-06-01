@@ -22,7 +22,7 @@ namespace Popsql
         /// <summary>
         /// Gets the table into which this <see cref="SqlInsert" /> inserts data.
         /// </summary>
-        public SqlTable TargetTable
+        public SqlTable Table
         {
             get;
             private set;
@@ -31,7 +31,7 @@ namespace Popsql
         /// <summary>
         /// Gets the collection of columns into which this <see cref="SqlInsert" /> inserts data.
         /// </summary>
-        public IEnumerable<SqlColumn> TargetColumns
+        public IEnumerable<SqlColumn> Columns
         {
             get;
             private set;
@@ -40,7 +40,7 @@ namespace Popsql
         /// <summary>
         /// Gets the collection of values to be inserted by this <see cref="SqlInsert"/>.
         /// </summary>
-        public IEnumerable<IEnumerable<SqlValue>> InsertValues
+        public IEnumerable<IEnumerable<SqlValue>> Rows
         {
             get
             {
@@ -88,8 +88,8 @@ namespace Popsql
         {
             if (table == null) throw new ArgumentNullException("table");
 
-            TargetTable = table;
-            TargetColumns = columns;
+            Table = table;
+            Columns = columns;
             return this;
         }
 

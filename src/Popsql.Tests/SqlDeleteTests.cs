@@ -21,8 +21,8 @@ namespace Popsql.Tests
         public void From_WithSqlTable_SetsTargetProperty()
         {
             var delete = new SqlDelete().From("Users");
-            Assert.IsNotNull(delete.Target);
-            Assert.AreEqual("Users", delete.Target.TableName);
+            Assert.IsNotNull(delete.Table);
+            Assert.AreEqual("Users", delete.Table.TableName);
         }
     }
 }

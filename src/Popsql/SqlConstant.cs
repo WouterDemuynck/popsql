@@ -36,5 +36,11 @@ namespace Popsql
             get;
             private set;
         }
+
+        public static SqlParameter operator +(string parameterName, SqlConstant value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            return new SqlParameter(parameterName, value.Value);
+        }
     }
 }

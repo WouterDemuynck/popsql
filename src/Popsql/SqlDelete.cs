@@ -20,7 +20,7 @@ namespace Popsql
         /// <summary>
         /// Gets the table from which to delete data.
         /// </summary>
-        public SqlTable Target
+        public SqlTable Table
         {
             get;
             private set;
@@ -42,7 +42,7 @@ namespace Popsql
         {
             if (table == null) throw new ArgumentNullException("table");
 
-            Target = table;
+            Table = table;
             return this;
         }
     }

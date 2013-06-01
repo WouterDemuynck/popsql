@@ -39,8 +39,8 @@ namespace Popsql.Tests
             SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
             select.From("Users");
 
-            Assert.IsNotNull(select.Source);
-            Assert.AreEqual("Users", select.Source.TableName);
+            Assert.IsNotNull(select.Table);
+            Assert.AreEqual("Users", select.Table.TableName);
         }
     }
 }

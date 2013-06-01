@@ -307,9 +307,28 @@ namespace Popsql.Text
         public void WriteStartValues()
         {
             EnsureNotDisposed();
-            WriteCloseParenthesis();
-            Write("VALUES");
+            switch (WriteState)
+            {
+                case SqlWriterState.Into:
+                    WriteCloseParenthesis();
+                    Write("VALUES");
+                    break;
+
+                case SqlWriterState.EndValues:
+                    WriteRaw(",");
+                    break;
+            }
             _stateManager.RequestState(SqlWriterState.StartValues);
+        }
+
+        /// <summary>
+        /// Writes the end of a SQL VALUES clause to the output stream.
+        /// </summary>
+        public void WriteEndValues()
+        {
+            EnsureNotDisposed();
+            WriteCloseParenthesis();
+            _stateManager.RequestState(SqlWriterState.EndValues);
         }
 
         /// <summary>

@@ -60,6 +60,10 @@ namespace Popsql.Text
         /// </summary>
         Values,
         /// <summary>
+        /// Indicates that the writer is currently finished with a SQL VALUES clause of an INSERT statement.
+        /// </summary>
+        EndValues,
+        /// <summary>
         /// Indicates that the start of a SQL DELETE statement has been written.
         /// </summary>
         StartDelete,
