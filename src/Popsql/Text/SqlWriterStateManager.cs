@@ -23,6 +23,8 @@ namespace Popsql.Text
                 { SqlWriterState.Values,      new[] { SqlWriterState.EndValues } },
                 { SqlWriterState.EndValues,   new[] { SqlWriterState.StartValues } },
                 { SqlWriterState.StartUpdate, new[] { SqlWriterState.Update } },
+                { SqlWriterState.Update,      new[] { SqlWriterState.StartSet } },
+                { SqlWriterState.StartSet,    new[] { SqlWriterState.Set } },
             };
 
         private readonly Stack<SqlWriterState> _states;

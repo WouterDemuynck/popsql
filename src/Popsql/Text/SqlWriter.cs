@@ -156,6 +156,10 @@ namespace Popsql.Text
                 case SqlWriterState.StartInto: 
                     WriteOpenParenthesis();
                     break;
+
+                case SqlWriterState.Set:
+                    WriteRaw(",");
+                    break;
             }
 
             if (!string.IsNullOrWhiteSpace(tableName))
@@ -183,6 +187,10 @@ namespace Popsql.Text
 
                 case SqlWriterState.StartInto:
                     _stateManager.RequestState(SqlWriterState.Into);
+                    break;
+
+                case SqlWriterState.StartSet:
+                    _stateManager.RequestState(SqlWriterState.Set);
                     break;
             }
         }
@@ -282,6 +290,16 @@ namespace Popsql.Text
         }
 
         /// <summary>
+        /// Writes the start of a SQL SET clause to the output stream.
+        /// </summary>
+        public void WriteStartSet()
+        {
+            EnsureNotDisposed();
+            Write("SET");
+            _stateManager.RequestState(SqlWriterState.StartSet);
+        }
+
+        /// <summary>
         /// Writes the start of a SQL INSERT statement to the output stream.
         /// </summary>
         public void WriteStartInsert()
@@ -361,6 +379,10 @@ namespace Popsql.Text
                 case SqlWriterState.Values:
                     WriteRaw(",");
                     break;
+
+                case SqlWriterState.Set:
+                    Write("=");
+                    break;
             }
 
             if (value == null)
@@ -425,6 +447,10 @@ namespace Popsql.Text
 
                 case SqlWriterState.Values:
                     WriteRaw(",");
+                    break;
+
+                case SqlWriterState.Set:
+                    Write("=");
                     break;
             }
 

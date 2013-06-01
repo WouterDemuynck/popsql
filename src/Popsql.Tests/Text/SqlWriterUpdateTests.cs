@@ -48,5 +48,26 @@ namespace Popsql.Tests.Text
 
             Assert.AreEqual("UPDATE [Users]", builder.ToString());
         }
+
+        [TestMethod]
+        public void WriteStartSet_WhenUpdateStatement_WritesParametersAndValues()
+        {
+            StringBuilder builder = new StringBuilder();
+            using (SqlWriter writer = new SqlWriter(builder))
+            {
+                writer.WriteStartUpdate();
+                writer.WriteTable("Users");
+                writer.WriteStartSet();
+                writer.WriteColumn("Id");
+                writer.WriteValue(15);
+                writer.WriteColumn("UserName");
+                writer.WriteParameter("UserName");
+                writer.WriteColumn("Email");
+                writer.WriteParameter("Email");
+                Assert.AreEqual(SqlWriterState.Set, writer.WriteState);
+            }
+
+            Assert.AreEqual("UPDATE [Users] SET [Id] = 15, [UserName] = @UserName, [Email] = @Email", builder.ToString());
+        }
     }
 }

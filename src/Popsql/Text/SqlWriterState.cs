@@ -40,6 +40,14 @@ namespace Popsql.Text
         /// </summary>
         Update,
         /// <summary>
+        /// Indicates that the start of a SQL SET clause of an UPDATE statement has been written.
+        /// </summary>
+        StartSet,
+        /// <summary>
+        /// Indicates that the writer is currently writing a SQL SET clause of an UPDATE statement.
+        /// </summary>
+        Set,
+        /// <summary>
         /// Indicates that the start of a SQL INSERT statement has been written.
         /// </summary>
         StartInsert,
