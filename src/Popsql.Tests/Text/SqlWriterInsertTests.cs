@@ -139,5 +139,29 @@ namespace Popsql.Tests.Text
 
             Assert.AreEqual("INSERT INTO [Users] ([Id], [UserName], [Email]) VALUES ((15, 'My user name.', 'myemail@mydomain.local'), (16, 'My second user name.', 'mysecondemail@mydomain.local'))", builder.ToString());
         }
+
+        [TestMethod]
+        public void WriteParameter_WhenInsertStatement_WritesParameters()
+        {
+            StringBuilder builder = new StringBuilder();
+            using (SqlWriter writer = new SqlWriter(builder))
+            {
+                writer.WriteStartInsert();
+                writer.WriteStartInto();
+                writer.WriteTable("Users");
+                writer.WriteColumn("Id");
+                writer.WriteColumn("UserName");
+                writer.WriteColumn("Email");
+                writer.WriteStartValues();
+                Assert.AreEqual(SqlWriterState.StartValues, writer.WriteState);
+                writer.WriteParameter("Id");
+                writer.WriteParameter("UserName");
+                writer.WriteParameter("Email");
+                writer.WriteEndValues();
+                Assert.AreEqual(SqlWriterState.EndValues, writer.WriteState);
+            }
+
+            Assert.AreEqual("INSERT INTO [Users] ([Id], [UserName], [Email]) VALUES (@Id, @UserName, @Email)", builder.ToString());
+        }
     }
 }

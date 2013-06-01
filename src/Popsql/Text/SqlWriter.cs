@@ -407,6 +407,38 @@ namespace Popsql.Text
         }
 
         /// <summary>
+        /// Writes the specified SQL parameter to the output stream.
+        /// </summary>
+        /// <param name="value">
+        /// The value to write to the output stream.
+        /// </param>
+        public void WriteParameter(string parameterName)
+        {
+            EnsureNotDisposed();
+
+            switch (WriteState)
+            {
+                case SqlWriterState.StartValues:
+                    Write("(");
+                    _hasPendingSpace = false;
+                    break;
+
+                case SqlWriterState.Values:
+                    WriteRaw(",");
+                    break;
+            }
+
+            Write(FormatParameterName(parameterName));
+
+            switch (WriteState)
+            {
+                case SqlWriterState.StartValues:
+                    _stateManager.RequestState(SqlWriterState.Values);
+                    break;
+            }
+        }
+
+        /// <summary>
         /// Writes the specified string to the output stream, including any pending formatting.
         /// </summary>
         /// <param name="value">
@@ -463,6 +495,21 @@ namespace Popsql.Text
         protected virtual string FormatTableName(string tableName)
         {
             return "[" + tableName + "]";
+        }
+
+        /// <summary>
+        /// Formats the specified parameter name for the current SQL dialect. The default implementation 
+        /// returns the parameter name prefixed with an 'at' sign ('@').
+        /// </summary>
+        /// <param name="tableName">
+        /// The parameter name to format.
+        /// </param>
+        /// <returns>
+        /// The formatted parameter name.
+        /// </returns>
+        protected virtual string FormatParameterName(string parameterName)
+        {
+            return "@" + parameterName;
         }
 
         /// <summary>
