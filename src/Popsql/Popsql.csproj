@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SqlAssign.cs" />
+    <Compile Include="SqlBinaryExpression.cs" />
+    <Compile Include="SqlBinaryOperator.cs" />
     <Compile Include="SqlParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sql.cs" />
@@ -52,7 +54,7 @@
     <Compile Include="SqlSelect.cs" />
     <Compile Include="SqlStatement.cs" />
     <Compile Include="SqlTable.cs" />
-    <Compile Include="SqlToken.cs" />
+    <Compile Include="SqlExpression.cs" />
     <Compile Include="SqlUpdate.cs" />
     <Compile Include="SqlValue.cs" />
     <Compile Include="Text\SqlWriter.cs" />

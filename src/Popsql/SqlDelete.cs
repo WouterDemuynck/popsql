@@ -18,7 +18,7 @@ namespace Popsql
         }
 
         /// <summary>
-        /// Gets the table from which to delete data.
+        /// Gets the table from which to delete rows.
         /// </summary>
         public SqlTable Table
         {
@@ -27,10 +27,19 @@ namespace Popsql
         }
 
         /// <summary>
-        /// Sets the <paramref name="table"/> from which to delete data.
+        /// Gets the predicate determining which rows are deleted by this SQL DELETE statement.
+        /// </summary>
+        public SqlExpression Predicate
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Sets the <paramref name="table"/> from which to delete rows.
         /// </summary>
         /// <param name="table">
-        /// The <see cref="SqlTable"/> from which to delete data.
+        /// The <see cref="SqlTable"/> from which to delete rows.
         /// </param>
         /// <returns>
         /// The current instance of the <see cref="SqlDelete"/> class.
@@ -43,6 +52,21 @@ namespace Popsql
             if (table == null) throw new ArgumentNullException("table");
 
             Table = table;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the predicate used for determining which rows are deleted by this SQL DELETE statement.
+        /// </summary>
+        /// <param name="predicate">
+        /// The predicate used for determining which rows are deleted by this SQL DELETE statement.
+        /// </param>
+        /// <returns>
+        /// The current instance of the <see cref="SqlDelete"/> class.
+        /// </returns>
+        public SqlDelete Where(SqlExpression predicate)
+        {
+            Predicate = predicate;
             return this;
         }
     }

@@ -21,8 +21,8 @@ namespace Popsql.Tests
         public void Ctor_WithSqlTable_SetsTargetProperty()
         {
             var update = new SqlUpdate("Users");
-            Assert.IsNotNull(update.Target);
-            Assert.AreEqual("Users", update.Target.TableName);
+            Assert.IsNotNull(update.Table);
+            Assert.AreEqual("Users", update.Table.TableName);
         }
 
         [TestMethod]
@@ -51,6 +51,23 @@ namespace Popsql.Tests
             Assert.IsInstanceOfType(update.Values.First().Value, typeof(SqlParameter));
             Assert.AreEqual("Test", ((SqlParameter)update.Values.First().Value).ParameterName);
             Assert.AreEqual(5.0f, ((SqlParameter)update.Values.First().Value).Value);
+        }
+
+        [TestMethod]
+        public void Where_WithSqlExpression_SetsPredicateProperty()
+        {
+            SqlUpdate update = new SqlUpdate("Users");
+            update.Where(SqlExpression.Equal("Id", 5));
+
+            Assert.IsNotNull(update.Predicate);
+            Assert.IsInstanceOfType(update.Predicate, typeof(SqlBinaryExpression));
+            Assert.IsInstanceOfType(((SqlBinaryExpression)update.Predicate).Left, typeof(SqlColumn));
+            Assert.AreEqual("Id", ((SqlColumn)((SqlBinaryExpression)update.Predicate).Left).ColumnName);
+
+            Assert.AreEqual(SqlBinaryOperator.Equal, ((SqlBinaryExpression)update.Predicate).Operator);
+
+            Assert.IsInstanceOfType(((SqlBinaryExpression)update.Predicate).Right, typeof(SqlConstant));
+            Assert.AreEqual(5, ((SqlConstant)((SqlBinaryExpression)update.Predicate).Right).Value);
         }
     }
 }

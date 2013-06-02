@@ -28,19 +28,38 @@ namespace Popsql.Tests
             Assert.AreEqual("Email", select.Columns.Last().ColumnName);
         }
 
+        [TestMethod]
         public void From_WithNullSqlTable_ThrowsArgumentNull()
         {
             SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
             AssertEx.Throws<ArgumentNullException>(() => select.From(null));
         }
 
-        public void From_WithSqlTable_SetsSourceProperty()
+        [TestMethod]
+        public void From_WithSqlTable_SetsTableProperty()
         {
             SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
             select.From("Users");
 
             Assert.IsNotNull(select.Table);
             Assert.AreEqual("Users", select.Table.TableName);
+        }
+
+        [TestMethod]
+        public void Where_WithSqlExpression_SetsPredicateProperty()
+        {
+            SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
+            select.Where(SqlExpression.Equal("Id", 5));
+
+            Assert.IsNotNull(select.Predicate);
+            Assert.IsInstanceOfType(select.Predicate, typeof(SqlBinaryExpression));
+            Assert.IsInstanceOfType(((SqlBinaryExpression)select.Predicate).Left, typeof(SqlColumn));
+            Assert.AreEqual("Id", ((SqlColumn)((SqlBinaryExpression)select.Predicate).Left).ColumnName);
+
+            Assert.AreEqual(SqlBinaryOperator.Equal, ((SqlBinaryExpression)select.Predicate).Operator);
+
+            Assert.IsInstanceOfType(((SqlBinaryExpression)select.Predicate).Right, typeof(SqlConstant));
+            Assert.AreEqual(5, ((SqlConstant)((SqlBinaryExpression)select.Predicate).Right).Value);
         }
     }
 }

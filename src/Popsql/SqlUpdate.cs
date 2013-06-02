@@ -25,13 +25,22 @@ namespace Popsql
         public SqlUpdate(SqlTable table)
         {
             if (table == null) throw new ArgumentNullException("table");
-            Target = table;
+            Table = table;
         }
 
         /// <summary>
         /// Gets the table updated by this <see cref="SqlUpdate" />.
         /// </summary>
-        public SqlTable Target
+        public SqlTable Table
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Gets the predicate determining which rows are updated by this SQL UPDATE statement.
+        /// </summary>
+        public SqlExpression Predicate
         {
             get;
             private set;
@@ -78,6 +87,21 @@ namespace Popsql
                 _values = new List<SqlAssign>();
             }
             _values.Add(new SqlAssign(column, value));
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the predicate used for determining which rows are updated by this SQL UPDATE statement.
+        /// </summary>
+        /// <param name="predicate">
+        /// The predicate used for determining which rows are updated by this SQL UPDATE statement.
+        /// </param>
+        /// <returns>
+        /// The current instance of the <see cref="SqlUpdate"/> class.
+        /// </returns>
+        public SqlUpdate Where(SqlExpression predicate)
+        {
+            Predicate = predicate;
             return this;
         }
     }

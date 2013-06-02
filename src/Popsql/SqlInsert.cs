@@ -20,7 +20,7 @@ namespace Popsql
         }
 
         /// <summary>
-        /// Gets the table into which this <see cref="SqlInsert" /> inserts data.
+        /// Gets the table into which this <see cref="SqlInsert" /> inserts rows.
         /// </summary>
         public SqlTable Table
         {
@@ -29,7 +29,7 @@ namespace Popsql
         }
 
         /// <summary>
-        /// Gets the collection of columns into which this <see cref="SqlInsert" /> inserts data.
+        /// Gets the collection of columns into which this <see cref="SqlInsert" /> inserts rows.
         /// </summary>
         public IEnumerable<SqlColumn> Columns
         {
@@ -53,10 +53,10 @@ namespace Popsql
         }
 
         /// <summary>
-        /// Sets the table into which data is inserted.
+        /// Sets the table into which rows are inserted.
         /// </summary>
         /// <param name="table">
-        /// The table into which data is inserted.
+        /// The table into which rows are inserted.
         /// </param>
         /// <returns>
         /// The current instance of the <see cref="SqlInsert"/> class.
@@ -70,13 +70,13 @@ namespace Popsql
         }
 
         /// <summary>
-        /// Sets the table and columns into which data is inserted.
+        /// Sets the table and columns into which rows are inserted.
         /// </summary>
         /// <param name="table">
-        /// The table into which data is inserted.
+        /// The table into which rows are inserted.
         /// </param>
         /// <param name="columns">
-        /// The columns into which data is inserted.
+        /// The columns into which rows are inserted.
         /// </param>
         /// <returns>
         /// The current instance of the <see cref="SqlInsert"/> class.

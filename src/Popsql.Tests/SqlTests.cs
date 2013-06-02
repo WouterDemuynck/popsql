@@ -36,8 +36,8 @@ namespace Popsql.Tests
                 .Update("Users");
 
             Assert.IsNotNull(query);
-            Assert.IsNotNull(query.Target);
-            Assert.AreEqual("Users", query.Target.TableName);
+            Assert.IsNotNull(query.Table);
+            Assert.AreEqual("Users", query.Table.TableName);
         }
 
         [TestMethod]

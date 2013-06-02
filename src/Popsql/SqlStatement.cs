@@ -9,7 +9,7 @@ namespace Popsql
     /// <summary>
     /// Represents an abstract SQL statement.
     /// </summary>
-    public abstract class SqlStatement : SqlToken
+    public abstract class SqlStatement : SqlExpression
     {
     }
 }

@@ -10,3 +10,4 @@ TestResults
 
 # NuGet Stuff
 NuGet.exe
+*.nupkg

@@ -26,13 +26,13 @@ namespace Popsql
         }
 
         /// <summary>
-        /// Creates a <see cref="SqlUpdate"/> that updates data in the specified <paramref name="table"/>.
+        /// Creates a <see cref="SqlUpdate"/> that updates rows in the specified <paramref name="table"/>.
         /// </summary>
         /// <param name="table">
         /// The table to update.
         /// </param>
         /// <returns>
-        /// A <see cref="SqlUpdate"/> that updates data in the specified <paramref name="table"/>.
+        /// A <see cref="SqlUpdate"/> that updates rows in the specified <paramref name="table"/>.
         /// </returns>
         public static SqlUpdate Update(SqlTable table)
         {
@@ -40,10 +40,10 @@ namespace Popsql
         }
 
         /// <summary>
-        /// Creates a <see cref="SqlInsert"/> that inserts data into a table.
+        /// Creates a <see cref="SqlInsert"/> that inserts rows into a table.
         /// </summary>
         /// <returns>
-        /// A <see cref="SqlInsert"/> that inserts data into a table.
+        /// A <see cref="SqlInsert"/> that inserts rows into a table.
         /// </returns>
         public static SqlInsert Insert()
         {
@@ -51,10 +51,10 @@ namespace Popsql
         }
 
         /// <summary>
-        /// Creates a <see cref="SqlDelete"/> that deletes data from a table.
+        /// Creates a <see cref="SqlDelete"/> that deletes rows from a table.
         /// </summary>
         /// <returns>
-        /// A <see cref="SqlDelete"/> that deletes data from a table.
+        /// A <see cref="SqlDelete"/> that deletes rows from a table.
         /// </returns>
         public static SqlDelete Delete()
         {
