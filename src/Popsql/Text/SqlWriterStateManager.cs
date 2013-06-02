@@ -11,20 +11,25 @@ namespace Popsql.Text
         // of the dictionary represents the list of valid next states.
         private static readonly Dictionary<SqlWriterState, SqlWriterState[]> _transitions = new Dictionary<SqlWriterState, SqlWriterState[]>
             {
-                { SqlWriterState.Start,       new[] { SqlWriterState.StartSelect, SqlWriterState.StartUpdate, SqlWriterState.StartInsert, SqlWriterState.StartDelete } },
-                { SqlWriterState.StartSelect, new[] { SqlWriterState.Select } },
-                { SqlWriterState.Select,      new[] { SqlWriterState.StartFrom } },
-                { SqlWriterState.StartFrom,   new[] { SqlWriterState.From } },
-                { SqlWriterState.StartDelete, new[] { SqlWriterState.StartFrom } },
-                { SqlWriterState.StartInsert, new[] { SqlWriterState.StartInto } },
-                { SqlWriterState.Into,        new[] { SqlWriterState.StartValues } },
-                { SqlWriterState.StartInto,   new[] { SqlWriterState.Into, SqlWriterState.StartValues } },
-                { SqlWriterState.StartValues, new[] { SqlWriterState.Values } },
-                { SqlWriterState.Values,      new[] { SqlWriterState.EndValues } },
-                { SqlWriterState.EndValues,   new[] { SqlWriterState.StartValues } },
-                { SqlWriterState.StartUpdate, new[] { SqlWriterState.Update } },
-                { SqlWriterState.Update,      new[] { SqlWriterState.StartSet } },
-                { SqlWriterState.StartSet,    new[] { SqlWriterState.Set } },
+                { SqlWriterState.Start,               new[] { SqlWriterState.StartSelect, SqlWriterState.StartUpdate, SqlWriterState.StartInsert, SqlWriterState.StartDelete } },
+                { SqlWriterState.StartSelect,         new[] { SqlWriterState.Select } },
+                { SqlWriterState.Select,              new[] { SqlWriterState.StartFrom } },
+                { SqlWriterState.StartFrom,           new[] { SqlWriterState.From } },
+                { SqlWriterState.From,                new[] { SqlWriterState.StartWhere } },
+                { SqlWriterState.StartWhere,          new[] { SqlWriterState.StartExpression } },
+                { SqlWriterState.StartExpression,     new[] { SqlWriterState.Expression } },
+                { SqlWriterState.Expression,          new[] { SqlWriterState.Where, SqlWriterState.StartExpression } },
+                { SqlWriterState.Where,               new[] { SqlWriterState.Expression } },
+                { SqlWriterState.StartDelete,         new[] { SqlWriterState.StartFrom } },
+                { SqlWriterState.StartInsert,         new[] { SqlWriterState.StartInto } },
+                { SqlWriterState.Into,                new[] { SqlWriterState.StartValues } },
+                { SqlWriterState.StartInto,           new[] { SqlWriterState.Into, SqlWriterState.StartValues } },
+                { SqlWriterState.StartValues,         new[] { SqlWriterState.Values } },
+                { SqlWriterState.Values,              new[] { SqlWriterState.EndValues } },
+                { SqlWriterState.EndValues,           new[] { SqlWriterState.StartValues } },
+                { SqlWriterState.StartUpdate,         new[] { SqlWriterState.Update } },
+                { SqlWriterState.Update,              new[] { SqlWriterState.StartSet } },
+                { SqlWriterState.StartSet,            new[] { SqlWriterState.Set } },
             };
 
         private readonly Stack<SqlWriterState> _states;
@@ -53,6 +58,7 @@ namespace Popsql.Text
                 throw new InvalidOperationException(
                     string.Format(
                         "The current state '{0}' is invalid for the current operation. Valid next states are '{1}'.",
+                        CurrentState,
                         string.Join("', '", validNextStates)));
 
             _states.Push(state);

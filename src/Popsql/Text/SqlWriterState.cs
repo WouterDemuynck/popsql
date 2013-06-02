@@ -32,6 +32,22 @@ namespace Popsql.Text
         /// </summary>
         From,
         /// <summary>
+        /// Indicates that the start of a SQL WHERE clause has been written.
+        /// </summary>
+        StartWhere,
+        /// <summary>
+        /// Indicates that the writer is currently writing a SQL WHERE clause.
+        /// </summary>
+        Where,
+        /// <summary>
+        /// Indicates that the start of a SQL expression has been written.
+        /// </summary>
+        StartExpression,
+        /// <summary>
+        /// Indicates that the writer is currently writing a SQL expression.
+        /// </summary>
+        Expression,
+        /// <summary>
         /// Indicates that the start of a SQL UPDATE statement has been written.
         /// </summary>
         StartUpdate,

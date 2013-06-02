@@ -86,5 +86,31 @@ namespace Popsql.Tests.Text
 
             Assert.AreEqual("SELECT [Id], [Name] AS [n], [Users].[Email] AS [e] FROM [Users], [Sessions] [s]", builder.ToString());
         }
+
+        [TestMethod]
+        public void WriteStartFrom_WhenSelectStatement_WritesWhere()
+        {
+            StringBuilder builder = new StringBuilder();
+            using (SqlWriter writer = new SqlWriter(builder))
+            {
+                writer.WriteStartSelect();
+                writer.WriteColumn("Id");
+                writer.WriteColumn("Name", "n");
+                writer.WriteColumn("Users", "Email", "e");
+                writer.WriteStartFrom();
+                writer.WriteTable("Users");
+                writer.WriteStartWhere();
+                Assert.AreEqual(SqlWriterState.StartWhere, writer.WriteState);
+                writer.WriteColumn("Id");
+                writer.WriteOperator(SqlBinaryOperator.Equal);
+                writer.WriteParameter("Id");
+                writer.WriteOperator(SqlBinaryOperator.Or);
+                writer.WriteColumn("Id");
+                writer.WriteOperator(SqlBinaryOperator.LessThan);
+                writer.WriteValue(100);
+            }
+
+            Assert.AreEqual("SELECT [Id], [Name] AS [n], [Users].[Email] AS [e] FROM [Users] WHERE ([Id] = @Id) OR ([Id] < 100)", builder.ToString());
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace Popsql
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlBinaryExpression"/> class using the specified 
-        /// <paramref name="left"/> and <paramref name="right"/> operands and the specified <paramref name="@operator"/>.
+        /// <paramref name="left"/> and <paramref name="right"/> operands and the specified <paramref name="operator"/>.
         /// </summary>
         /// <param name="left">
         /// The left operand of the binary expression.

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -160,6 +161,11 @@ namespace Popsql.Text
                 case SqlWriterState.Set:
                     WriteRaw(",");
                     break;
+
+                case SqlWriterState.StartWhere:
+                case SqlWriterState.Expression:
+                    WriteOpenParenthesis();
+                    break;
             }
 
             if (!string.IsNullOrWhiteSpace(tableName))
@@ -192,6 +198,11 @@ namespace Popsql.Text
                 case SqlWriterState.StartSet:
                     _stateManager.RequestState(SqlWriterState.Set);
                     break;
+
+                case SqlWriterState.StartWhere:
+                case SqlWriterState.Expression:
+                    _stateManager.RequestState(SqlWriterState.StartExpression);
+                    break;
             }
         }
 
@@ -220,6 +231,16 @@ namespace Popsql.Text
             EnsureNotDisposed();
             Write("FROM");
             _stateManager.RequestState(SqlWriterState.StartFrom);
+        }
+
+        /// <summary>
+        /// Writes the start of a SQL WHERE clause to the output stream.
+        /// </summary>
+        public void WriteStartWhere()
+        {
+            EnsureNotDisposed();
+            Write("WHERE");
+            _stateManager.RequestState(SqlWriterState.StartWhere);
         }
 
         /// <summary>
@@ -277,6 +298,60 @@ namespace Popsql.Text
                     _stateManager.RequestState(SqlWriterState.Update);
                     break;
             }
+        }
+
+        /// <summary>
+        /// Writes the specified operator to the output stream.
+        /// </summary>
+        /// <param name="operator">
+        /// The operator to write to the output stream.
+        /// </param>
+        public void WriteOperator(SqlBinaryOperator @operator)
+        {
+            EnsureNotDisposed();
+            switch (@operator)
+            {
+                case SqlBinaryOperator.And:
+                    Write("AND");
+                    break;
+
+                case SqlBinaryOperator.Equal:
+                    Write("=");
+                    break;
+
+                case SqlBinaryOperator.GreaterThan:
+                    Write(">");
+                    break;
+
+                case SqlBinaryOperator.GreaterThanOrEqual:
+                    Write(">=");
+                    break;
+
+                case SqlBinaryOperator.LessThan:
+                    Write("<");
+                    break;
+
+                case SqlBinaryOperator.LessThanOrEqual:
+                    Write("<=");
+                    break;
+
+                case SqlBinaryOperator.Like:
+                    Write("LIKE");
+                    break;
+
+                case SqlBinaryOperator.NotEqual:
+                    Write("<>");
+                    break;
+
+                case SqlBinaryOperator.Or:
+                    Write("OR");
+                    break;
+
+                default:
+                    throw new InvalidEnumArgumentException("operator", (int)@operator, typeof(SqlBinaryOperator));
+            }
+
+            _stateManager.RequestState(SqlWriterState.Expression);
         }
 
         /// <summary>
@@ -425,6 +500,11 @@ namespace Popsql.Text
                 case SqlWriterState.StartValues:
                     _stateManager.RequestState(SqlWriterState.Values);
                     break;
+
+                case SqlWriterState.Expression:
+                    WriteCloseParenthesis();
+                    _stateManager.RequestState(SqlWriterState.Where);
+                    break;
             }
         }
 
@@ -460,6 +540,11 @@ namespace Popsql.Text
             {
                 case SqlWriterState.StartValues:
                     _stateManager.RequestState(SqlWriterState.Values);
+                    break;
+
+                case SqlWriterState.Expression:
+                    WriteCloseParenthesis();
+                    _stateManager.RequestState(SqlWriterState.Where);
                     break;
             }
         }
