@@ -20,6 +20,17 @@ namespace Popsql
         }
 
         /// <summary>
+        /// Returns the expression type of this expression.
+        /// </summary>
+        public override sealed SqlExpressionType ExpressionType
+        {
+            get
+            {
+                return SqlExpressionType.Insert;
+            }
+        }
+
+        /// <summary>
         /// Gets the table into which this <see cref="SqlInsert" /> inserts rows.
         /// </summary>
         public SqlTable Table

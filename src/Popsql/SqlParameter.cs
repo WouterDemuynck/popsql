@@ -29,6 +29,17 @@ namespace Popsql
         }
 
         /// <summary>
+        /// Returns the expression type of this expression.
+        /// </summary>
+        public override sealed SqlExpressionType ExpressionType
+        {
+            get
+            {
+                return SqlExpressionType.Parameter;
+            }
+        }
+
+        /// <summary>
         /// Gets the parameter name name of this <see cref="SqlParameter"/>.
         /// </summary>
         public string ParameterName

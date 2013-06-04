@@ -29,6 +29,17 @@ namespace Popsql
         }
 
         /// <summary>
+        /// Returns the expression type of this expression.
+        /// </summary>
+        public override sealed SqlExpressionType ExpressionType
+        {
+            get
+            {
+                return SqlExpressionType.Constant;
+            }
+        }
+
+        /// <summary>
         /// The value of this <see cref="SqlConstant"/>.
         /// </summary>
         public object Value

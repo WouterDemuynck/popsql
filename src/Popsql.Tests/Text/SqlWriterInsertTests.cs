@@ -119,6 +119,7 @@ namespace Popsql.Tests.Text
                 writer.WriteColumn("Id");
                 writer.WriteColumn("UserName");
                 writer.WriteColumn("Email");
+
                 writer.WriteStartValues();
                 writer.WriteOpenParenthesis();
                 Assert.AreEqual(SqlWriterState.StartValues, writer.WriteState);
@@ -127,6 +128,7 @@ namespace Popsql.Tests.Text
                 writer.WriteValue("myemail@mydomain.local");
                 writer.WriteEndValues();
                 Assert.AreEqual(SqlWriterState.EndValues, writer.WriteState);
+                
                 writer.WriteStartValues();
                 Assert.AreEqual(SqlWriterState.StartValues, writer.WriteState);
                 writer.WriteValue(16);
@@ -134,6 +136,7 @@ namespace Popsql.Tests.Text
                 writer.WriteValue("mysecondemail@mydomain.local");
                 writer.WriteEndValues(); 
                 Assert.AreEqual(SqlWriterState.EndValues, writer.WriteState);
+                
                 writer.WriteCloseParenthesis();
             }
 

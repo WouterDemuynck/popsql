@@ -72,6 +72,17 @@ namespace Popsql
         }
 
         /// <summary>
+        /// Returns the expression type of this expression.
+        /// </summary>
+        public override sealed SqlExpressionType ExpressionType
+        {
+            get
+            {
+                return SqlExpressionType.Column;
+            }
+        }
+
+        /// <summary>
         /// Gets the name of the table to which the column belongs.
         /// </summary>
         public string TableName

@@ -50,6 +50,17 @@ namespace Popsql
         }
 
         /// <summary>
+        /// Returns the expression type of this expression.
+        /// </summary>
+        public override sealed SqlExpressionType ExpressionType
+        {
+            get
+            {
+                return SqlExpressionType.Table;
+            }
+        }
+
+        /// <summary>
         /// Gets the name of the table.
         /// </summary>
         public string TableName

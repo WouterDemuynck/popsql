@@ -33,6 +33,17 @@ namespace Popsql
         }
 
         /// <summary>
+        /// Returns the expression type of this expression.
+        /// </summary>
+        public override sealed SqlExpressionType ExpressionType
+        {
+            get
+            {
+                return SqlExpressionType.Binary;
+            }
+        }
+
+        /// <summary>
         /// Gets the left operand of the binary expression.
         /// </summary>
         public SqlExpression Left

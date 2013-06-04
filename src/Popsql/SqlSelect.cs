@@ -27,6 +27,17 @@ namespace Popsql
         }
 
         /// <summary>
+        /// Returns the expression type of this expression.
+        /// </summary>
+        public override sealed SqlExpressionType ExpressionType
+        {
+            get
+            {
+                return SqlExpressionType.Select;
+            }
+        }
+
+        /// <summary>
         /// Gets the table from which rows are selected by this SQL SELECT statement.
         /// </summary>
         public SqlTable Table

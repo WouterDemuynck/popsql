@@ -18,6 +18,17 @@ namespace Popsql
         }
 
         /// <summary>
+        /// Returns the expression type of this expression.
+        /// </summary>
+        public override sealed SqlExpressionType ExpressionType
+        {
+            get
+            {
+                return SqlExpressionType.Delete;
+            }
+        }
+
+        /// <summary>
         /// Gets the table from which to delete rows.
         /// </summary>
         public SqlTable Table

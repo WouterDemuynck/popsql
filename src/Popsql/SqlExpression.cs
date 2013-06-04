@@ -201,5 +201,13 @@ namespace Popsql
         {
             return new SqlBinaryExpression(column, SqlBinaryOperator.Like, value ?? SqlConstant.Null);
         }
+
+        /// <summary>
+        /// Gets the expression type of this expression.
+        /// </summary>
+        public abstract SqlExpressionType ExpressionType 
+        { 
+            get; 
+        }
     }
 }

@@ -29,6 +29,17 @@ namespace Popsql
         }
 
         /// <summary>
+        /// Returns the expression type of this expression.
+        /// </summary>
+        public override sealed SqlExpressionType ExpressionType
+        {
+            get
+            {
+                return SqlExpressionType.Update;
+            }
+        }
+
+        /// <summary>
         /// Gets the table updated by this <see cref="SqlUpdate" />.
         /// </summary>
         public SqlTable Table
@@ -53,7 +64,7 @@ namespace Popsql
         {
             get
             {
-                return _values ?? (_values = new List<SqlAssign>()); 
+                return _values ?? (_values = new List<SqlAssign>());
             }
         }
 

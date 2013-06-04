@@ -30,6 +30,7 @@ namespace Popsql.Text
                 { SqlWriterState.StartUpdate,         new[] { SqlWriterState.Update } },
                 { SqlWriterState.Update,              new[] { SqlWriterState.StartSet } },
                 { SqlWriterState.StartSet,            new[] { SqlWriterState.Set } },
+                { SqlWriterState.Set,                 new[] { SqlWriterState.Set, SqlWriterState.StartWhere } },
             };
 
         private readonly Stack<SqlWriterState> _states;
