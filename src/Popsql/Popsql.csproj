@@ -54,6 +54,8 @@
     <Compile Include="SqlDelete.cs" />
     <Compile Include="SqlInsert.cs" />
     <Compile Include="SqlSelect.cs" />
+    <Compile Include="SqlSort.cs" />
+    <Compile Include="SqlSortOrder.cs" />
     <Compile Include="SqlStatement.cs" />
     <Compile Include="SqlStatementExtensions.cs" />
     <Compile Include="SqlTable.cs" />

@@ -50,7 +50,7 @@ namespace Popsql
         
         /// <summary>
         /// Converts the specified <see cref="SqlConstant"/> to a <see cref="SqlParameter"/> when
-        /// concatenated by a <see cref="String"/>.
+        /// concatenated with a <see cref="String"/>.
         /// </summary>
         /// <param name="parameterName">
         /// The name of the parameter.

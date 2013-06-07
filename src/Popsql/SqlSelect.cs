@@ -10,6 +10,8 @@ namespace Popsql
     /// </summary>
     public class SqlSelect : SqlStatement
     {
+        private List<SqlSort> _sorting;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlSelect"/> class using the
         /// specified <paramref name="columns"/>.
@@ -65,6 +67,17 @@ namespace Popsql
         }
 
         /// <summary>
+        /// Gets the collection of sorting clauses determining the result ordering of this SQL SELECT statement.
+        /// </summary>
+        public IEnumerable<SqlSort> Sorting
+        {
+            get 
+            {
+                return _sorting ?? (_sorting = new List<SqlSort>());
+            }
+        }
+
+        /// <summary>
         /// Sets the table from which rows are selected by this SQL SELECT statement.
         /// </summary>
         /// <param name="table">
@@ -92,6 +105,28 @@ namespace Popsql
         public SqlSelect Where(SqlExpression predicate)
         {
             Predicate = predicate;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the sort order used for sorting the results of this SQL SELECT statement.
+        /// </summary>
+        /// <param name="column">
+        /// The <see cref="SqlColumn"/> on which to sort.
+        /// </param>
+        /// <param name="sortOrder">
+        /// The <see cref="SqlSortOrder"/> derermining the sorting order.
+        /// </param>
+        /// <returns>
+        /// The current instance of the <see cref="SqlSelect"/> class.
+        /// </returns>
+        public SqlSelect OrderBy(SqlColumn column, SqlSortOrder sortOrder)
+        {
+            if (_sorting == null)
+            {
+                _sorting = new List<SqlSort>();
+            }
+            _sorting.Add(column + sortOrder);
             return this;
         }
     }
