@@ -49,6 +49,10 @@ namespace Popsql
         /// <summary>
         /// Represents a sorting expression in SQL.
         /// </summary>
-        Sort
+        Sort,
+        /// <summary>
+        /// Represents an assignment expression in SQL.
+        /// </summary>
+        Assign
     }
 }

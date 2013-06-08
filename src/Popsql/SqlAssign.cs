@@ -8,7 +8,7 @@ namespace Popsql
     /// <summary>
     /// Represents an assignment in SQL.
     /// </summary>
-    public sealed class SqlAssign
+    public sealed class SqlAssign : SqlExpression
     {
         internal SqlAssign(SqlColumn column, SqlValue value)
         {
@@ -32,6 +32,14 @@ namespace Popsql
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// Returns the expression type of this expression.
+        /// </summary>
+        public override SqlExpressionType ExpressionType
+        {
+            get { return SqlExpressionType.Assign; }
         }
     }
 }

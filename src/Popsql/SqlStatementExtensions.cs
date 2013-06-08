@@ -168,8 +168,8 @@ namespace Popsql
             {
                 _writer.WriteStartUpdate();
                 Visit(expression.Table);
-                _writer.WriteStartSet();
 
+                _writer.WriteStartSet();
                 foreach (var value in expression.Values)
                 {
                     Visit(value.Column);

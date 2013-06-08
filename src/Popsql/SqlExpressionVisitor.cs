@@ -64,6 +64,9 @@ namespace Popsql
 
                 case SqlExpressionType.Sort:
                     return VisitSort((SqlSort)expression);
+
+                case SqlExpressionType.Assign:
+                    return VisitAssign((SqlAssign)expression);
             }
 
             return expression;
@@ -233,10 +236,11 @@ namespace Popsql
         protected virtual SqlExpression VisitUpdate(SqlUpdate expression)
         {
             SqlTable table = VisitAndConvert<SqlTable>(expression.Table);
-            SqlAssign[] values = VisitValues(expression.Values).ToArray();
+            IEnumerable<SqlAssign> values = VisitAndConvert<SqlAssign>(expression.Values);
             SqlExpression predicate = expression.Predicate == null ? null : Visit(expression.Predicate);
 
             if (expression.Table != table ||
+                !expression.Values.SequenceEqual(values) ||
                 expression.Predicate != predicate)
             {
                 var result = Sql
@@ -252,25 +256,6 @@ namespace Popsql
             }
 
             return expression;
-        }
-
-        private IEnumerable<SqlAssign> VisitValues(IEnumerable<SqlAssign> expressions)
-        {
-            foreach (var assign in expressions)
-            {
-                var column = VisitAndConvert<SqlColumn>(assign.Column);
-                var value = VisitAndConvert<SqlValue>(assign.Value);
-
-                if (assign.Column != column ||
-                    assign.Value != value)
-                {
-                    yield return new SqlAssign(column, value);
-                }
-                else
-                {
-                    yield return assign;
-                }
-            }
         }
 
         /// <summary>
@@ -345,6 +330,39 @@ namespace Popsql
         /// </returns>
         protected virtual SqlExpression VisitSort(SqlSort expression)
         {
+            var column = VisitAndConvert<SqlColumn>(expression.Column);
+            var order = VisitSortOrder(expression.SortOrder);
+
+            if (expression.Column != column ||
+                expression.SortOrder != order)
+            {
+                return new SqlSort(column, order);
+            }
+
+            return expression;
+        }
+
+        /// <summary>
+        /// Visits a <see cref="SqlAssign"/>.
+        /// </summary>
+        /// <param name="expression">
+        /// The expression to visit.
+        /// </param>
+        /// <returns>
+        /// The modified expression, if it or any subexpression was modified; otherwise, returns the original
+        /// expression.
+        /// </returns>
+        protected virtual SqlExpression VisitAssign(SqlAssign expression)
+        {
+            var column = VisitAndConvert<SqlColumn>(expression.Column);
+            var value = VisitAndConvert<SqlValue>(expression.Value);
+
+            if (expression.Column != column ||
+                expression.Value != value)
+            {
+                return new SqlAssign(column, value);
+            }
+
             return expression;
         }
 
@@ -387,6 +405,21 @@ namespace Popsql
         protected virtual SqlBinaryOperator VisitOperator(SqlBinaryOperator @operator)
         {
             return @operator;
+        }
+
+        /// <summary>
+        /// Visits a <see cref="SqlSortOrder"/>.
+        /// </summary>
+        /// <param name="sortOrder">
+        /// The sort order to visit.
+        /// </param>
+        /// <returns>
+        /// The modified sort order, if it was modified; otherwise, returns the original
+        /// sort order.
+        /// </returns>
+        protected virtual SqlSortOrder VisitSortOrder(SqlSortOrder sortOrder)
+        {
+            return sortOrder;
         }
     }
 }
