@@ -45,6 +45,10 @@ namespace Popsql
         /// <summary>
         /// Represents a table in SQL.
         /// </summary>
-        Table
+        Table,
+        /// <summary>
+        /// Represents a sorting expression in SQL.
+        /// </summary>
+        Sort
     }
 }

@@ -61,6 +61,9 @@ namespace Popsql
 
                 case SqlExpressionType.Parameter:
                     return VisitParameter((SqlParameter)expression);
+
+                case SqlExpressionType.Sort:
+                    return VisitSort((SqlSort)expression);
             }
 
             return expression;
@@ -132,15 +135,24 @@ namespace Popsql
             SqlColumn[] columns = VisitAndConvert<SqlColumn>(expression.Columns).ToArray();
             SqlTable table = VisitAndConvert<SqlTable>(expression.Table);
             SqlExpression predicate = expression.Predicate == null ? null : Visit(expression.Predicate);
+            SqlSort[] sort = VisitAndConvert<SqlSort>(expression.Sorting).ToArray();
 
             if (!expression.Columns.SequenceEqual(columns) ||
                 expression.Table != table ||
-                expression.Predicate != predicate)
+                expression.Predicate != predicate ||
+                !expression.Sorting.SequenceEqual(sort))
             {
-                return Sql
+                var result = Sql
                     .Select(columns)
                     .From(table)
                     .Where(predicate);
+
+                foreach (var item in sort)
+                {
+                    result.OrderBy(item);
+                }
+
+                return result;
             }
 
             return expression;
@@ -317,6 +329,21 @@ namespace Popsql
         /// expression.
         /// </returns>
         protected virtual SqlExpression VisitParameter(SqlParameter expression)
+        {
+            return expression;
+        }
+
+        /// <summary>
+        /// Visits a <see cref="SqlSort"/>.
+        /// </summary>
+        /// <param name="expression">
+        /// The expression to visit.
+        /// </param>
+        /// <returns>
+        /// The modified expression, if it or any subexpression was modified; otherwise, returns the original
+        /// expression.
+        /// </returns>
+        protected virtual SqlExpression VisitSort(SqlSort expression)
         {
             return expression;
         }

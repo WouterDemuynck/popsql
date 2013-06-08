@@ -9,7 +9,7 @@ namespace Popsql
     /// <summary>
     /// Represents a sorting expression in SQL.
     /// </summary>
-    public class SqlSort
+    public class SqlSort : SqlExpression
     {
         internal SqlSort(SqlColumn column, SqlSortOrder sortOrder)
         {
@@ -34,6 +34,14 @@ namespace Popsql
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// Returns the expression type of this expression.
+        /// </summary>
+        public override SqlExpressionType ExpressionType
+        {
+            get { return SqlExpressionType.Sort; }
         }
     }
 }

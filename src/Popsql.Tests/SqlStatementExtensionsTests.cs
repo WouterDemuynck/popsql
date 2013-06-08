@@ -23,6 +23,33 @@ namespace Popsql.Tests
         }
 
         [TestMethod]
+        public void ToSql_WithSelectWithOrderByClause_WritesCorrectSql()
+        {
+            var sql = Sql
+                .Select("Id", "Name", "Email")
+                .From("Users")
+                .Where(SqlExpression.Or(SqlExpression.Equal("Id", 5), SqlExpression.GreaterThan("Age", "Age" + (SqlConstant)30)))
+                .OrderBy("Id", SqlSortOrder.Descending)
+                .OrderBy("Name")
+                .ToSql();
+
+            Assert.AreEqual("SELECT [Id], [Name], [Email] FROM [Users] WHERE (([Id] = 5) OR ([Age] > @Age)) ORDER BY [Id] DESC, [Name] ASC", sql);
+        }
+
+        [TestMethod]
+        public void ToSql_WithSelectWithOrderByClauseWithoutWhereClause_WritesCorrectSql()
+        {
+            var sql = Sql
+                .Select("Id", "Name", "Email")
+                .From("Users")
+                .OrderBy("Id", SqlSortOrder.Descending)
+                .OrderBy("Name")
+                .ToSql();
+
+            Assert.AreEqual("SELECT [Id], [Name], [Email] FROM [Users] ORDER BY [Id] DESC, [Name] ASC", sql);
+        }
+
+        [TestMethod]
         public void ToSql_WithDelete_WritesCorrectSql()
         {
             var sql = Sql

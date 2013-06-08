@@ -48,6 +48,14 @@ namespace Popsql.Text
         /// </summary>
         Expression,
         /// <summary>
+        /// Indicates that the start of a SQL ORDER BY clause has been written.
+        /// </summary>
+        StartOrderBy,
+        /// <summary>
+        /// Indicates that the writer is currently writing a SQL ORDER BY clause.
+        /// </summary>
+        OrderBy,
+        /// <summary>
         /// Indicates that the start of a SQL UPDATE statement has been written.
         /// </summary>
         StartUpdate,

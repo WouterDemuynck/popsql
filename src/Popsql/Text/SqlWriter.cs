@@ -151,15 +151,13 @@ namespace Popsql.Text
             {
                 case SqlWriterState.Select:
                 case SqlWriterState.Into:
+                case SqlWriterState.OrderBy:
+                case SqlWriterState.Set:
                     WriteRaw(",");
                     break;
 
                 case SqlWriterState.StartInto: 
                     WriteOpenParenthesis();
-                    break;
-
-                case SqlWriterState.Set:
-                    WriteRaw(",");
                     break;
 
                 case SqlWriterState.StartWhere:
@@ -202,6 +200,10 @@ namespace Popsql.Text
                 case SqlWriterState.StartWhere:
                 case SqlWriterState.Expression:
                     _stateManager.RequestState(SqlWriterState.StartExpression);
+                    break;
+
+                case SqlWriterState.StartOrderBy:
+                    _stateManager.RequestState(SqlWriterState.OrderBy);
                     break;
             }
         }
@@ -297,6 +299,40 @@ namespace Popsql.Text
                 case SqlWriterState.StartUpdate:
                     _stateManager.RequestState(SqlWriterState.Update);
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Writes the start of a SQL ORDER BY clause to the output stream.
+        /// </summary>
+        public void WriteStartOrderBy()
+        {
+            EnsureNotDisposed();
+            Write("ORDER BY");
+            _stateManager.RequestState(SqlWriterState.StartOrderBy);
+        }
+
+        /// <summary>
+        /// Writes the specified sort order to the output stream.
+        /// </summary>
+        /// <param name="sortOrder">
+        /// The sort order to write to the output stream.
+        /// </param>
+        public void WriteSortOrder(SqlSortOrder sortOrder)
+        {
+            EnsureNotDisposed();
+            switch (sortOrder)
+            {
+                case SqlSortOrder.Ascending:
+                    Write("ASC");
+                    break;
+
+                case SqlSortOrder.Descending:
+                    Write("DESC");
+                    break;
+
+                default:
+                    throw new InvalidEnumArgumentException("operator", (int)sortOrder, typeof(SqlBinaryOperator));
             }
         }
 

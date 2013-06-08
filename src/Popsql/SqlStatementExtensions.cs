@@ -140,6 +140,12 @@ namespace Popsql
                     Visit(expression.Predicate);
                 }
 
+                if (expression.Sorting.Any())
+                {
+                    _writer.WriteStartOrderBy();
+                    Visit(expression.Sorting);
+                }
+
                 return expression;
             }
 
@@ -231,6 +237,13 @@ namespace Popsql
             protected override SqlExpression VisitParameter(SqlParameter expression)
             {
                 _writer.WriteParameter(expression.ParameterName);
+                return expression;
+            }
+
+            protected override SqlExpression VisitSort(SqlSort expression)
+            {
+                Visit(expression.Column);
+                _writer.WriteSortOrder(expression.SortOrder);
                 return expression;
             }
 

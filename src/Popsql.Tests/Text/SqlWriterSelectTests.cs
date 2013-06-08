@@ -112,5 +112,78 @@ namespace Popsql.Tests.Text
 
             Assert.AreEqual("SELECT [Id], [Name] AS [n], [Users].[Email] AS [e] FROM [Users] WHERE ([Id] = @Id) OR ([Id] < 100)", builder.ToString());
         }
+
+        [TestMethod]
+        public void WriteOrderBy_WhenSelectStatementWithoutWhereClause_WritesOrderBy()
+        {
+            StringBuilder builder = new StringBuilder();
+            using (SqlWriter writer = new SqlWriter(builder))
+            {
+                writer.WriteStartSelect();
+                writer.WriteColumn("Id");
+                writer.WriteColumn("Name", "n");
+                writer.WriteColumn("Users", "Email", "e");
+                writer.WriteStartFrom();
+                writer.WriteTable("Users");
+                writer.WriteStartOrderBy();
+                writer.WriteColumn("Id");
+                writer.WriteSortOrder(SqlSortOrder.Ascending);
+            }
+
+            Assert.AreEqual("SELECT [Id], [Name] AS [n], [Users].[Email] AS [e] FROM [Users] ORDER BY [Id] ASC", builder.ToString());
+        }
+
+        [TestMethod]
+        public void WriteOrderBy_WhenSelectStatementWithMultipleSortExpressions_WritesOrderBy()
+        {
+            StringBuilder builder = new StringBuilder();
+            using (SqlWriter writer = new SqlWriter(builder))
+            {
+                writer.WriteStartSelect();
+                writer.WriteColumn("Id");
+                writer.WriteColumn("Name", "n");
+                writer.WriteColumn("Users", "Email", "e");
+                writer.WriteStartFrom();
+                writer.WriteTable("Users");
+                writer.WriteStartOrderBy();
+                writer.WriteColumn("Id");
+                writer.WriteSortOrder(SqlSortOrder.Ascending);
+                writer.WriteColumn("Name");
+                writer.WriteSortOrder(SqlSortOrder.Descending);
+            }
+
+            Assert.AreEqual("SELECT [Id], [Name] AS [n], [Users].[Email] AS [e] FROM [Users] ORDER BY [Id] ASC, [Name] DESC", builder.ToString());
+        }
+
+        [TestMethod]
+        public void WriteStartOrderBy_WhenSelectStatementWithWhereClause_WritesOrderBy()
+        {
+            StringBuilder builder = new StringBuilder();
+            using (SqlWriter writer = new SqlWriter(builder))
+            {
+                writer.WriteStartSelect();
+                writer.WriteColumn("Id");
+                writer.WriteColumn("Name", "n");
+                writer.WriteColumn("Users", "Email", "e");
+                writer.WriteStartFrom();
+                writer.WriteTable("Users");
+                writer.WriteStartWhere();
+                Assert.AreEqual(SqlWriterState.StartWhere, writer.WriteState);
+                writer.WriteColumn("Id");
+                writer.WriteOperator(SqlBinaryOperator.Equal);
+                writer.WriteParameter("Id");
+                writer.WriteOperator(SqlBinaryOperator.Or);
+                writer.WriteColumn("Id");
+                writer.WriteOperator(SqlBinaryOperator.LessThan);
+                writer.WriteValue(100);
+                writer.WriteStartOrderBy();
+                writer.WriteColumn("Id");
+                writer.WriteSortOrder(SqlSortOrder.Ascending);
+                writer.WriteColumn("Name");
+                writer.WriteSortOrder(SqlSortOrder.Descending);
+            }
+
+            Assert.AreEqual("SELECT [Id], [Name] AS [n], [Users].[Email] AS [e] FROM [Users] WHERE ([Id] = @Id) OR ([Id] < 100) ORDER BY [Id] ASC, [Name] DESC", builder.ToString());
+        }
     }
 }
