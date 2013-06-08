@@ -61,5 +61,29 @@ namespace Popsql.Tests
             Assert.IsInstanceOfType(((SqlBinaryExpression)select.Predicate).Right, typeof(SqlConstant));
             Assert.AreEqual(5, ((SqlConstant)((SqlBinaryExpression)select.Predicate).Right).Value);
         }
+
+        [TestMethod]
+        public void OrderBy_WithNullColumn_ThrowsArgumentNull()
+        {
+            SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
+            AssertEx.Throws<ArgumentNullException>(() => select.OrderBy(null, SqlSortOrder.Ascending));
+        }
+
+        [TestMethod]
+        public void OrderBy_WithColumnAndSortOrder_SetsSortingProperty()
+        {
+            SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name", "Email" });
+            select.OrderBy((SqlColumn)"Id" + SqlSortOrder.Descending);
+            select.OrderBy("Name", SqlSortOrder.Ascending);
+            select.OrderBy("Email");
+
+            Assert.AreEqual(3, select.Sorting.Count());
+            Assert.AreEqual("Id", select.Sorting.First().Column.ColumnName);
+            Assert.AreEqual(SqlSortOrder.Descending, select.Sorting.First().SortOrder);
+            Assert.AreEqual("Name", select.Sorting.Skip(1).First().Column.ColumnName);
+            Assert.AreEqual(SqlSortOrder.Ascending, select.Sorting.Skip(1).First().SortOrder);
+            Assert.AreEqual("Email", select.Sorting.Last().Column.ColumnName);
+            Assert.AreEqual(SqlSortOrder.Ascending, select.Sorting.Last().SortOrder);
+        }
     }
 }

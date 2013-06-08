@@ -120,13 +120,27 @@ namespace Popsql
         /// <returns>
         /// The current instance of the <see cref="SqlSelect"/> class.
         /// </returns>
-        public SqlSelect OrderBy(SqlColumn column, SqlSortOrder sortOrder)
+        public SqlSelect OrderBy(SqlColumn column, SqlSortOrder sortOrder = SqlSortOrder.Ascending)
+        {
+            return OrderBy(column + sortOrder);
+        }
+
+        /// <summary>
+        /// Sets the sort order used for sorting the results of this SQL SELECT statement.
+        /// </summary>
+        /// <param name="sortOrder">
+        /// The <see cref="SqlSort"/> determining the sort order.
+        /// </param>
+        /// <returns>
+        /// The current instance of the <see cref="SqlSelect"/> class.
+        /// </returns>
+        public SqlSelect OrderBy(SqlSort sortOrder)
         {
             if (_sorting == null)
             {
                 _sorting = new List<SqlSort>();
             }
-            _sorting.Add(column + sortOrder);
+            _sorting.Add(sortOrder);
             return this;
         }
     }
