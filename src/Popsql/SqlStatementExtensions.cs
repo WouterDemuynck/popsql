@@ -134,6 +134,11 @@ namespace Popsql
                 _writer.WriteStartFrom();
                 _writer.WriteTable(expression.Table.TableName, expression.Table.Alias);
 
+                foreach (var join in expression.Joins)
+                {
+                    Visit(join);
+                }
+
                 if (expression.Predicate != null)
                 {
                     _writer.WriteStartWhere();
@@ -267,6 +272,7 @@ namespace Popsql
                 {
                     case SqlExpressionType.Constant:
                     case SqlExpressionType.Parameter:
+                    case SqlExpressionType.Column:
                         Visit(expression.Right);
                         break;
 
@@ -276,6 +282,18 @@ namespace Popsql
                         break;
                 }
 
+                return expression;
+            }
+
+            protected override SqlExpression VisitJoin(SqlJoin expression)
+            {
+                _writer.WriteStartJoin(expression.Type);
+                Visit(expression.Table);
+                if (expression.Predicate != null)
+                {
+                    _writer.WriteStartOn();
+                    Visit(expression.Predicate);
+                }
                 return expression;
             }
         }

@@ -15,12 +15,16 @@ namespace Popsql.Text
                 { SqlWriterState.StartSelect,         new[] { SqlWriterState.Select } },
                 { SqlWriterState.Select,              new[] { SqlWriterState.StartFrom } },
                 { SqlWriterState.StartFrom,           new[] { SqlWriterState.From } },
-                { SqlWriterState.From,                new[] { SqlWriterState.StartWhere, SqlWriterState.StartOrderBy } },
+                { SqlWriterState.From,                new[] { SqlWriterState.StartJoin, SqlWriterState.StartWhere, SqlWriterState.StartOrderBy } },
+                { SqlWriterState.StartJoin,           new[] { SqlWriterState.Join } },
+                { SqlWriterState.Join,                new[] { SqlWriterState.StartOn, SqlWriterState.StartWhere, SqlWriterState.StartOrderBy } },
+                { SqlWriterState.StartOn,             new[] { SqlWriterState.StartExpression } },
+                { SqlWriterState.On,                  new[] { SqlWriterState.StartExpression, SqlWriterState.StartWhere, SqlWriterState.StartOrderBy } },
                 { SqlWriterState.StartWhere,          new[] { SqlWriterState.StartExpression } },
                 { SqlWriterState.StartExpression,     new[] { SqlWriterState.Expression } },
-                { SqlWriterState.Expression,          new[] { SqlWriterState.Where, SqlWriterState.StartExpression, SqlWriterState.StartOrderBy } },
+                { SqlWriterState.Expression,          new[] { SqlWriterState.On, SqlWriterState.Where, SqlWriterState.StartExpression, SqlWriterState.StartOrderBy } },
                 { SqlWriterState.StartOrderBy,        new[] { SqlWriterState.OrderBy } },
-                { SqlWriterState.Where,               new[] { SqlWriterState.Expression, SqlWriterState.StartOrderBy } },
+                { SqlWriterState.Where,               new[] { SqlWriterState.StartExpression, SqlWriterState.StartOrderBy } },
                 { SqlWriterState.StartDelete,         new[] { SqlWriterState.StartFrom } },
                 { SqlWriterState.StartInsert,         new[] { SqlWriterState.StartInto } },
                 { SqlWriterState.Into,                new[] { SqlWriterState.StartValues } },
@@ -64,6 +68,12 @@ namespace Popsql.Text
                         string.Join("', '", validNextStates)));
 
             _states.Push(state);
+        }
+
+        public void RequestState(IDictionary<SqlWriterState, SqlWriterState> states)
+        {
+            var state = _states.First(_ => states.ContainsKey(_));
+            RequestState(states[state]);
         }
 
         public void Close()

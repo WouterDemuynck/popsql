@@ -85,5 +85,101 @@ namespace Popsql.Tests
             Assert.AreEqual("Email", select.Sorting.Last().Column.ColumnName);
             Assert.AreEqual(SqlSortOrder.Ascending, select.Sorting.Last().SortOrder);
         }
+
+        [TestMethod]
+        public void Join_WithNullTable_ThrowsArgumentNull()
+        {
+            SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name", "Email" });
+            AssertEx.Throws<ArgumentNullException>(() => select.Join(null));
+        }
+
+        [TestMethod]
+        public void InnerJoin_WithNullTable_ThrowsArgumentNull()
+        {
+            SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name", "Email" });
+            AssertEx.Throws<ArgumentNullException>(() => select.InnerJoin(null));
+        }
+
+        [TestMethod]
+        public void LeftJoin_WithNullTable_ThrowsArgumentNull()
+        {
+            SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name", "Email" });
+            AssertEx.Throws<ArgumentNullException>(() => select.LeftJoin(null));
+        }
+
+        [TestMethod]
+        public void RightJoin_WithNullTable_ThrowsArgumentNull()
+        {
+            SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name", "Email" });
+            AssertEx.Throws<ArgumentNullException>(() => select.RightJoin(null));
+        }
+
+        [TestMethod]
+        public void Join_WithTable_AddsJoin()
+        {
+            SqlTable foo = new SqlTable("Foo", "f");
+            SqlTable bar = new SqlTable("Bar", "b");
+            SqlSelect select = Sql
+                .Select(foo + "Id", bar + "Name")
+                .From(foo)
+                .Join(bar, SqlExpression.Equal(foo + "Id", bar + "FooId"));
+
+            Assert.IsNotNull(select.Joins);
+            Assert.AreEqual(1, select.Joins.Count());
+            Assert.AreEqual(SqlJoinType.Default, select.Joins.First().Type);
+            Assert.AreEqual("Bar", select.Joins.First().Table.TableName);
+            Assert.IsNotNull(select.Joins.First().Predicate);
+        }
+
+        [TestMethod]
+        public void InnerJoin_WithTable_AddsJoin()
+        {
+            SqlTable foo = new SqlTable("Foo", "f");
+            SqlTable bar = new SqlTable("Bar", "b");
+            SqlSelect select = Sql
+                .Select(foo + "Id", bar + "Name")
+                .From(foo)
+                .InnerJoin(bar, SqlExpression.Equal(foo + "Id", bar + "FooId"));
+
+            Assert.IsNotNull(select.Joins);
+            Assert.AreEqual(1, select.Joins.Count());
+            Assert.AreEqual(SqlJoinType.Inner, select.Joins.First().Type);
+            Assert.AreEqual("Bar", select.Joins.First().Table.TableName);
+            Assert.IsNotNull(select.Joins.First().Predicate);
+        }
+
+        [TestMethod]
+        public void LeftJoin_WithTable_AddsJoin()
+        {
+            SqlTable foo = new SqlTable("Foo", "f");
+            SqlTable bar = new SqlTable("Bar", "b");
+            SqlSelect select = Sql
+                .Select(foo + "Id", bar + "Name")
+                .From(foo)
+                .LeftJoin(bar, SqlExpression.Equal(foo + "Id", bar + "FooId"));
+
+            Assert.IsNotNull(select.Joins);
+            Assert.AreEqual(1, select.Joins.Count());
+            Assert.AreEqual(SqlJoinType.Left, select.Joins.First().Type);
+            Assert.AreEqual("Bar", select.Joins.First().Table.TableName);
+            Assert.IsNotNull(select.Joins.First().Predicate);
+        }
+
+        [TestMethod]
+        public void RightJoin_WithTable_AddsJoin()
+        {
+            SqlTable foo = new SqlTable("Foo", "f");
+            SqlTable bar = new SqlTable("Bar", "b");
+            SqlSelect select = Sql
+                .Select(foo + "Id", bar + "Name")
+                .From(foo)
+                .RightJoin(bar, SqlExpression.Equal(foo + "Id", bar + "FooId"));
+
+            Assert.IsNotNull(select.Joins);
+            Assert.AreEqual(1, select.Joins.Count());
+            Assert.AreEqual(SqlJoinType.Right, select.Joins.First().Type);
+            Assert.AreEqual("Bar", select.Joins.First().Table.TableName);
+            Assert.IsNotNull(select.Joins.First().Predicate);
+        }
     }
 }

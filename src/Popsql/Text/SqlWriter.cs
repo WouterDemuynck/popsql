@@ -161,7 +161,8 @@ namespace Popsql.Text
                     break;
 
                 case SqlWriterState.StartWhere:
-                case SqlWriterState.Expression:
+                case SqlWriterState.StartOn:
+                case SqlWriterState.StartExpression:
                     WriteOpenParenthesis();
                     break;
             }
@@ -198,8 +199,17 @@ namespace Popsql.Text
                     break;
 
                 case SqlWriterState.StartWhere:
-                case SqlWriterState.Expression:
+                case SqlWriterState.StartOn:
                     _stateManager.RequestState(SqlWriterState.StartExpression);
+                    break;
+
+                case SqlWriterState.Expression:
+                    WriteCloseParenthesis();
+                    _stateManager.RequestState(new Dictionary<SqlWriterState, SqlWriterState>
+                    {
+                        { SqlWriterState.StartOn,    SqlWriterState.On },
+                        { SqlWriterState.StartWhere, SqlWriterState.Where },
+                    });
                     break;
 
                 case SqlWriterState.StartOrderBy:
@@ -233,6 +243,40 @@ namespace Popsql.Text
             EnsureNotDisposed();
             Write("FROM");
             _stateManager.RequestState(SqlWriterState.StartFrom);
+        }
+
+        /// <summary>
+        /// Writes the start of a SQL JOIN clause to the output stream.
+        /// </summary>
+        public void WriteStartJoin(SqlJoinType type = SqlJoinType.Default)
+        {
+            EnsureNotDisposed();
+            switch (type)
+            {
+                case SqlJoinType.Inner:
+                    Write("INNER");
+                    break;
+
+                case SqlJoinType.Left:
+                    Write("LEFT");
+                    break;
+
+                case SqlJoinType.Right:
+                    Write("RIGHT");
+                    break;
+            }
+            Write("JOIN");
+            _stateManager.RequestState(SqlWriterState.StartJoin);
+        }
+
+        /// <summary>
+        /// Writes the start of a SQL JOIN condition to the output stream.
+        /// </summary>
+        public void WriteStartOn()
+        {
+            EnsureNotDisposed();
+            Write("ON");
+            _stateManager.RequestState(SqlWriterState.StartOn);
         }
 
         /// <summary>
@@ -299,6 +343,10 @@ namespace Popsql.Text
                 case SqlWriterState.StartUpdate:
                     _stateManager.RequestState(SqlWriterState.Update);
                     break;
+
+                case SqlWriterState.StartJoin:
+                    _stateManager.RequestState(SqlWriterState.Join);
+                    break;
             }
         }
 
@@ -345,9 +393,11 @@ namespace Popsql.Text
         public void WriteOperator(SqlBinaryOperator @operator)
         {
             EnsureNotDisposed();
+            SqlWriterState state = SqlWriterState.Expression;
             switch (@operator)
             {
                 case SqlBinaryOperator.And:
+                    state = SqlWriterState.StartExpression;
                     Write("AND");
                     break;
 
@@ -380,6 +430,7 @@ namespace Popsql.Text
                     break;
 
                 case SqlBinaryOperator.Or:
+                    state = SqlWriterState.StartExpression;
                     Write("OR");
                     break;
 
@@ -387,7 +438,7 @@ namespace Popsql.Text
                     throw new InvalidEnumArgumentException("operator", (int)@operator, typeof(SqlBinaryOperator));
             }
 
-            _stateManager.RequestState(SqlWriterState.Expression);
+            _stateManager.RequestState(state);
         }
 
         /// <summary>
@@ -539,7 +590,11 @@ namespace Popsql.Text
 
                 case SqlWriterState.Expression:
                     WriteCloseParenthesis();
-                    _stateManager.RequestState(SqlWriterState.Where);
+                    _stateManager.RequestState(new Dictionary<SqlWriterState, SqlWriterState>
+                    {
+                        { SqlWriterState.StartOn,    SqlWriterState.On },
+                        { SqlWriterState.StartWhere, SqlWriterState.Where },
+                    });
                     break;
             }
         }
@@ -580,7 +635,11 @@ namespace Popsql.Text
 
                 case SqlWriterState.Expression:
                     WriteCloseParenthesis();
-                    _stateManager.RequestState(SqlWriterState.Where);
+                    _stateManager.RequestState(new Dictionary<SqlWriterState, SqlWriterState>
+                    {
+                        { SqlWriterState.StartOn,    SqlWriterState.On },
+                        { SqlWriterState.StartWhere, SqlWriterState.Where },
+                    });
                     break;
             }
         }

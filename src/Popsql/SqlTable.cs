@@ -91,5 +91,23 @@ namespace Popsql
         {
             return new SqlTable(tableName);
         }
+
+        /// <summary>
+        /// Converts the specified column name to a <see cref="SqlColumn"/> when concatenated
+        /// with a <see cref="SqlTable"/>.
+        /// </summary>
+        /// <param name="table">
+        /// The table used to access the column.
+        /// </param>
+        /// <param name="columnName">
+        /// The name of the column.
+        /// </param>
+        /// <returns>
+        /// A <see cref="SqlColumn"/> instance representing the specified column in the specified table.
+        /// </returns>
+        public static SqlColumn operator +(SqlTable table, string columnName)
+        {
+            return new SqlColumn(table.Alias ?? table.TableName, columnName, null);
+        }
     }
 }

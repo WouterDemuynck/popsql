@@ -185,5 +185,115 @@ namespace Popsql.Tests.Text
 
             Assert.AreEqual("SELECT [Id], [Name] AS [n], [Users].[Email] AS [e] FROM [Users] WHERE ([Id] = @Id) OR ([Id] < 100) ORDER BY [Id] ASC, [Name] DESC", builder.ToString());
         }
+
+        [TestMethod]
+        public void WriteStartOn_WritesOnClause()
+        {
+            StringBuilder builder = new StringBuilder();
+            using (SqlWriter writer = new SqlWriter(builder))
+            {
+                writer.WriteStartSelect();
+                writer.WriteColumn("Id");
+                writer.WriteColumn("Name", "n");
+                writer.WriteColumn("Users", "Email", "e");
+                writer.WriteStartFrom();
+                writer.WriteTable("Users");
+                writer.WriteStartJoin();
+                writer.WriteTable("Profiles");
+                writer.WriteStartOn();
+                writer.WriteColumn("Users", "Id", null);
+                writer.WriteOperator(SqlBinaryOperator.Equal);
+                writer.WriteColumn("Profiles", "UserId", null);
+                writer.WriteOperator(SqlBinaryOperator.And);
+                writer.WriteColumn("Users", "Name", null);
+                writer.WriteOperator(SqlBinaryOperator.Equal);
+                writer.WriteParameter("Name");
+                writer.WriteStartWhere();
+                Assert.AreEqual(SqlWriterState.StartWhere, writer.WriteState);
+                writer.WriteColumn("Id");
+                writer.WriteOperator(SqlBinaryOperator.Equal);
+                writer.WriteParameter("Id");
+                writer.WriteOperator(SqlBinaryOperator.Or);
+                writer.WriteColumn("Id");
+                writer.WriteOperator(SqlBinaryOperator.LessThan);
+                writer.WriteValue(100);
+                writer.WriteStartOrderBy();
+                writer.WriteColumn("Id");
+                writer.WriteSortOrder(SqlSortOrder.Ascending);
+                writer.WriteColumn("Name");
+                writer.WriteSortOrder(SqlSortOrder.Descending);
+            }
+
+            Assert.AreEqual("SELECT [Id], [Name] AS [n], [Users].[Email] AS [e] FROM [Users] JOIN [Profiles] ON ([Users].[Id] = [Profiles].[UserId]) AND ([Users].[Name] = @Name) WHERE ([Id] = @Id) OR ([Id] < 100) ORDER BY [Id] ASC, [Name] DESC", builder.ToString());
+        }
+
+        [TestMethod]
+        public void WriteStartJoin_WritesInnerJoin()
+        {
+            StringBuilder builder = new StringBuilder();
+            using (SqlWriter writer = new SqlWriter(builder))
+            {
+                writer.WriteStartSelect();
+                writer.WriteColumn("Id");
+                writer.WriteColumn("Name", "n");
+                writer.WriteColumn("Users", "Email", "e");
+                writer.WriteStartFrom();
+                writer.WriteTable("Users");
+                writer.WriteStartJoin(SqlJoinType.Inner);
+                writer.WriteTable("Profiles");
+                writer.WriteStartOn();
+                writer.WriteColumn("Users", "Id", null);
+                writer.WriteOperator(SqlBinaryOperator.Equal);
+                writer.WriteColumn("Profiles", "UserId", null);
+            }
+
+            Assert.AreEqual("SELECT [Id], [Name] AS [n], [Users].[Email] AS [e] FROM [Users] INNER JOIN [Profiles] ON ([Users].[Id] = [Profiles].[UserId])", builder.ToString());
+        }
+
+        [TestMethod]
+        public void WriteStartJoin_WritesLeftJoin()
+        {
+            StringBuilder builder = new StringBuilder();
+            using (SqlWriter writer = new SqlWriter(builder))
+            {
+                writer.WriteStartSelect();
+                writer.WriteColumn("Id");
+                writer.WriteColumn("Name", "n");
+                writer.WriteColumn("Users", "Email", "e");
+                writer.WriteStartFrom();
+                writer.WriteTable("Users");
+                writer.WriteStartJoin(SqlJoinType.Left);
+                writer.WriteTable("Profiles");
+                writer.WriteStartOn();
+                writer.WriteColumn("Users", "Id", null);
+                writer.WriteOperator(SqlBinaryOperator.Equal);
+                writer.WriteColumn("Profiles", "UserId", null);
+            }
+
+            Assert.AreEqual("SELECT [Id], [Name] AS [n], [Users].[Email] AS [e] FROM [Users] LEFT JOIN [Profiles] ON ([Users].[Id] = [Profiles].[UserId])", builder.ToString());
+        }
+
+        [TestMethod]
+        public void WriteStartJoin_WritesRightJoin()
+        {
+            StringBuilder builder = new StringBuilder();
+            using (SqlWriter writer = new SqlWriter(builder))
+            {
+                writer.WriteStartSelect();
+                writer.WriteColumn("Id");
+                writer.WriteColumn("Name", "n");
+                writer.WriteColumn("Users", "Email", "e");
+                writer.WriteStartFrom();
+                writer.WriteTable("Users");
+                writer.WriteStartJoin(SqlJoinType.Right);
+                writer.WriteTable("Profiles");
+                writer.WriteStartOn();
+                writer.WriteColumn("Users", "Id", null);
+                writer.WriteOperator(SqlBinaryOperator.Equal);
+                writer.WriteColumn("Profiles", "UserId", null);
+            }
+
+            Assert.AreEqual("SELECT [Id], [Name] AS [n], [Users].[Email] AS [e] FROM [Users] RIGHT JOIN [Profiles] ON ([Users].[Id] = [Profiles].[UserId])", builder.ToString());
+        }
     }
 }

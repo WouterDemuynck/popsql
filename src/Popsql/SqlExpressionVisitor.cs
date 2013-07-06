@@ -67,6 +67,9 @@ namespace Popsql
 
                 case SqlExpressionType.Assign:
                     return VisitAssign((SqlAssign)expression);
+
+                case SqlExpressionType.Join:
+                    return VisitJoin((SqlJoin)expression);
             }
 
             return expression;
@@ -367,6 +370,32 @@ namespace Popsql
         }
 
         /// <summary>
+        /// Visits a <see cref="SqlJoin"/>.
+        /// </summary>
+        /// <param name="expression">
+        /// The expression to visit.
+        /// </param>
+        /// <returns>
+        /// The modified expression, if it or any subexpression was modified; otherwise, returns the original
+        /// expression.
+        /// </returns>
+        protected virtual SqlExpression VisitJoin(SqlJoin expression)
+        {
+            var type = VisitJoinType(expression.Type);
+            var table = VisitAndConvert<SqlTable>(expression.Table);
+            var predicate = VisitAndConvert<SqlExpression>(expression.Predicate);
+
+            if (expression.Type != type ||
+                expression.Table != table ||
+                expression.Predicate != predicate)
+            {
+                return new SqlJoin(type, table, predicate);
+            }
+
+            return expression;
+        }
+
+        /// <summary>
         /// Visits the children of a <see cref="SqlBinaryExpression"/>.
         /// </summary>
         /// <param name="expression">
@@ -405,6 +434,21 @@ namespace Popsql
         protected virtual SqlBinaryOperator VisitOperator(SqlBinaryOperator @operator)
         {
             return @operator;
+        }
+
+        /// <summary>
+        /// Visits a <see cref="SqlJoinType"/>.
+        /// </summary>
+        /// <param name="type">
+        /// The <see cref="SqlJoinType"/> to visit.
+        /// </param>
+        /// <returns>
+        /// The modified join type, if it was modified; otherwise, returns the original
+        /// join type.
+        /// </returns>
+        protected virtual SqlJoinType VisitJoinType(SqlJoinType type)
+        {
+            return type;
         }
 
         /// <summary>

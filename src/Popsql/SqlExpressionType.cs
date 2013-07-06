@@ -53,6 +53,10 @@ namespace Popsql
         /// <summary>
         /// Represents an assignment expression in SQL.
         /// </summary>
-        Assign
+        Assign,
+        /// <summary>
+        /// Represents a joining expression expression in SQL.
+        /// </summary>
+        Join
     }
 }

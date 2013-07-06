@@ -32,6 +32,22 @@ namespace Popsql.Text
         /// </summary>
         From,
         /// <summary>
+        /// Indicates that the start of a SQL JOIN clause has been written.
+        /// </summary>
+        StartJoin,
+        /// <summary>
+        /// Indicates that the writer is currently writing a SQL JOIN clause.
+        /// </summary>
+        Join,
+        /// <summary>
+        /// Indicates that the start of a SQL JOIN condition has been written.
+        /// </summary>
+        StartOn,
+        /// <summary>
+        /// Indicates that the writer is currently writing a SQL Join condition.
+        /// </summary>
+        On,
+        /// <summary>
         /// Indicates that the start of a SQL WHERE clause has been written.
         /// </summary>
         StartWhere,
