@@ -234,5 +234,65 @@ namespace Popsql.Tests
 
             Assert.AreEqual("INSERT INTO [Users] ([Email], [Age]) VALUES ((@Email, 30), ('someone@foo.bar', 23))", sql);
         }
+
+        [TestMethod]
+        public void ToSql_WithUnion_WritesCorrectSql()
+        {
+            var query = Sql.Union(
+                Sql.Select("Id", "Name").From("Users"),
+                Sql.Select("Id", "Name").From("Users"))
+                .ToSql();
+
+            Assert.AreEqual("(SELECT [Id], [Name] FROM [Users]) UNION (SELECT [Id], [Name] FROM [Users])", query);
+        }
+
+        [TestMethod]
+        public void ToSql_WithUnionWithWhereClause_WritesCorrectSql()
+        {
+            var query = Sql.Union(
+                Sql.Select("Id", "Name").From("Users").Where(SqlExpression.LessThan("Age", 18)),
+                Sql.Select("Id", "Name").From("Users").Where(SqlExpression.GreaterThanOrEqual("Age", 30)))
+                .ToSql();
+
+            Assert.AreEqual("(SELECT [Id], [Name] FROM [Users] WHERE ([Age] < 18)) UNION (SELECT [Id], [Name] FROM [Users] WHERE ([Age] >= 30))", query);
+        }
+
+        [TestMethod]
+        public void ToSql_WithUnionWithJoinClauseWithoutOnClause_WritesCorrectSql()
+        {
+            // Okay, this is a far-off scenario I think (since the SQL won't really make sense without an ON), but I want to test it anyway.
+            var u = new SqlTable("Users", "u");
+            var p = new SqlTable("Profiles", "p");
+            var query = Sql.Union(
+                Sql.Select(u + "Id", u + "Name", p + "Age").From(u).Join(p),
+                Sql.Select(u + "Id", u + "Name", p + "Age").From(u).InnerJoin(p, SqlExpression.Equal(u + "Id", p + "UserId")).Where(SqlExpression.GreaterThanOrEqual(p + "Age", 30)))
+                .ToSql();
+
+            Assert.AreEqual("(SELECT [u].[Id], [u].[Name], [p].[Age] FROM [Users] [u] JOIN [Profiles] [p]) UNION (SELECT [u].[Id], [u].[Name], [p].[Age] FROM [Users] [u] INNER JOIN [Profiles] [p] ON ([u].[Id] = [p].[UserId]) WHERE ([p].[Age] >= 30))", query);
+        }
+
+        [TestMethod]
+        public void ToSql_WithUnionWithJoinClause_WritesCorrectSql()
+        {
+            var u = new SqlTable("Users", "u");
+            var p = new SqlTable("Profiles", "p");
+            var query = Sql.Union(
+                Sql.Select(u + "Id", u + "Name", p + "Age").From(u).InnerJoin(p, SqlExpression.Equal(u + "Id", p + "UserId")),
+                Sql.Select(u + "Id", u + "Name", p + "Age").From(u).InnerJoin(p, SqlExpression.Equal(u + "Id", p + "UserId")).Where(SqlExpression.GreaterThanOrEqual(p + "Age", 30)))
+                .ToSql();
+
+            Assert.AreEqual("(SELECT [u].[Id], [u].[Name], [p].[Age] FROM [Users] [u] INNER JOIN [Profiles] [p] ON ([u].[Id] = [p].[UserId])) UNION (SELECT [u].[Id], [u].[Name], [p].[Age] FROM [Users] [u] INNER JOIN [Profiles] [p] ON ([u].[Id] = [p].[UserId]) WHERE ([p].[Age] >= 30))", query);
+        }
+
+        [TestMethod]
+        public void ToSql_WithUnionWithOrderByClause_WritesCorrectSql()
+        {
+            var query = Sql.Union(
+                Sql.Select("Id", "Name").From("Users").Where(SqlExpression.LessThan("Age", 18)).OrderBy("Name").OrderBy("Id"),
+                Sql.Select("Id", "Name").From("Users").Where(SqlExpression.GreaterThanOrEqual("Age", 30)).OrderBy("Age", SqlSortOrder.Descending))
+                .ToSql();
+
+            Assert.AreEqual("(SELECT [Id], [Name] FROM [Users] WHERE ([Age] < 18) ORDER BY [Name] ASC, [Id] ASC) UNION (SELECT [Id], [Name] FROM [Users] WHERE ([Age] >= 30) ORDER BY [Age] DESC)", query);
+        }
     }
 }
