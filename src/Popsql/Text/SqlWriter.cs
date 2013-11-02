@@ -83,6 +83,13 @@ namespace Popsql.Text
             }
         }
 
+        public void WriteUnion()
+        {
+            EnsureNotDisposed();
+            Write("UNION");
+            _stateManager.RequestState(SqlWriterState.Union);
+        }
+
         /// <summary>
         /// Writes the start of a SQL SELECT statement to the output stream.
         /// </summary>
@@ -91,6 +98,15 @@ namespace Popsql.Text
             EnsureNotDisposed();
             Write("SELECT");
             _stateManager.RequestState(SqlWriterState.StartSelect);
+        }
+
+        /// <summary>
+        /// Writes the end of a SQL SELECT statement to the output stream.
+        /// </summary>
+        public void WriteEndSelect()
+        {
+            EnsureNotDisposed();
+            _stateManager.RequestState(SqlWriterState.EndSelect);
         }
 
         /// <summary>

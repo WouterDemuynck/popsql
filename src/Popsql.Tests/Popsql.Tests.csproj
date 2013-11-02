@@ -64,6 +64,7 @@
     <Compile Include="Text\SqlWriterInsertTests.cs" />
     <Compile Include="Text\SqlWriterSelectTests.cs" />
     <Compile Include="Text\SqlWriterTests.cs" />
+    <Compile Include="Text\SqlWriterUnionTests.cs" />
     <Compile Include="Text\SqlWriterUpdateTests.cs" />
     <Compile Include="Utilities\AssertEx.cs" />
   </ItemGroup>

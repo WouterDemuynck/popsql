@@ -72,6 +72,14 @@ namespace Popsql.Text
         /// </summary>
         OrderBy,
         /// <summary>
+        /// Indicates that the end of a SQL SELECT statement has been written.
+        /// </summary>
+        EndSelect,
+        /// <summary>
+        /// Indicates that the writer is currently writing a SQL UNION statement.
+        /// </summary>
+        Union,
+        /// <summary>
         /// Indicates that the start of a SQL UPDATE statement has been written.
         /// </summary>
         StartUpdate,

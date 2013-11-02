@@ -15,16 +15,19 @@ namespace Popsql.Text
                 { SqlWriterState.StartSelect,         new[] { SqlWriterState.Select } },
                 { SqlWriterState.Select,              new[] { SqlWriterState.StartFrom } },
                 { SqlWriterState.StartFrom,           new[] { SqlWriterState.From } },
-                { SqlWriterState.From,                new[] { SqlWriterState.StartJoin, SqlWriterState.StartWhere, SqlWriterState.StartOrderBy } },
+                { SqlWriterState.From,                new[] { SqlWriterState.StartJoin, SqlWriterState.StartWhere, SqlWriterState.StartOrderBy, SqlWriterState.EndSelect } },
                 { SqlWriterState.StartJoin,           new[] { SqlWriterState.Join } },
-                { SqlWriterState.Join,                new[] { SqlWriterState.StartOn, SqlWriterState.StartWhere, SqlWriterState.StartOrderBy } },
+                { SqlWriterState.Join,                new[] { SqlWriterState.StartOn, SqlWriterState.StartWhere, SqlWriterState.StartOrderBy, SqlWriterState.EndSelect } },
                 { SqlWriterState.StartOn,             new[] { SqlWriterState.StartExpression } },
-                { SqlWriterState.On,                  new[] { SqlWriterState.StartExpression, SqlWriterState.StartWhere, SqlWriterState.StartOrderBy } },
+                { SqlWriterState.On,                  new[] { SqlWriterState.StartExpression, SqlWriterState.StartWhere, SqlWriterState.StartOrderBy, SqlWriterState.EndSelect } },
                 { SqlWriterState.StartWhere,          new[] { SqlWriterState.StartExpression } },
                 { SqlWriterState.StartExpression,     new[] { SqlWriterState.Expression } },
                 { SqlWriterState.Expression,          new[] { SqlWriterState.On, SqlWriterState.Where, SqlWriterState.StartExpression, SqlWriterState.StartOrderBy } },
+                { SqlWriterState.Where,               new[] { SqlWriterState.StartExpression, SqlWriterState.StartOrderBy, SqlWriterState.EndSelect } },
                 { SqlWriterState.StartOrderBy,        new[] { SqlWriterState.OrderBy } },
-                { SqlWriterState.Where,               new[] { SqlWriterState.StartExpression, SqlWriterState.StartOrderBy } },
+                { SqlWriterState.OrderBy,             new[] { SqlWriterState.EndSelect } },
+                { SqlWriterState.EndSelect,           new[] { SqlWriterState.Union, SqlWriterState.StartSelect, SqlWriterState.StartUpdate, SqlWriterState.StartInsert, SqlWriterState.StartDelete } },
+                { SqlWriterState.Union,               new[] { SqlWriterState.StartSelect } },
                 { SqlWriterState.StartDelete,         new[] { SqlWriterState.StartFrom } },
                 { SqlWriterState.StartInsert,         new[] { SqlWriterState.StartInto } },
                 { SqlWriterState.Into,                new[] { SqlWriterState.StartValues } },
@@ -63,8 +66,9 @@ namespace Popsql.Text
             if (!validNextStates.Contains(state))
                 throw new InvalidOperationException(
                     string.Format(
-                        "The current state '{0}' is invalid for the current operation. Valid next states are '{1}'.",
+                        "The current state '{0}' is invalid for the requested state '{1}'. Valid next states are '{2}'.",
                         CurrentState,
+                        state,
                         string.Join("', '", validNextStates)));
 
             _states.Push(state);

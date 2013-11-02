@@ -62,6 +62,7 @@
     <Compile Include="SqlStatementExtensions.cs" />
     <Compile Include="SqlTable.cs" />
     <Compile Include="SqlExpression.cs" />
+    <Compile Include="SqlUnion.cs" />
     <Compile Include="SqlUpdate.cs" />
     <Compile Include="SqlValue.cs" />
     <Compile Include="Text\SqlWriter.cs" />

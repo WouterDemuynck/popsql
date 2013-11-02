@@ -70,6 +70,9 @@ namespace Popsql
 
                 case SqlExpressionType.Join:
                     return VisitJoin((SqlJoin)expression);
+
+                case SqlExpressionType.Union:
+                    return VisitUnion((SqlUnion)expression);
             }
 
             return expression;
@@ -392,6 +395,26 @@ namespace Popsql
                 return new SqlJoin(type, table, predicate);
             }
 
+            return expression;
+        }
+
+        /// <summary>
+        /// Visits a <see cref="SqlUnion"/>.
+        /// </summary>
+        /// <param name="expression">
+        /// The expression to visit.
+        /// </param>
+        /// <returns>
+        /// The modified expression, if it or any subexpression was modified; otherwise, returns the original
+        /// expression.
+        /// </returns>
+        protected virtual SqlExpression VisitUnion(SqlUnion expression)
+        {
+            var statements = VisitAndConvert<SqlSelect>(expression.Statements);
+            if (!expression.Statements.SequenceEqual(statements))
+            {
+                return new SqlUnion(statements);
+            }
             return expression;
         }
 

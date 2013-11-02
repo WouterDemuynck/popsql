@@ -36,6 +36,29 @@ namespace Popsql
         }
 
         /// <summary>
+        /// Converts the specified <see cref="SqlUnion"/> expression tree to SQL text.
+        /// </summary>
+        /// <param name="sql">
+        /// The <see cref="SqlUnion"/> to convert to SQL text.
+        /// </param>
+        /// <returns>
+        /// The SQL text for the specified SQL expression tree.
+        /// </returns>
+        public static string ToSql(this SqlUnion sql)
+        {
+            if (sql == null) throw new ArgumentNullException("sql");
+
+            StringBuilder builder = new StringBuilder();
+            using (SqlWriter writer = new SqlWriter(builder))
+            {
+                SqlWriterVisitor visitor = new SqlWriterVisitor(writer);
+                visitor.Visit(sql);
+            }
+
+            return builder.ToString();
+        }
+
+        /// <summary>
         /// Converts the specified <see cref="SqlDelete"/> expression tree to SQL text.
         /// </summary>
         /// <param name="sql">
@@ -150,7 +173,24 @@ namespace Popsql
                     _writer.WriteStartOrderBy();
                     Visit(expression.Sorting);
                 }
+                _writer.WriteEndSelect();
+                return expression;
+            }
 
+            protected override SqlExpression VisitUnion(SqlUnion expression)
+            {
+                bool writeUnion = false;
+                foreach (SqlSelect statement in expression.Statements)
+                {
+                    if (writeUnion)
+                    {
+                        _writer.WriteUnion();
+                    }
+                    _writer.WriteOpenParenthesis();
+                    Visit(statement);
+                    _writer.WriteCloseParenthesis();
+                    writeUnion = true;
+                }
                 return expression;
             }
 

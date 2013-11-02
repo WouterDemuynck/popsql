@@ -57,6 +57,10 @@ namespace Popsql
         /// <summary>
         /// Represents a joining expression expression in SQL.
         /// </summary>
-        Join
+        Join,
+        /// <summary>
+        /// Represents a UNION operator in SQL.
+        /// </summary>
+        Union
     }
 }
