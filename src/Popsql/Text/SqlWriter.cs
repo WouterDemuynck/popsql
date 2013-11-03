@@ -83,6 +83,9 @@ namespace Popsql.Text
             }
         }
 
+        /// <summary>
+        /// Writes a SQL UNION operator to the output stream.
+        /// </summary>
         public void WriteUnion()
         {
             EnsureNotDisposed();

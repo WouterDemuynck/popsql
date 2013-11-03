@@ -1,9 +1,8 @@
 ﻿using Popsql.Text;
 using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Popsql
 {
@@ -12,6 +11,246 @@ namespace Popsql
     /// </summary>
     public static class SqlStatementExtensions
     {
+        /// <summary>
+        /// Converts the specified <see cref="SqlSelect"/> expression tree to an <see cref="IDbCommand"/>
+        /// instance for the specified <paramref name="connection" />.
+        /// </summary>
+        /// <param name="sql">
+        /// The <see cref="SqlSelect"/> to convert to an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <param name="connection">
+        /// The <see cref="IDbConnection"/> for which to create an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IDbCommand"/> for the specified <paramref name="connection"/> that reprents
+        /// the specified SQL expression tree.
+        /// </returns>
+        /// <remarks>
+        /// Any <see cref="SqlParameter"/> members of the <see cref="SqlSelect"/> expression are
+        /// automatically converted to <see cref="IDbDataParameter"/> instances and attached to
+        /// the returned <see cref="IDbCommand"/>.
+        /// </remarks>
+        public static IDbCommand ToCommand(this SqlSelect sql, IDbConnection connection)
+        {
+            return connection.CreateCommandInternal(sql);
+        }
+
+        /// <summary>
+        /// Converts the specified <see cref="SqlUnion"/> expression tree to an <see cref="IDbCommand"/>
+        /// instance for the specified <paramref name="connection" />.
+        /// </summary>
+        /// <param name="sql">
+        /// The <see cref="SqlSelect"/> to convert to an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <param name="connection">
+        /// The <see cref="IDbConnection"/> for which to create an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IDbCommand"/> for the specified <paramref name="connection"/> that reprents
+        /// the specified SQL expression tree.
+        /// </returns>
+        /// <remarks>
+        /// Any <see cref="SqlParameter"/> members of the <see cref="SqlSelect"/> expression are
+        /// automatically converted to <see cref="IDbDataParameter"/> instances and attached to
+        /// the returned <see cref="IDbCommand"/>.
+        /// </remarks>
+        public static IDbCommand ToCommand(this SqlUnion sql, IDbConnection connection)
+        {
+            return connection.CreateCommandInternal(sql);
+        }
+
+        /// <summary>
+        /// Converts the specified <see cref="SqlInsert"/> expression tree to an <see cref="IDbCommand"/>
+        /// instance for the specified <paramref name="connection" />.
+        /// </summary>
+        /// <param name="sql">
+        /// The <see cref="SqlInsert"/> to convert to an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <param name="connection">
+        /// The <see cref="IDbConnection"/> for which to create an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IDbCommand"/> for the specified <paramref name="connection"/> that reprents
+        /// the specified SQL expression tree.
+        /// </returns>
+        /// <remarks>
+        /// Any <see cref="SqlParameter"/> members of the <see cref="SqlInsert"/> expression are
+        /// automatically converted to <see cref="IDbDataParameter"/> instances and attached to
+        /// the returned <see cref="IDbCommand"/>.
+        /// </remarks>
+        public static IDbCommand ToCommand(this SqlInsert sql, IDbConnection connection)
+        {
+            return connection.CreateCommandInternal(sql);
+        }
+
+        /// <summary>
+        /// Converts the specified <see cref="SqlUpdate"/> expression tree to an <see cref="IDbCommand"/>
+        /// instance for the specified <paramref name="connection" />.
+        /// </summary>
+        /// <param name="sql">
+        /// The <see cref="SqlUpdate"/> to convert to an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <param name="connection">
+        /// The <see cref="IDbConnection"/> for which to create an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IDbCommand"/> for the specified <paramref name="connection"/> that reprents
+        /// the specified SQL expression tree.
+        /// </returns>
+        /// <remarks>
+        /// Any <see cref="SqlParameter"/> members of the <see cref="SqlUpdate"/> expression are
+        /// automatically converted to <see cref="IDbDataParameter"/> instances and attached to
+        /// the returned <see cref="IDbCommand"/>.
+        /// </remarks>
+        public static IDbCommand ToCommand(this SqlUpdate sql, IDbConnection connection)
+        {
+            return connection.CreateCommandInternal(sql);
+        }
+
+        /// <summary>
+        /// Converts the specified <see cref="SqlDelete"/> expression tree to an <see cref="IDbCommand"/>
+        /// instance for the specified <paramref name="connection" />.
+        /// </summary>
+        /// <param name="sql">
+        /// The <see cref="SqlDelete"/> to convert to an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <param name="connection">
+        /// The <see cref="IDbConnection"/> for which to create an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IDbCommand"/> for the specified <paramref name="connection"/> that reprents
+        /// the specified SQL expression tree.
+        /// </returns>
+        /// <remarks>
+        /// Any <see cref="SqlParameter"/> members of the <see cref="SqlDelete"/> expression are
+        /// automatically converted to <see cref="IDbDataParameter"/> instances and attached to
+        /// the returned <see cref="IDbCommand"/>.
+        /// </remarks>
+        public static IDbCommand ToCommand(this SqlDelete sql, IDbConnection connection)
+        {
+            return connection.CreateCommandInternal(sql);
+        }
+
+        /// <summary>
+        /// Converts the specified <see cref="SqlDelete"/> expression tree to an <see cref="IDbCommand"/>
+        /// instance for the specified <paramref name="connection" />.
+        /// </summary>
+        /// <param name="sql">
+        /// The <see cref="SqlDelete"/> to convert to an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <param name="connection">
+        /// The <see cref="IDbConnection"/> for which to create an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IDbCommand"/> for the specified <paramref name="connection"/> that reprents
+        /// the specified SQL expression tree.
+        /// </returns>
+        /// <remarks>
+        /// Any <see cref="SqlParameter"/> members of the <see cref="SqlDelete"/> expression are
+        /// automatically converted to <see cref="IDbDataParameter"/> instances and attached to
+        /// the returned <see cref="IDbCommand"/>.
+        /// </remarks>
+        public static IDbCommand CreateCommand(this IDbConnection connection, SqlDelete sql)
+        {
+            return connection.CreateCommandInternal(sql);
+        }
+
+        /// <summary>
+        /// Converts the specified <see cref="SqlUpdate"/> expression tree to an <see cref="IDbCommand"/>
+        /// instance for the specified <paramref name="connection" />.
+        /// </summary>
+        /// <param name="sql">
+        /// The <see cref="SqlUpdate"/> to convert to an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <param name="connection">
+        /// The <see cref="IDbConnection"/> for which to create an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IDbCommand"/> for the specified <paramref name="connection"/> that reprents
+        /// the specified SQL expression tree.
+        /// </returns>
+        /// <remarks>
+        /// Any <see cref="SqlParameter"/> members of the <see cref="SqlUpdate"/> expression are
+        /// automatically converted to <see cref="IDbDataParameter"/> instances and attached to
+        /// the returned <see cref="IDbCommand"/>.
+        /// </remarks>
+        public static IDbCommand CreateCommand(this IDbConnection connection, SqlUpdate sql)
+        {
+            return connection.CreateCommandInternal(sql);
+        }
+
+        /// <summary>
+        /// Converts the specified <see cref="SqlInsert"/> expression tree to an <see cref="IDbCommand"/>
+        /// instance for the specified <paramref name="connection" />.
+        /// </summary>
+        /// <param name="sql">
+        /// The <see cref="SqlInsert"/> to convert to an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <param name="connection">
+        /// The <see cref="IDbConnection"/> for which to create an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IDbCommand"/> for the specified <paramref name="connection"/> that reprents
+        /// the specified SQL expression tree.
+        /// </returns>
+        /// <remarks>
+        /// Any <see cref="SqlParameter"/> members of the <see cref="SqlInsert"/> expression are
+        /// automatically converted to <see cref="IDbDataParameter"/> instances and attached to
+        /// the returned <see cref="IDbCommand"/>.
+        /// </remarks>
+        public static IDbCommand CreateCommand(this IDbConnection connection, SqlInsert sql)
+        {
+            return connection.CreateCommandInternal(sql);
+        }
+
+        /// <summary>
+        /// Converts the specified <see cref="SqlUnion"/> expression tree to an <see cref="IDbCommand"/>
+        /// instance for the specified <paramref name="connection" />.
+        /// </summary>
+        /// <param name="sql">
+        /// The <see cref="SqlUnion"/> to convert to an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <param name="connection">
+        /// The <see cref="IDbConnection"/> for which to create an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IDbCommand"/> for the specified <paramref name="connection"/> that reprents
+        /// the specified SQL expression tree.
+        /// </returns>
+        /// <remarks>
+        /// Any <see cref="SqlParameter"/> members of the <see cref="SqlUnion"/> expression are
+        /// automatically converted to <see cref="IDbDataParameter"/> instances and attached to
+        /// the returned <see cref="IDbCommand"/>.
+        /// </remarks>
+        public static IDbCommand CreateCommand(this IDbConnection connection, SqlUnion sql)
+        {
+            return connection.CreateCommandInternal(sql);
+        }
+
+        /// <summary>
+        /// Converts the specified <see cref="SqlSelect"/> expression tree to an <see cref="IDbCommand"/>
+        /// instance for the specified <paramref name="connection" />.
+        /// </summary>
+        /// <param name="sql">
+        /// The <see cref="SqlSelect"/> to convert to an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <param name="connection">
+        /// The <see cref="IDbConnection"/> for which to create an <see cref="IDbCommand"/>.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IDbCommand"/> for the specified <paramref name="connection"/> that reprents
+        /// the specified SQL expression tree.
+        /// </returns>
+        /// <remarks>
+        /// Any <see cref="SqlParameter"/> members of the <see cref="SqlSelect"/> expression are
+        /// automatically converted to <see cref="IDbDataParameter"/> instances and attached to
+        /// the returned <see cref="IDbCommand"/>.
+        /// </remarks>
+        public static IDbCommand CreateCommand(this IDbConnection connection, SqlSelect sql)
+        {
+            return connection.CreateCommandInternal(sql);
+        }
+
         /// <summary>
         /// Converts the specified <see cref="SqlSelect"/> expression tree to SQL text.
         /// </summary>
@@ -23,16 +262,7 @@ namespace Popsql
         /// </returns>
         public static string ToSql(this SqlSelect sql)
         {
-            if (sql == null) throw new ArgumentNullException("sql");
-
-            StringBuilder builder = new StringBuilder();
-            using (SqlWriter writer = new SqlWriter(builder))
-            {
-                SqlWriterVisitor visitor = new SqlWriterVisitor(writer);
-                visitor.Visit(sql);
-            }
-
-            return builder.ToString();
+            return ToSqlInternal(sql);
         }
 
         /// <summary>
@@ -46,16 +276,7 @@ namespace Popsql
         /// </returns>
         public static string ToSql(this SqlUnion sql)
         {
-            if (sql == null) throw new ArgumentNullException("sql");
-
-            StringBuilder builder = new StringBuilder();
-            using (SqlWriter writer = new SqlWriter(builder))
-            {
-                SqlWriterVisitor visitor = new SqlWriterVisitor(writer);
-                visitor.Visit(sql);
-            }
-
-            return builder.ToString();
+            return sql.ToSqlInternal();
         }
 
         /// <summary>
@@ -69,16 +290,7 @@ namespace Popsql
         /// </returns>
         public static string ToSql(this SqlDelete sql)
         {
-            if (sql == null) throw new ArgumentNullException("sql");
-
-            StringBuilder builder = new StringBuilder();
-            using (SqlWriter writer = new SqlWriter(builder))
-            {
-                SqlWriterVisitor visitor = new SqlWriterVisitor(writer);
-                visitor.Visit(sql);
-            }
-
-            return builder.ToString();
+            return sql.ToSqlInternal();
         }
 
         /// <summary>
@@ -92,16 +304,7 @@ namespace Popsql
         /// </returns>
         public static string ToSql(this SqlUpdate sql)
         {
-            if (sql == null) throw new ArgumentNullException("sql");
-
-            StringBuilder builder = new StringBuilder();
-            using (SqlWriter writer = new SqlWriter(builder))
-            {
-                SqlWriterVisitor visitor = new SqlWriterVisitor(writer);
-                visitor.Visit(sql);
-            }
-
-            return builder.ToString();
+            return sql.ToSqlInternal();
         }
 
         /// <summary>
@@ -115,16 +318,40 @@ namespace Popsql
         /// </returns>
         public static string ToSql(this SqlInsert sql)
         {
+            return sql.ToSqlInternal();
+        }
+
+        private static string ToSqlInternal(this SqlStatement sql, Action<SqlParameter> parameterVisited = null)
+        {
             if (sql == null) throw new ArgumentNullException("sql");
 
             StringBuilder builder = new StringBuilder();
             using (SqlWriter writer = new SqlWriter(builder))
             {
                 SqlWriterVisitor visitor = new SqlWriterVisitor(writer);
+                visitor.ParameterVisited = parameterVisited;
                 visitor.Visit(sql);
             }
 
             return builder.ToString();
+        }
+
+        private static IDbCommand CreateCommandInternal(this IDbConnection connection, SqlStatement sql)
+        {
+            if (sql == null) throw new ArgumentNullException("sql");
+            if (connection == null) throw new ArgumentNullException("connection");
+
+            var command = connection.CreateCommand();
+            command.CommandText = sql.ToSqlInternal(
+                    p =>
+                    {
+                        IDbDataParameter parameter = command.CreateParameter();
+                        parameter.ParameterName = p.ParameterName;
+                        parameter.Value = p.Value;
+                        command.Parameters.Add(parameter);
+                    });
+
+            return command;
         }
 
         private class SqlWriterVisitor : SqlExpressionVisitor
@@ -282,7 +509,19 @@ namespace Popsql
             protected override SqlExpression VisitParameter(SqlParameter expression)
             {
                 _writer.WriteParameter(expression.ParameterName);
+
+                if (ParameterVisited != null)
+                {
+                    ParameterVisited(expression);
+                }
+
                 return expression;
+            }
+
+            public Action<SqlParameter> ParameterVisited
+            {
+                get;
+                set;
             }
 
             protected override SqlExpression VisitSort(SqlSort expression)
