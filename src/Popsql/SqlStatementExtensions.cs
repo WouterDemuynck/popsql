@@ -381,24 +381,27 @@ namespace Popsql
                     _writer.WriteColumn("*");
                 }
 
-                _writer.WriteStartFrom();
-                _writer.WriteTable(expression.Table.TableName, expression.Table.Alias);
-
-                foreach (var join in expression.Joins)
+                if (expression.Table != null)
                 {
-                    Visit(join);
-                }
+                    _writer.WriteStartFrom();
+                    _writer.WriteTable(expression.Table.TableName, expression.Table.Alias);
 
-                if (expression.Predicate != null)
-                {
-                    _writer.WriteStartWhere();
-                    Visit(expression.Predicate);
-                }
+                    foreach (var join in expression.Joins)
+                    {
+                        Visit(join);
+                    }
 
-                if (expression.Sorting.Any())
-                {
-                    _writer.WriteStartOrderBy();
-                    Visit(expression.Sorting);
+                    if (expression.Predicate != null)
+                    {
+                        _writer.WriteStartWhere();
+                        Visit(expression.Predicate);
+                    }
+
+                    if (expression.Sorting.Any())
+                    {
+                        _writer.WriteStartOrderBy();
+                        Visit(expression.Sorting);
+                    }
                 }
                 _writer.WriteEndSelect();
                 return expression;

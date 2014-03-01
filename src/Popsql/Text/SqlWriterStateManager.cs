@@ -13,7 +13,7 @@ namespace Popsql.Text
             {
                 { SqlWriterState.Start,               new[] { SqlWriterState.StartSelect, SqlWriterState.StartUpdate, SqlWriterState.StartInsert, SqlWriterState.StartDelete } },
                 { SqlWriterState.StartSelect,         new[] { SqlWriterState.Select } },
-                { SqlWriterState.Select,              new[] { SqlWriterState.StartFrom } },
+                { SqlWriterState.Select,              new[] { SqlWriterState.StartFrom, SqlWriterState.EndSelect } },
                 { SqlWriterState.StartFrom,           new[] { SqlWriterState.From } },
                 { SqlWriterState.From,                new[] { SqlWriterState.StartJoin, SqlWriterState.StartWhere, SqlWriterState.StartOrderBy, SqlWriterState.EndSelect } },
                 { SqlWriterState.StartJoin,           new[] { SqlWriterState.Join } },
