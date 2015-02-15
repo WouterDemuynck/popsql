@@ -11,3 +11,6 @@ TestResults
 # NuGet Stuff
 NuGet.exe
 *.nupkg
+
+# Windows left-overs
+Thumbs.db
