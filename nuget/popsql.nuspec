@@ -2,12 +2,14 @@
 <package>
   <metadata>
     <id>popsql</id>
-    <version>0.1.5-prealpha</version>
+    <version>1.0.0</version>
     <title>Popsql</title>
     <authors>Wouter Demuynck</authors>
     <description>Popsql is a library eliminating the need for magic SQL strings in your code.</description>
     <language>en-US</language>
+    <projectUrl>https://github.com/WouterDemuynck/popsql</projectUrl>
 	  <iconUrl>https://raw.github.com/WouterDemuynck/popsql/master/res/logo.png</iconUrl>
+    <licenseUrl>https://raw.githubusercontent.com/WouterDemuynck/popsql/master/LICENSE.md</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <references>
       <reference file="Popsql.dll" />
