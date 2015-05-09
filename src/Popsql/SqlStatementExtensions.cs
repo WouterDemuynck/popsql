@@ -3,6 +3,7 @@ using System;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Popsql
 {
@@ -336,6 +337,7 @@ namespace Popsql
             return builder.ToString();
         }
 
+        [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "Popsql uses paraeterized queries.")]
         private static IDbCommand CreateCommandInternal(this IDbConnection connection, SqlStatement sql)
         {
             if (sql == null) throw new ArgumentNullException("sql");
