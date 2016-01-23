@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Popsql
+﻿namespace Popsql
 {
 	/// <summary>
 	/// Provides the base class for SQL expressions.
