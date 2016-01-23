@@ -74,8 +74,51 @@ namespace Popsql
 		{
 			get
 			{
-				return SqlExpressionType.Table;
+				return SqlExpressionType.Column;
 			}
 		}
+
+		/// <summary> 
+		/// Implicitly converts a <see cref="string"/> representing a table name to a <see cref="SqlTable"/> instance. 
+		/// </summary> 
+		/// <param name="tableName"> 
+		/// The name of the table. 
+		/// </param> 
+		/// <returns> 
+		/// A <see cref="SqlTable"/> instance representing the specified table. 
+		/// </returns> 
+		public static implicit operator SqlTable(string tableName)
+		{
+			return new SqlTable(tableName);
+		}
+		
+		/// <summary> 
+		/// Converts the specified column name to a <see cref="SqlColumn"/> when concatenated 
+		/// with a <see cref="SqlTable"/>. 
+		/// </summary> 
+		/// <param name="table"> 
+		/// The table used to access the column. 
+		/// </param> 
+		/// <param name="columnName"> 
+		/// The name of the column. 
+		/// </param> 
+		/// <returns> 
+		/// A <see cref="SqlColumn"/> instance representing the specified column in the specified table. 
+		/// </returns> 
+		public static SqlColumn operator +(SqlTable table, string columnName)
+		{
+			SqlIdentifier identifier;
+			if (table.Alias != null)
+			{
+				identifier = new SqlIdentifier(new[] { table.Alias, columnName });
+			}
+			else
+			{
+				var segments = table.TableName.Segments;
+				identifier = new SqlIdentifier(segments.Concat(new[] { columnName }).ToArray());
+			}
+			return new SqlColumn(identifier, null);
+		}
+
 	}
 }

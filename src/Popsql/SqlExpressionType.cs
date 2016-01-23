@@ -16,6 +16,6 @@
 		/// <summary> 
 		/// Represents a table in SQL. 
 		/// </summary> 
-		Table
+		Column
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Xunit;
 
 namespace Popsql.Tests
@@ -44,7 +45,32 @@ namespace Popsql.Tests
 		public void ExpressionType_ReturnsTable()
 		{
 			var table = new SqlTable("[dbo].[Users]");
-			Assert.Equal(SqlExpressionType.Table, table.ExpressionType);
+			Assert.Equal(SqlExpressionType.Column, table.ExpressionType);
+		}
+
+		[Fact]
+		public void ImplicitConversion_WithAlias_ReturnsColumn()
+		{
+			var table = new SqlTable("[dbo].[Users]", "u");
+			var column = table + "Id";
+
+			Assert.NotNull(column);
+			Assert.Equal(2, column.ColumnName.Segments.Length);
+			Assert.Equal("u", column.ColumnName.Segments.First());
+			Assert.Equal("Id", column.ColumnName.Segments.Last());
+		}
+
+		[Fact]
+		public void ImplicitConversion_WithoutAlias_ReturnsColumn()
+		{
+			var table = new SqlTable("[dbo].[Users]");
+			var column = table + "Id";
+
+			Assert.NotNull(column);
+			Assert.Equal(3, column.ColumnName.Segments.Length);
+			Assert.Equal("dbo", column.ColumnName.Segments.First());
+			Assert.Equal("Users", column.ColumnName.Segments.Skip(1).First());
+			Assert.Equal("Id", column.ColumnName.Segments.Last());
 		}
 	}
 }
