@@ -75,6 +75,7 @@
     <Compile Include="SqlSelectTests.cs" />
     <Compile Include="SqlColumnTests.cs" />
     <Compile Include="SqlTableTests.cs" />
+    <Compile Include="Text\SqlWriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Popsql\Popsql.csproj">
@@ -85,6 +86,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
