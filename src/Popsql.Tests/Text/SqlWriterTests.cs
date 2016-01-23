@@ -101,5 +101,39 @@ namespace Popsql.Tests.Text
 
 			Assert.Throws<ObjectDisposedException>(() => writer.EnsureNotDisposedTest());
 		}
+
+		private class TestTextWriter : TextWriter, IDisposable
+		{
+			public override Encoding Encoding
+			{
+				get
+				{
+					return Encoding.UTF8;
+				}
+			}
+
+			protected override void Dispose(bool disposing)
+			{
+				base.Dispose(disposing);
+				IsDisposed = true;
+			}
+
+			public bool IsDisposed
+			{
+				get;
+				private set;
+			}
+		}
+
+		[Fact]
+		public void Dispose_WithTextWriter_DoesNotDisposeTextWriter()
+		{
+			var textWriter = new TestTextWriter();
+			using (var writer = new SqlWriter(textWriter))
+			{
+			}
+
+			Assert.False(textWriter.IsDisposed);
+		}
 	}
 }
