@@ -48,6 +48,12 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void Where_WithSqlExpression_SetsPredicateProperty()
+		{
+			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
+		}
+
+		[Fact]
 		public void ExpressionType_ReturnsSelect()
 		{
 			var query = new SqlSelect(new SqlColumn[] { "Id" });

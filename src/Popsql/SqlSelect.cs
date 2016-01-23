@@ -53,6 +53,15 @@ namespace Popsql
 			private set;
 		}
 
+		/// <summary> 
+		/// Gets the predicate determining which rows are selected by this SQL SELECT statement. 
+		/// </summary> 
+		public SqlExpression Predicate
+		{
+			get;
+			private set;
+		}
+
 		/// <summary>
 		/// Sets the table from which rows are selected by this SQL SELECT statement.
 		/// </summary>
@@ -66,6 +75,21 @@ namespace Popsql
 		{
 			if (table == null) throw new ArgumentNullException("table");
 			Table = table;
+			return this;
+		}
+
+		/// <summary> 
+		/// Sets the predicate used for determining which rows are selected by this SQL SELECT statement. 
+		/// </summary> 
+		/// <param name="predicate"> 
+		/// The predicate used for determining which rows are selected by this SQL SELECT statement. 
+		/// </param> 
+		/// <returns> 
+		/// The current instance of the <see cref="SqlSelect"/> class. 
+		/// </returns> 
+		public SqlSelect Where(SqlExpression predicate)
+		{
+			Predicate = predicate;
 			return this;
 		}
 	}
