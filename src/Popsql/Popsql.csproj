@@ -50,7 +50,9 @@
     <Compile Include="SqlExpressionType.cs" />
     <Compile Include="SqlIdentifier.cs" />
     <Compile Include="SqlIdentifierParser.cs" />
+    <Compile Include="SqlSelect.cs" />
     <Compile Include="SqlStatement.cs" />
+    <Compile Include="SqlTable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

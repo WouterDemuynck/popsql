@@ -6,8 +6,16 @@
 	public enum SqlExpressionType
 	{
 		/// <summary>
+		/// Represents a SQL SELECT statement.
+		/// </summary>
+		Select,
+		/// <summary>
 		/// Represents a SQL identifier.
 		/// </summary>
-		Identifier
+		Identifier,
+		/// <summary> 
+		/// Represents a table in SQL. 
+		/// </summary> 
+		Table
 	}
 }

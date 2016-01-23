@@ -103,5 +103,17 @@ namespace Popsql.Tests
 			Assert.Equal("[dbo]", identifier.Segments[1]);
 			Assert.Equal("\"Users\"", identifier.Segments[2]);
 		}
+
+		[Fact]
+		public void ImplicitConversion_ReturnsCorrectIdentifier()
+		{
+			var identifier = (SqlIdentifier)("[[Blog]]].\"[dbo]\".[\"Users\"]");
+
+			Assert.NotNull(identifier.Segments);
+			Assert.Equal(3, identifier.Segments.Length);
+			Assert.Equal("[Blog]", identifier.Segments[0]);
+			Assert.Equal("[dbo]", identifier.Segments[1]);
+			Assert.Equal("\"Users\"", identifier.Segments[2]);
+		}
 	}
 }

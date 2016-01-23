@@ -55,5 +55,19 @@ namespace Popsql
 			get;
 			private set;
 		}
+
+		/// <summary>
+		/// Implicitly converts a <see cref="string"/> representing a SQL identifier to a <see cref="SqlIdentifier"/> instance.
+		/// </summary>
+		/// <param name="identifier">
+		/// A string representing a SQL identifier.
+		/// </param>
+		/// <returns>
+		/// A <see cref="SqlIdentifier"/> instance representing the specified identifier.
+		/// </returns>
+		public static implicit operator SqlIdentifier(string identifier)
+		{
+			return new SqlIdentifier(identifier);
+		}
 	}
 }

@@ -71,6 +71,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlIdentifierTests.cs" />
+    <Compile Include="SqlSelectTests.cs" />
+    <Compile Include="SqlTableTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Popsql\Popsql.csproj">
