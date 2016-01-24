@@ -8,6 +8,8 @@ namespace Popsql
 	/// </summary>
 	public class SqlSelect : SqlStatement
 	{
+		private List<SqlJoin> _joins;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlSelect"/> class using the
 		/// specified <paramref name="columns"/>.
@@ -90,6 +92,96 @@ namespace Popsql
 		public SqlSelect Where(SqlExpression predicate)
 		{
 			Predicate = predicate;
+			return this;
+		}
+
+		/// <summary>
+		/// Gets the joins used by this <see cref="SqlSelect"/>.
+		/// </summary>
+		public IEnumerable<SqlJoin> Joins
+		{
+			get
+			{
+				return _joins ?? (_joins = new List<SqlJoin>());
+			}
+		}
+
+		/// <summary>
+		/// Adds a SQL JOIN clause to this SQL SELECT statement.
+		/// </summary>
+		/// <param name="table">
+		/// The table with which to join.
+		/// </param>
+		/// <param name="predicate">
+		/// The predicate used for determining which rows are joined by this JOIN clause.
+		/// </param>
+		/// <returns>
+		/// The current instance of the <see cref="SqlSelect"/> class.
+		/// </returns>
+		public SqlSelect Join(SqlTable table, SqlExpression predicate = null)
+		{
+			return JoinInternal(SqlJoinType.Default, table, predicate);
+		}
+
+		/// <summary>
+		/// Adds a SQL INNER JOIN clause to this SQL SELECT statement.
+		/// </summary>
+		/// <param name="table">
+		/// The table with which to join.
+		/// </param>
+		/// <param name="predicate">
+		/// The predicate used for determining which rows are joined by this JOIN clause.
+		/// </param>
+		/// <returns>
+		/// The current instance of the <see cref="SqlSelect"/> class.
+		/// </returns>
+		public SqlSelect InnerJoin(SqlTable table, SqlExpression predicate = null)
+		{
+			return JoinInternal(SqlJoinType.Inner, table, predicate);
+		}
+
+		/// <summary>
+		/// Adds a SQL LEFT JOIN clause to this SQL SELECT statement.
+		/// </summary>
+		/// <param name="table">
+		/// The table with which to join.
+		/// </param>
+		/// <param name="predicate">
+		/// The predicate used for determining which rows are joined by this JOIN clause.
+		/// </param>
+		/// <returns>
+		/// The current instance of the <see cref="SqlSelect"/> class.
+		/// </returns>
+		public SqlSelect LeftJoin(SqlTable table, SqlExpression predicate = null)
+		{
+			return JoinInternal(SqlJoinType.Left, table, predicate);
+		}
+
+		/// <summary>
+		/// Adds a SQL RIGHT JOIN clause to this SQL SELECT statement.
+		/// </summary>
+		/// <param name="table">
+		/// The table with which to join.
+		/// </param>
+		/// <param name="predicate">
+		/// The predicate used for determining which rows are joined by this JOIN clause.
+		/// </param>
+		/// <returns>
+		/// The current instance of the <see cref="SqlSelect"/> class.
+		/// </returns>
+		public SqlSelect RightJoin(SqlTable table, SqlExpression predicate = null)
+		{
+			return JoinInternal(SqlJoinType.Right, table, predicate);
+		}
+
+		private SqlSelect JoinInternal(SqlJoinType type, SqlTable table, SqlExpression predicate = null)
+		{
+			if (table == null) throw new ArgumentNullException("table");
+			if (_joins == null)
+			{
+				_joins = new List<SqlJoin>();
+			}
+			_joins.Add(new SqlJoin(type, table, predicate));
 			return this;
 		}
 	}

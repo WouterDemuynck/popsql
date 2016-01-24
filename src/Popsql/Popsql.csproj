@@ -55,6 +55,8 @@
     <Compile Include="SqlExpressionType.cs" />
     <Compile Include="SqlIdentifier.cs" />
     <Compile Include="SqlIdentifierParser.cs" />
+    <Compile Include="SqlJoin.cs" />
+    <Compile Include="SqlJoinType.cs" />
     <Compile Include="SqlParameter.cs" />
     <Compile Include="SqlSelect.cs" />
     <Compile Include="SqlStatement.cs" />

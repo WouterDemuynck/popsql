@@ -65,6 +65,154 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void Join_WithNullTable_ThrowsArgumentNull()
+		{
+			var users = new SqlTable("dbo.Users", "u");
+			var profiles = new SqlTable("dbo.Profiles", "p");
+			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+				.From(users);
+
+			Assert.Throws<ArgumentNullException>(() => select.Join(null, SqlExpression.Equal(users + "Id", profiles + "UserId")));
+		}
+
+		[Fact]
+		public void Join_WithTableAndPredicate_AddsJoin()
+		{
+			var users = new SqlTable("dbo.Users", "u");
+			var profiles = new SqlTable("dbo.Profiles", "p");
+			var predicate = SqlExpression.Equal(users + "Id", profiles + "UserId");
+			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+				.From(users)
+				.Join(profiles, predicate);
+
+			Assert.Equal(1, select.Joins.Count());
+			var join = select.Joins.First();
+
+			Assert.Same(profiles, join.Table);
+			Assert.Same(predicate, join.Predicate);
+			Assert.Equal(SqlJoinType.Default, join.Type);
+		}
+
+		[Fact]
+		public void InnerJoin_WithNullTable_ThrowsArgumentNull()
+		{
+			var users = new SqlTable("dbo.Users", "u");
+			var profiles = new SqlTable("dbo.Profiles", "p");
+			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+				.From(users);
+
+			Assert.Throws<ArgumentNullException>(() => select.InnerJoin(null, SqlExpression.Equal(users + "Id", profiles + "UserId")));
+		}
+
+		[Fact]
+		public void InnerJoin_WithTableAndPredicate_AddsJoin()
+		{
+			var users = new SqlTable("dbo.Users", "u");
+			var profiles = new SqlTable("dbo.Profiles", "p");
+			var predicate = SqlExpression.Equal(users + "Id", profiles + "UserId");
+			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+				.From(users)
+				.InnerJoin(profiles, predicate);
+
+			Assert.Equal(1, select.Joins.Count());
+			var join = select.Joins.First();
+
+			Assert.Same(profiles, join.Table);
+			Assert.Same(predicate, join.Predicate);
+			Assert.Equal(SqlJoinType.Inner, join.Type);
+		}
+
+		[Fact]
+		public void LeftJoin_WithNullTable_ThrowsArgumentNull()
+		{
+			var users = new SqlTable("dbo.Users", "u");
+			var profiles = new SqlTable("dbo.Profiles", "p");
+			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+				.From(users);
+
+			Assert.Throws<ArgumentNullException>(() => select.LeftJoin(null, SqlExpression.Equal(users + "Id", profiles + "UserId")));
+		}
+
+		[Fact]
+		public void LeftJoin_WithTableAndPredicate_AddsJoin()
+		{
+			var users = new SqlTable("dbo.Users", "u");
+			var profiles = new SqlTable("dbo.Profiles", "p");
+			var predicate = SqlExpression.Equal(users + "Id", profiles + "UserId");
+			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+				.From(users)
+				.LeftJoin(profiles, predicate);
+
+			Assert.Equal(1, select.Joins.Count());
+			var join = select.Joins.First();
+
+			Assert.Same(profiles, join.Table);
+			Assert.Same(predicate, join.Predicate);
+			Assert.Equal(SqlJoinType.Left, join.Type);
+		}
+
+		[Fact]
+		public void RightJoin_WithNullTable_ThrowsArgumentNull()
+		{
+			var users = new SqlTable("dbo.Users", "u");
+			var profiles = new SqlTable("dbo.Profiles", "p");
+			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+				.From(users);
+
+			Assert.Throws<ArgumentNullException>(() => select.RightJoin(null, SqlExpression.Equal(users + "Id", profiles + "UserId")));
+		}
+
+		[Fact]
+		public void RightJoin_WithTableAndPredicate_AddsJoin()
+		{
+			var users = new SqlTable("dbo.Users", "u");
+			var profiles = new SqlTable("dbo.Profiles", "p");
+			var predicate = SqlExpression.Equal(users + "Id", profiles + "UserId");
+			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+				.From(users)
+				.RightJoin(profiles, predicate);
+
+			Assert.Equal(1, select.Joins.Count());
+			var join = select.Joins.First();
+
+			Assert.Same(profiles, join.Table);
+			Assert.Same(predicate, join.Predicate);
+			Assert.Equal(SqlJoinType.Right, join.Type);
+		}
+
+		[Fact]
+		public void Join_WithMultipleJoins_AddsAllJoins()
+		{
+			var users = new SqlTable("dbo.Users", "u");
+			var profiles = new SqlTable("dbo.Profiles", "p");
+			var addresses = new SqlTable("dbo.Addresses", "a");
+			var profilesPredicate = SqlExpression.Equal(users + "Id", profiles + "UserId");
+			var addressesPredicate = SqlExpression.Equal(users + "Id", addresses + "UserId");
+			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+				.From(users)
+				.LeftJoin(profiles, profilesPredicate)
+				.LeftJoin(addresses, addressesPredicate);
+
+			Assert.Equal(2, select.Joins.Count());
+			var join = select.Joins.First();
+			Assert.Same(profiles, join.Table);
+			Assert.Same(profilesPredicate, join.Predicate);
+			Assert.Equal(SqlJoinType.Left, join.Type);
+
+			join = select.Joins.Last();
+			Assert.Same(addresses, join.Table);
+			Assert.Same(addressesPredicate, join.Predicate);
+			Assert.Equal(SqlJoinType.Left, join.Type);
+		}
+
+		[Fact]
+		public void Joins_IsNotNullWhenFirstCalled()
+		{
+			var select = new SqlSelect(new SqlColumn[] { "Id" });
+			Assert.NotNull(select.Joins);
+		}
+
+		[Fact]
 		public void ExpressionType_ReturnsSelect()
 		{
 			var query = new SqlSelect(new SqlColumn[] { "Id" });

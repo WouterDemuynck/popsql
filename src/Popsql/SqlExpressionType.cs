@@ -28,6 +28,10 @@
 		/// <summary>
 		/// Represents a binary expression in SQL.
 		/// </summary>
-		Binary
+		Binary,
+		/// <summary>
+		/// Represents a joining expression expression in SQL.
+		/// </summary>
+		Join
 	}
 }

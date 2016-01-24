@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System;
+using Xunit;
 
 namespace Popsql.Tests
 {
@@ -32,6 +33,15 @@ namespace Popsql.Tests
 			Assert.Equal("Id", parameter.ParameterName);
 			Assert.NotNull(parameter.Value);
 			Assert.Equal(5, parameter.Value);
+		}
+
+
+		[Fact]
+		public void AdditionOperator_WithNullConstant_CreatesNullValuedParameter()
+		{
+			var constant = (SqlConstant)null;
+			Assert.Null(constant);
+			Assert.Throws<ArgumentNullException>(() => "Id" + constant);
 		}
 	}
 }

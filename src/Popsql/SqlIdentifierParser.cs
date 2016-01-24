@@ -6,7 +6,7 @@ namespace Popsql
 {
 	internal class SqlIdentifierParser
 	{
-		internal static string[] Parse(string identifier)
+		public static string[] Parse(string identifier)
 		{
 			if (identifier == null) throw new ArgumentNullException("identifier");
 			if (identifier.Length == 0) throw new ArgumentException("The value of the identifier argument must be a non-empty string.", "identifier");
