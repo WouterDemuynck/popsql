@@ -71,10 +71,15 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlBinaryExpressionTests.cs" />
+    <Compile Include="SqlConstantTests.cs" />
+    <Compile Include="SqlExpressionTests.cs" />
     <Compile Include="SqlIdentifierTests.cs" />
+    <Compile Include="SqlParameterTests.cs" />
     <Compile Include="SqlSelectTests.cs" />
     <Compile Include="SqlColumnTests.cs" />
     <Compile Include="SqlTableTests.cs" />
+    <Compile Include="SqlValueTests.cs" />
     <Compile Include="Text\SqlWriterTests.cs" />
   </ItemGroup>
   <ItemGroup>

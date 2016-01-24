@@ -47,14 +47,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlBinaryExpression.cs" />
+    <Compile Include="SqlBinaryOperator.cs" />
     <Compile Include="SqlColumn.cs" />
+    <Compile Include="SqlConstant.cs" />
     <Compile Include="SqlExpression.cs" />
     <Compile Include="SqlExpressionType.cs" />
     <Compile Include="SqlIdentifier.cs" />
     <Compile Include="SqlIdentifierParser.cs" />
+    <Compile Include="SqlParameter.cs" />
     <Compile Include="SqlSelect.cs" />
     <Compile Include="SqlStatement.cs" />
     <Compile Include="SqlTable.cs" />
+    <Compile Include="SqlValue.cs" />
     <Compile Include="Text\SqlWriter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

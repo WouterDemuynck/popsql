@@ -16,6 +16,18 @@
 		/// <summary> 
 		/// Represents a table in SQL. 
 		/// </summary> 
-		Column
+		Column,
+		/// <summary>
+		/// Represents a constant value in SQL.
+		/// </summary>
+		Constant,
+		/// <summary>
+		/// Represents a named parameter in SQL.
+		/// </summary>
+		Parameter,
+		/// <summary>
+		/// Represents a binary expression in SQL.
+		/// </summary>
+		Binary
 	}
 }

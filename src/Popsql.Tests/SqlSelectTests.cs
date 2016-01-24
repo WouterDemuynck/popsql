@@ -51,6 +51,17 @@ namespace Popsql.Tests
 		public void Where_WithSqlExpression_SetsPredicateProperty()
 		{
 			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
+			select.Where(SqlExpression.Equal("Id", 5));
+
+			Assert.NotNull(select.Predicate);
+			Assert.IsType<SqlBinaryExpression>(select.Predicate);
+			Assert.IsType<SqlColumn>(((SqlBinaryExpression)select.Predicate).Left);
+			Assert.Equal("Id", ((SqlColumn)((SqlBinaryExpression)select.Predicate).Left).ColumnName.Segments.First());
+
+			Assert.Equal(SqlBinaryOperator.Equal, ((SqlBinaryExpression)select.Predicate).Operator);
+
+			Assert.IsType<SqlConstant>(((SqlBinaryExpression)select.Predicate).Right);
+			Assert.Equal(5, ((SqlConstant)((SqlBinaryExpression)select.Predicate).Right).Value);
 		}
 
 		[Fact]
