@@ -48,5 +48,17 @@ namespace Popsql.Tests
 			var table = new SqlColumn("[dbo].[Users].[Id]");
 			Assert.Equal(SqlExpressionType.Column, table.ExpressionType);
 		}
+
+
+		[Fact]
+		public void ImplicitConversion_WithSortOrder_ReturnsSort()
+		{
+			var column = new SqlColumn("[dbo].[Users].[Id]");
+			var sort = column + SqlSortOrder.Descending;
+
+			Assert.NotNull(sort);
+			Assert.Same(column, sort.Column);
+			Assert.Equal(SqlSortOrder.Descending, sort.SortOrder);
+		}
 	}
 }

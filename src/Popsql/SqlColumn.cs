@@ -87,5 +87,23 @@ namespace Popsql
 		{
 			return new SqlColumn(columnName);
 		}
+
+		/// <summary>
+		/// Converts the specified <see cref="SqlColumn"/> to a <see cref="SqlSort"/> when concatenated
+		/// with a <see cref="SqlSortOrder"/>.
+		/// </summary>
+		/// <param name="column">
+		/// The <see cref="SqlColumn"/> to be sorted.
+		/// </param>
+		/// <param name="sortOrder">
+		/// The <see cref="SqlSortOrder"/> to use.
+		/// </param>
+		/// <returns>
+		/// A <see cref="SqlSort"/> representing a sorting expression for the column.
+		/// </returns>
+		public static SqlSort operator +(SqlColumn column, SqlSortOrder sortOrder)
+		{
+			return new SqlSort(column, sortOrder);
+		}
 	}
 }

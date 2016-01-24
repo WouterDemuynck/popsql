@@ -213,6 +213,34 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void OrderBy_WithNullColumn_ThrowsArgumentNull()
+		{
+			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
+
+			Assert.Throws<ArgumentNullException>(() => select.OrderBy(null));
+		}
+
+		[Fact]
+		public void OrderBy_WithColumnAndSortOrder_AddsSorting()
+		{
+			SqlColumn column = "dbo.Users.CreatedOn";
+			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
+			select.OrderBy(column, SqlSortOrder.Descending);
+
+			Assert.Equal(1, select.Sorting.Count);
+			var sort = select.Sorting.First();
+			Assert.Same(column, sort.Column);
+			Assert.Same(SqlSortOrder.Descending, sort.SortOrder);
+		}
+
+		[Fact]
+		public void Sorting_IsNotNullWhenFirstCalled()
+		{
+			var select = new SqlSelect(new SqlColumn[] { "Id" });
+			Assert.NotNull(select.Sorting);
+		}
+
+		[Fact]
 		public void ExpressionType_ReturnsSelect()
 		{
 			var query = new SqlSelect(new SqlColumn[] { "Id" });

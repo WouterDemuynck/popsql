@@ -30,6 +30,10 @@
 		/// </summary>
 		Binary,
 		/// <summary>
+		/// Represents a sorting expression in SQL.
+		/// </summary>
+		Sort,
+		/// <summary>
 		/// Represents a joining expression expression in SQL.
 		/// </summary>
 		Join

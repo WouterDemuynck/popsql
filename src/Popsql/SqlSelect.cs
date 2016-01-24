@@ -9,6 +9,7 @@ namespace Popsql
 	public class SqlSelect : SqlStatement
 	{
 		private List<SqlJoin> _joins;
+		private List<SqlSort> _sorting;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlSelect"/> class using the
@@ -98,11 +99,22 @@ namespace Popsql
 		/// <summary>
 		/// Gets the joins used by this <see cref="SqlSelect"/>.
 		/// </summary>
-		public IEnumerable<SqlJoin> Joins
+		public IReadOnlyCollection<SqlJoin> Joins
 		{
 			get
 			{
 				return _joins ?? (_joins = new List<SqlJoin>());
+			}
+		}
+
+		/// <summary>
+		/// Gets the collection of sorting clauses determining the result ordering of this SQL SELECT statement.
+		/// </summary>
+		public IReadOnlyCollection<SqlSort> Sorting
+		{
+			get
+			{
+				return _sorting ?? (_sorting = new List<SqlSort>());
 			}
 		}
 
@@ -182,6 +194,42 @@ namespace Popsql
 				_joins = new List<SqlJoin>();
 			}
 			_joins.Add(new SqlJoin(type, table, predicate));
+			return this;
+		}
+
+		/// <summary>
+		/// Sets the sort order used for sorting the results of this SQL SELECT statement.
+		/// </summary>
+		/// <param name="column">
+		/// The <see cref="SqlColumn"/> on which to sort.
+		/// </param>
+		/// <param name="sortOrder">
+		/// The <see cref="SqlSortOrder"/> derermining the sorting order.
+		/// </param>
+		/// <returns>
+		/// The current instance of the <see cref="SqlSelect"/> class.
+		/// </returns>
+		public SqlSelect OrderBy(SqlColumn column, SqlSortOrder sortOrder = SqlSortOrder.Ascending)
+		{
+			return OrderBy(column + sortOrder);
+		}
+
+		/// <summary>
+		/// Sets the sort order used for sorting the results of this SQL SELECT statement.
+		/// </summary>
+		/// <param name="sortExpression">
+		/// The <see cref="SqlSort"/> determining the sort order.
+		/// </param>
+		/// <returns>
+		/// The current instance of the <see cref="SqlSelect"/> class.
+		/// </returns>
+		public SqlSelect OrderBy(SqlSort sortExpression)
+		{
+			if (_sorting == null)
+			{
+				_sorting = new List<SqlSort>();
+			}
+			_sorting.Add(sortExpression);
 			return this;
 		}
 	}

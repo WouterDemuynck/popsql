@@ -59,6 +59,8 @@
     <Compile Include="SqlJoinType.cs" />
     <Compile Include="SqlParameter.cs" />
     <Compile Include="SqlSelect.cs" />
+    <Compile Include="SqlSort.cs" />
+    <Compile Include="SqlSortOrder.cs" />
     <Compile Include="SqlStatement.cs" />
     <Compile Include="SqlTable.cs" />
     <Compile Include="SqlValue.cs" />

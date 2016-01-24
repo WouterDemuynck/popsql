@@ -80,6 +80,7 @@
     <Compile Include="SqlParameterTests.cs" />
     <Compile Include="SqlSelectTests.cs" />
     <Compile Include="SqlColumnTests.cs" />
+    <Compile Include="SqlSortTests.cs" />
     <Compile Include="SqlTableTests.cs" />
     <Compile Include="SqlValueTests.cs" />
     <Compile Include="Text\SqlWriterTests.cs" />
