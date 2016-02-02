@@ -12,6 +12,7 @@ namespace Popsql.Text
 	{
 		private TextWriter _writer;
 		private readonly bool _canDisposeWriter;
+		private readonly SqlDialect _dialect;
 		private bool _isDisposed;
 		private bool _hasPendingSpace;
 
@@ -31,11 +32,31 @@ namespace Popsql.Text
 		/// Thrown when the <paramref name="builder"/> argument is <see langword="null"/>.
 		/// </exception>
 		public SqlWriter(StringBuilder builder)
+			: this(builder, SqlDialect.Default)
 		{
-			if (builder == null) throw new ArgumentNullException("builder");
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
+		/// specified <see cref="StringBuilder"/> using the specified <see cref="SqlDialect"/>.
+		/// </summary>
+		/// <param name="builder">
+		/// The <see cref="StringBuilder"/> to write to.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> to use while writing.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown when the <paramref name="builder"/> argument is <see langword="null"/>.
+		/// </exception>
+		public SqlWriter(StringBuilder builder, SqlDialect dialect)
+		{
+			if (builder == null) throw new ArgumentNullException(nameof(builder));
+			if (dialect == null) throw new ArgumentNullException(nameof(dialect));
 
 			_writer = new StringWriter(builder, CultureInfo.InvariantCulture);
 			_canDisposeWriter = true;
+			_dialect = dialect;
 		}
 
 		/// <summary>
@@ -49,11 +70,31 @@ namespace Popsql.Text
 		/// Thrown when the <paramref name="writer"/> argument is <see langword="null"/>.
 		/// </exception>
 		public SqlWriter(TextWriter writer)
+			: this(writer, SqlDialect.Default)
 		{
-			if (writer == null) throw new ArgumentNullException("writer");
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
+		/// specified <see cref="TextWriter"/> using the specified <see cref="SqlDialect" />.
+		/// </summary>
+		/// <param name="writer">
+		/// The <see cref="TextWriter"/> to write to.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> to use while writing.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown when the <paramref name="writer"/> argument is <see langword="null"/>.
+		/// </exception>
+		public SqlWriter(TextWriter writer, SqlDialect dialect)
+		{
+			if (writer == null) throw new ArgumentNullException(nameof(writer));
+			if (dialect == null) throw new ArgumentNullException(nameof(dialect));
 
 			_writer = writer;
 			_canDisposeWriter = false;
+			_dialect = dialect;
 		}
 
 		/// <summary>
@@ -62,6 +103,17 @@ namespace Popsql.Text
 		~SqlWriter()
 		{
 			Dispose(false);
+		}
+
+		/// <summary>
+		/// Gets the currently used SQL dialect.
+		/// </summary>
+		protected SqlDialect Dialect
+		{
+			get
+			{
+				return _dialect;
+			}
 		}
 
 		/// <summary>

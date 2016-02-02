@@ -23,7 +23,7 @@ namespace Popsql
 		/// </exception>
 		public SqlSelect(IEnumerable<SqlColumn> columns)
 		{
-			if (columns == null) throw new ArgumentNullException("columns");
+			if (columns == null) throw new ArgumentNullException(nameof(columns));
 			Columns = columns;
 		}
 
@@ -76,7 +76,7 @@ namespace Popsql
 		/// </returns>
 		public SqlSelect From(SqlTable table)
 		{
-			if (table == null) throw new ArgumentNullException("table");
+			if (table == null) throw new ArgumentNullException(nameof(table));
 			Table = table;
 			return this;
 		}
@@ -188,7 +188,7 @@ namespace Popsql
 
 		private SqlSelect JoinInternal(SqlJoinType type, SqlTable table, SqlExpression predicate = null)
 		{
-			if (table == null) throw new ArgumentNullException("table");
+			if (table == null) throw new ArgumentNullException(nameof(table));
 			if (_joins == null)
 			{
 				_joins = new List<SqlJoin>();
@@ -225,6 +225,8 @@ namespace Popsql
 		/// </returns>
 		public SqlSelect OrderBy(SqlSort sortExpression)
 		{
+			if (sortExpression == null) throw new ArgumentNullException(nameof(sortExpression));
+
 			if (_sorting == null)
 			{
 				_sorting = new List<SqlSort>();

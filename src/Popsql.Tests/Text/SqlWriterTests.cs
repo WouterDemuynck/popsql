@@ -30,6 +30,19 @@ namespace Popsql.Tests.Text
 			{
 			}
 
+			public TestSqlWriter(StringBuilder builder, SqlDialect dialect) 
+				: base(builder, dialect)
+			{
+			}
+
+			public SqlDialect TestDialect
+			{
+				get
+				{
+					return Dialect;
+				}
+			}
+
 			public void WriteTest(string value)
 			{
 				Write(value);
@@ -44,6 +57,28 @@ namespace Popsql.Tests.Text
 			{
 				EnsureNotDisposed();
 			}
+		}
+
+		[Fact]
+		public void Ctor_WithTextWriterAndNullDialect_ThrowsArgumentNull()
+		{
+			Assert.Throws<ArgumentNullException>(() => new SqlWriter(new TestTextWriter(), null));
+		}
+
+		[Fact]
+		public void Ctor_WithStringBuilderAndNullDialect_ThrowsArgumentNull()
+		{
+			Assert.Throws<ArgumentNullException>(() => new SqlWriter(new StringBuilder(), null));
+		}
+
+		[Fact]
+		public void Ctor_WithDialect_ReturnsDialect()
+		{
+			var builder = new StringBuilder();
+			var writer = new TestSqlWriter(builder, SqlDialect.Default);
+
+			Assert.NotNull(writer.TestDialect);
+			Assert.Same(SqlDialect.Default, writer.TestDialect);
 		}
 
 		[Fact]
@@ -134,6 +169,14 @@ namespace Popsql.Tests.Text
 			}
 
 			Assert.False(textWriter.IsDisposed);
+		}
+
+		[Fact]
+		public void Dispose_WhenCalledTwice_DoesNotThrow()
+		{
+			var writer = new SqlWriter(new StringBuilder());
+			writer.Dispose();
+			writer.Dispose();
 		}
 	}
 }

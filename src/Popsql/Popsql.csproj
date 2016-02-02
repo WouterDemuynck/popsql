@@ -64,6 +64,7 @@
     <Compile Include="SqlStatement.cs" />
     <Compile Include="SqlTable.cs" />
     <Compile Include="SqlValue.cs" />
+    <Compile Include="Text\SqlDialect.cs" />
     <Compile Include="Text\SqlWriter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -217,6 +217,14 @@ namespace Popsql.Tests
 		{
 			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
 
+			Assert.Throws<ArgumentNullException>(() => select.OrderBy((SqlColumn)null));
+		}
+
+		[Fact]
+		public void OrderBy_WithNullSorting_ThrowsArgumentNull()
+		{
+			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
+
 			Assert.Throws<ArgumentNullException>(() => select.OrderBy(null));
 		}
 
@@ -230,7 +238,7 @@ namespace Popsql.Tests
 			Assert.Equal(1, select.Sorting.Count);
 			var sort = select.Sorting.First();
 			Assert.Same(column, sort.Column);
-			Assert.Same(SqlSortOrder.Descending, sort.SortOrder);
+			Assert.Equal(SqlSortOrder.Descending, sort.SortOrder);
 		}
 
 		[Fact]
