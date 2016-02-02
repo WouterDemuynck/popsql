@@ -65,6 +65,8 @@
     <Compile Include="SqlTable.cs" />
     <Compile Include="SqlValue.cs" />
     <Compile Include="Text\SqlDialect.cs" />
+    <Compile Include="Text\SqlKeyword.cs" />
+    <Compile Include="Text\SqlKeywords.cs" />
     <Compile Include="Text\SqlWriter.cs" />
     <Compile Include="Text\SqlWriterSettings.cs" />
   </ItemGroup>

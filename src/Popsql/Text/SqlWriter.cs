@@ -221,6 +221,19 @@ namespace Popsql.Text
 		}
 
 		/// <summary>
+		/// Writes the specified <see cref="SqlKeyword"/> to the output stream.
+		/// </summary>
+		/// <param name="keyword">
+		/// The <see cref="SqlKeyword"/> to write to the output stream.
+		/// </param>
+		protected void WriteKeyword(SqlKeyword keyword)
+		{
+			Write(Settings.WriteKeywordsInLowerCase 
+				? keyword.Keyword.ToLowerInvariant() 
+				: keyword.Keyword.ToUpperInvariant());
+		}
+
+		/// <summary>
 		/// Writes the specified string to the output stream, including any pending formatting.
 		/// </summary>
 		/// <param name="value">

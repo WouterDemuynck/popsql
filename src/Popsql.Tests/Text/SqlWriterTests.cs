@@ -27,7 +27,7 @@ namespace Popsql.Tests.Text
 		{
 			var settings = new SqlWriterSettings();
 			TestSqlWriter writer = new TestSqlWriter(new StringBuilder(), settings);
-			Assert.Same(settings, writer.TestSettings);
+			Assert.Same(settings, writer.SettingsTest);
 		}
 
 		[Fact]
@@ -35,7 +35,7 @@ namespace Popsql.Tests.Text
 		{
 			var settings = new SqlWriterSettings();
 			TestSqlWriter writer = new TestSqlWriter(new StringWriter(new StringBuilder()), settings);
-			Assert.Same(settings, writer.TestSettings);
+			Assert.Same(settings, writer.SettingsTest);
 		}
 
 		private class TestSqlWriter : SqlWriter
@@ -60,7 +60,7 @@ namespace Popsql.Tests.Text
 			{
 			}
 
-			public SqlDialect TestDialect
+			public SqlDialect DialectTest
 			{
 				get
 				{
@@ -68,12 +68,17 @@ namespace Popsql.Tests.Text
 				}
 			}
 
-			public SqlWriterSettings TestSettings
+			public SqlWriterSettings SettingsTest
 			{
 				get
 				{
 					return Settings;
 				}
+			}
+
+			public void WriteKeywordTest(SqlKeyword keyword)
+			{
+				WriteKeyword(keyword);
 			}
 
 			public void WriteTest(string value)
@@ -110,8 +115,36 @@ namespace Popsql.Tests.Text
 			var builder = new StringBuilder();
 			var writer = new TestSqlWriter(builder, SqlDialect.Default);
 
-			Assert.NotNull(writer.TestDialect);
-			Assert.Same(SqlDialect.Default, writer.TestDialect);
+			Assert.NotNull(writer.DialectTest);
+			Assert.Same(SqlDialect.Default, writer.DialectTest);
+		}
+
+		[Fact]
+		public void WriteKeyword_WritesKeyword()
+		{
+			var builder = new StringBuilder();
+			using (var writer = new TestSqlWriter(builder))
+			{
+				writer.WriteKeywordTest(SqlKeywords.Select);
+			}
+			Assert.Equal("SELECT", builder.ToString());
+		}
+
+		[Fact]
+		public void WriteKeyword_WithWriteKeywordsInLowerCase_WritesKeywordsInLowerCase()
+		{
+			var builder = new StringBuilder();
+			var settings = new SqlWriterSettings
+			{
+				WriteKeywordsInLowerCase = true
+			};
+
+			using (var writer = new TestSqlWriter(builder, settings)) 
+			{
+				writer.WriteKeywordTest(SqlKeywords.Select);
+			}
+
+			Assert.Equal("select", builder.ToString());
 		}
 
 		[Fact]
