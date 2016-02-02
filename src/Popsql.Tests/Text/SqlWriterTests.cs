@@ -22,6 +22,21 @@ namespace Popsql.Tests.Text
 		{
 			Assert.Throws<ArgumentNullException>(() => new SqlWriter((TextWriter)null));
 		}
+		[Fact]
+		public void Ctor_WithStringBuilderAndSqlWriterSettings_UsesSpecifiedSettings()
+		{
+			var settings = new SqlWriterSettings();
+			TestSqlWriter writer = new TestSqlWriter(new StringBuilder(), settings);
+			Assert.Same(settings, writer.TestSettings);
+		}
+
+		[Fact]
+		public void Ctor_WithTextWriterAndSqlWriterSettings_UsesSpecifiedSettings()
+		{
+			var settings = new SqlWriterSettings();
+			TestSqlWriter writer = new TestSqlWriter(new StringWriter(new StringBuilder()), settings);
+			Assert.Same(settings, writer.TestSettings);
+		}
 
 		private class TestSqlWriter : SqlWriter
 		{
@@ -35,11 +50,29 @@ namespace Popsql.Tests.Text
 			{
 			}
 
+			public TestSqlWriter(StringBuilder builder, SqlWriterSettings settings) 
+				: base(builder, settings)
+			{
+			}
+
+			public TestSqlWriter(TextWriter writer, SqlWriterSettings settings) 
+				: base(writer, settings)
+			{
+			}
+
 			public SqlDialect TestDialect
 			{
 				get
 				{
 					return Dialect;
+				}
+			}
+
+			public SqlWriterSettings TestSettings
+			{
+				get
+				{
+					return Settings;
 				}
 			}
 
@@ -62,13 +95,13 @@ namespace Popsql.Tests.Text
 		[Fact]
 		public void Ctor_WithTextWriterAndNullDialect_ThrowsArgumentNull()
 		{
-			Assert.Throws<ArgumentNullException>(() => new SqlWriter(new TestTextWriter(), null));
+			Assert.Throws<ArgumentNullException>(() => new SqlWriter(new TestTextWriter(), (SqlDialect)null));
 		}
 
 		[Fact]
 		public void Ctor_WithStringBuilderAndNullDialect_ThrowsArgumentNull()
 		{
-			Assert.Throws<ArgumentNullException>(() => new SqlWriter(new StringBuilder(), null));
+			Assert.Throws<ArgumentNullException>(() => new SqlWriter(new StringBuilder(), (SqlDialect)null));
 		}
 
 		[Fact]

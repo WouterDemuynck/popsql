@@ -66,6 +66,7 @@
     <Compile Include="SqlValue.cs" />
     <Compile Include="Text\SqlDialect.cs" />
     <Compile Include="Text\SqlWriter.cs" />
+    <Compile Include="Text\SqlWriterSettings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

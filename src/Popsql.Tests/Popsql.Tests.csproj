@@ -84,6 +84,7 @@
     <Compile Include="SqlTableTests.cs" />
     <Compile Include="SqlValueTests.cs" />
     <Compile Include="Text\SqlDialectTests.cs" />
+    <Compile Include="Text\SqlWriterSettingsTests.cs" />
     <Compile Include="Text\SqlWriterTests.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -13,6 +13,7 @@ namespace Popsql.Text
 		private TextWriter _writer;
 		private readonly bool _canDisposeWriter;
 		private readonly SqlDialect _dialect;
+		private readonly SqlWriterSettings _settings;
 		private bool _isDisposed;
 		private bool _hasPendingSpace;
 
@@ -38,6 +39,26 @@ namespace Popsql.Text
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
+		/// specified <see cref="StringBuilder"/> using the specified <paramref name="settings"/>.
+		/// </summary>
+		/// <param name="builder">
+		/// The <see cref="StringBuilder"/> to write to.
+		/// </param>
+		/// <param name="settings">
+		/// The <see cref="SqlWriterSettings"/> object used to configure the new <see cref="SqlWriter"/>
+		/// instance. If this <see langword="null"/>, a <see cref="SqlWriterSettings"/> object with default
+		/// settings is used.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown when the <paramref name="builder"/> argument is <see langword="null"/>.
+		/// </exception>
+		public SqlWriter(StringBuilder builder, SqlWriterSettings settings)
+			: this(builder, SqlDialect.Default, settings)
+		{
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
 		/// specified <see cref="StringBuilder"/> using the specified <see cref="SqlDialect"/>.
 		/// </summary>
 		/// <param name="builder">
@@ -47,16 +68,42 @@ namespace Popsql.Text
 		/// The <see cref="SqlDialect"/> to use while writing.
 		/// </param>
 		/// <exception cref="ArgumentNullException">
-		/// Thrown when the <paramref name="builder"/> argument is <see langword="null"/>.
+		/// Thrown when the <paramref name="builder"/> or <paramref name="dialect"/> argument is <see langword="null"/>.
 		/// </exception>
 		public SqlWriter(StringBuilder builder, SqlDialect dialect)
+			: this(builder, dialect, null)
+		{
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
+		/// specified <see cref="StringBuilder"/> using the specified <see cref="SqlDialect" /> and
+		/// <paramref name="settings"/>.
+		/// </summary>
+		/// <param name="builder">
+		/// The <see cref="StringBuilder"/> to write to.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> to use while writing.
+		/// </param>
+		/// <param name="settings">
+		/// The <see cref="SqlWriterSettings"/> object used to configure the new <see cref="SqlWriter"/>
+		/// instance. If this <see langword="null"/>, a <see cref="SqlWriterSettings"/> object with default
+		/// settings is used.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown when the <paramref name="builder"/> or <paramref name="dialect"/> argument is <see langword="null"/>.
+		/// </exception>
+		public SqlWriter(StringBuilder builder, SqlDialect dialect, SqlWriterSettings settings)
 		{
 			if (builder == null) throw new ArgumentNullException(nameof(builder));
 			if (dialect == null) throw new ArgumentNullException(nameof(dialect));
+			if (settings == null) settings = new SqlWriterSettings();
 
 			_writer = new StringWriter(builder, CultureInfo.InvariantCulture);
 			_canDisposeWriter = true;
 			_dialect = dialect;
+			_settings = settings;
 		}
 
 		/// <summary>
@@ -76,6 +123,26 @@ namespace Popsql.Text
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
+		/// specified <see cref="TextWriter"/> using the specified <paramref name="settings"/>.
+		/// </summary>
+		/// <param name="writer">
+		/// The <see cref="TextWriter"/> to write to.
+		/// </param>
+		/// <param name="settings">
+		/// The <see cref="SqlWriterSettings"/> object used to configure the new <see cref="SqlWriter"/>
+		/// instance. If this <see langword="null"/>, a <see cref="SqlWriterSettings"/> object with default
+		/// settings is used.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown when the <paramref name="writer"/> argument is <see langword="null"/>.
+		/// </exception>
+		public SqlWriter(TextWriter writer, SqlWriterSettings settings)
+			: this(writer, SqlDialect.Default, settings)
+		{
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
 		/// specified <see cref="TextWriter"/> using the specified <see cref="SqlDialect" />.
 		/// </summary>
 		/// <param name="writer">
@@ -85,16 +152,42 @@ namespace Popsql.Text
 		/// The <see cref="SqlDialect"/> to use while writing.
 		/// </param>
 		/// <exception cref="ArgumentNullException">
-		/// Thrown when the <paramref name="writer"/> argument is <see langword="null"/>.
+		/// Thrown when the <paramref name="writer"/> or <paramref name="dialect"/> argument is <see langword="null"/>.
 		/// </exception>
 		public SqlWriter(TextWriter writer, SqlDialect dialect)
+			: this(writer, dialect, null)
+		{
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
+		/// specified <see cref="TextWriter"/> using the specified <see cref="SqlDialect" /> and
+		/// <paramref name="settings"/>.
+		/// </summary>
+		/// <param name="writer">
+		/// The <see cref="TextWriter"/> to write to.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> to use while writing.
+		/// </param>
+		/// <param name="settings">
+		/// The <see cref="SqlWriterSettings"/> object used to configure the new <see cref="SqlWriter"/>
+		/// instance. If this <see langword="null"/>, a <see cref="SqlWriterSettings"/> object with default
+		/// settings is used.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown when the <paramref name="writer"/> or <paramref name="dialect"/> argument is <see langword="null"/>.
+		/// </exception>
+		public SqlWriter(TextWriter writer, SqlDialect dialect, SqlWriterSettings settings)
 		{
 			if (writer == null) throw new ArgumentNullException(nameof(writer));
 			if (dialect == null) throw new ArgumentNullException(nameof(dialect));
+			if (settings == null) settings = new SqlWriterSettings();
 
 			_writer = writer;
 			_canDisposeWriter = false;
 			_dialect = dialect;
+			_settings = settings;
 		}
 
 		/// <summary>
@@ -113,6 +206,17 @@ namespace Popsql.Text
 			get
 			{
 				return _dialect;
+			}
+		}
+
+		/// <summary>
+		/// Gets the <see cref="SqlWriterSettings"/> used to create this <see cref="SqlWriter"/> instance.
+		/// </summary>
+		protected SqlWriterSettings Settings
+		{
+			get
+			{
+				return _settings;
 			}
 		}
 
