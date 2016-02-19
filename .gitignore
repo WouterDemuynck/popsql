@@ -10,6 +10,7 @@ TestResults
 
 # NuGet Stuff
 NuGet.exe
+packages
 *.nupkg
 
 # Windows left-overs
