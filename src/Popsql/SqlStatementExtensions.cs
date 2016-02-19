@@ -263,7 +263,24 @@ namespace Popsql
         /// </returns>
         public static string ToSql(this SqlSelect sql)
         {
-            return ToSqlInternal(sql);
+            return sql.ToSqlInternal();
+        }
+
+		/// <summary>
+		/// Converts the specified <see cref="SqlSelect"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlSelect"/> to convert to SQL text.
+		/// </param>
+		/// <param name="parameterAction">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlSelect sql, Action<SqlParameter> parameterAction = null)
+        {
+            return sql.ToSqlInternal(parameterAction);
         }
 
         /// <summary>
@@ -280,6 +297,23 @@ namespace Popsql
             return sql.ToSqlInternal();
         }
 
+		/// <summary>
+		/// Converts the specified <see cref="SqlUnion"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlUnion"/> to convert to SQL text.
+		/// </param>
+		/// <param name="parameterAction">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlUnion sql, Action<SqlParameter> parameterAction = null)
+        {
+            return sql.ToSqlInternal(parameterAction);
+        }
+
         /// <summary>
         /// Converts the specified <see cref="SqlDelete"/> expression tree to SQL text.
         /// </summary>
@@ -292,6 +326,23 @@ namespace Popsql
         public static string ToSql(this SqlDelete sql)
         {
             return sql.ToSqlInternal();
+        }
+
+		/// <summary>
+		/// Converts the specified <see cref="SqlDelete"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlDelete"/> to convert to SQL text.
+		/// </param>
+		/// <param name="parameterAction">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlDelete sql, Action<SqlParameter> parameterAction = null)
+        {
+            return sql.ToSqlInternal(parameterAction);
         }
 
         /// <summary>
@@ -308,6 +359,23 @@ namespace Popsql
             return sql.ToSqlInternal();
         }
 
+		/// <summary>
+		/// Converts the specified <see cref="SqlUpdate"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlUpdate"/> to convert to SQL text.
+		/// </param>
+		/// <param name="parameterAction">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlUpdate sql, Action<SqlParameter> parameterAction = null)
+        {
+            return sql.ToSqlInternal(parameterAction);
+        }
+
         /// <summary>
         /// Converts the specified <see cref="SqlInsert"/> expression tree to SQL text.
         /// </summary>
@@ -322,7 +390,24 @@ namespace Popsql
             return sql.ToSqlInternal();
         }
 
-        private static string ToSqlInternal(this SqlStatement sql, Action<SqlParameter> parameterVisited = null)
+        /// <summary>
+        /// Converts the specified <see cref="SqlInsert"/> expression tree to SQL text.
+        /// </summary>
+        /// <param name="sql">
+        /// The <see cref="SqlInsert"/> to convert to SQL text.
+        /// </param>
+        /// <param name="parameterAction">
+        /// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+        /// </param>
+        /// <returns>
+        /// The SQL text for the specified SQL expression tree.
+        /// </returns>
+        public static string ToSql(this SqlInsert sql, Action<SqlParameter> parameterAction = null)
+        {
+            return sql.ToSqlInternal(parameterAction);
+        }
+
+        private static string ToSqlInternal(this SqlStatement sql, Action<SqlParameter> parameterAction = null)
         {
             if (sql == null) throw new ArgumentNullException("sql");
 
@@ -330,7 +415,7 @@ namespace Popsql
             using (SqlWriter writer = new SqlWriter(builder))
             {
                 SqlWriterVisitor visitor = new SqlWriterVisitor(writer);
-                visitor.ParameterVisited = parameterVisited;
+                visitor.ParameterVisited = parameterAction;
                 visitor.Visit(sql);
             }
 
