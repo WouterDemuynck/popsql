@@ -74,6 +74,7 @@
     <Compile Include="SqlBinaryExpressionTests.cs" />
     <Compile Include="SqlConstantTests.cs" />
     <Compile Include="SqlExpressionTests.cs" />
+    <Compile Include="SqlFunctionTests.cs" />
     <Compile Include="SqlIdentifierParserTests.cs" />
     <Compile Include="SqlIdentifierTests.cs" />
     <Compile Include="SqlJoinTests.cs" />

@@ -36,6 +36,10 @@
 		/// <summary>
 		/// Represents a joining expression expression in SQL.
 		/// </summary>
-		Join
+		Join,
+		/// <summary>
+		/// Represents a function call in SQL.
+		/// </summary>
+		Function
 	}
 }

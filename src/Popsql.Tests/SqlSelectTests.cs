@@ -22,11 +22,11 @@ namespace Popsql.Tests
 			columns.Add("Email");
 			var query = new SqlSelect(columns);
 
-			Assert.NotNull(query.Columns);
-			Assert.Equal(3, query.Columns.Count());
-			Assert.Equal("Id", query.Columns.First().ColumnName.Segments[0]);
-			Assert.Equal("Name", query.Columns.Skip(1).First().ColumnName.Segments[0]);
-			Assert.Equal("Email", query.Columns.Last().ColumnName.Segments[0]);
+			Assert.NotNull(query.Values);
+			Assert.Equal(3, query.Values.Count());
+			Assert.Equal("Id", query.Values.Cast<SqlColumn>().First().ColumnName.Segments[0]);
+			Assert.Equal("Name", query.Values.Cast<SqlColumn>().Skip(1).First().ColumnName.Segments[0]);
+			Assert.Equal("Email", query.Values.Cast<SqlColumn>().Last().ColumnName.Segments[0]);
 		}
 
 		[Fact]

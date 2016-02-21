@@ -24,7 +24,7 @@ namespace Popsql
 		public SqlSelect(IEnumerable<SqlColumn> columns)
 		{
 			if (columns == null) throw new ArgumentNullException(nameof(columns));
-			Columns = columns;
+			Values = columns;
 		}
 
 		/// <summary>
@@ -48,9 +48,9 @@ namespace Popsql
 		}
 
 		/// <summary>
-		/// Gets the collection of columns selected by this SQL SELECT statement.
+		/// Gets the collection of values selected by this SQL SELECT statement.
 		/// </summary>
-		public IEnumerable<SqlColumn> Columns
+		public IEnumerable<SqlValue> Values
 		{
 			get;
 			private set;

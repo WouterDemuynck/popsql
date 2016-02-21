@@ -53,6 +53,7 @@
     <Compile Include="SqlConstant.cs" />
     <Compile Include="SqlExpression.cs" />
     <Compile Include="SqlExpressionType.cs" />
+    <Compile Include="SqlFunction.cs" />
     <Compile Include="SqlIdentifier.cs" />
     <Compile Include="SqlIdentifierParser.cs" />
     <Compile Include="SqlJoin.cs" />
