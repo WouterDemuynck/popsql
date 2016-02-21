@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Popsql
 {
@@ -19,6 +20,8 @@ namespace Popsql
 		/// </param>
 		public SqlFunction(string functionName, IEnumerable<SqlValue> arguments = null)
 		{
+			if (functionName == null) throw new ArgumentNullException(nameof(functionName));
+
 			FunctionName = functionName;
 			Arguments = arguments;
 		}

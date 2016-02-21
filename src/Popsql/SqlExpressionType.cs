@@ -18,6 +18,10 @@
 		/// </summary> 
 		Column,
 		/// <summary>
+		/// Represents a table in SQL.
+		/// </summary>
+		Table,
+		/// <summary>
 		/// Represents a constant value in SQL.
 		/// </summary>
 		Constant,
@@ -40,6 +44,6 @@
 		/// <summary>
 		/// Represents a function call in SQL.
 		/// </summary>
-		Function
+		Function,
 	}
 }

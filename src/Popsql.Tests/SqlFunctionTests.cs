@@ -14,7 +14,7 @@ namespace Popsql.Tests
 		[Fact]
 		public void Ctor_WithNonNullFunctionName_UpdatesFunctionNameProperty()
 		{
-			var expected = "COUNT";
+			var expected = "GETDATE";
 			var function = new SqlFunction("GETDATE");
 
 			Assert.Equal(expected, function.FunctionName);
