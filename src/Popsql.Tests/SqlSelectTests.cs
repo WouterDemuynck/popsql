@@ -22,46 +22,51 @@ namespace Popsql.Tests
 			columns.Add("Email");
 			var query = new SqlSelect(columns);
 
-			Assert.NotNull(query.Values);
-			Assert.Equal(3, query.Values.Count());
-			Assert.Equal("Id", query.Values.Cast<SqlColumn>().First().ColumnName.Segments[0]);
-			Assert.Equal("Name", query.Values.Cast<SqlColumn>().Skip(1).First().ColumnName.Segments[0]);
-			Assert.Equal("Email", query.Values.Cast<SqlColumn>().Last().ColumnName.Segments[0]);
+			Assert.NotNull(query.Select);
+			Assert.Equal(3, query.Select.Count());
+			Assert.Equal("Id", query.Select.Cast<SqlColumn>().First().ColumnName.Segments[0]);
+			Assert.Equal("Name", query.Select.Cast<SqlColumn>().Skip(1).First().ColumnName.Segments[0]);
+			Assert.Equal("Email", query.Select.Cast<SqlColumn>().Last().ColumnName.Segments[0]);
 		}
 
 		[Fact]
-		public void From_WithNullSqlTable_ThrowsArgumentNull()
+		public void From_WithNullTable_ThrowsArgumentNull()
 		{
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
+			var select = Sql.Select("Id", "Name");
 			Assert.Throws<ArgumentNullException>(() => select.From(null));
 		}
 
 
 		[Fact]
-		public void From_WithSqlTable_SetsTableProperty()
+		public void From_WithTable_SetsTableProperty()
 		{
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
-			select.From("Users");
+			var select = Sql
+				.Select("Id", "Name")
+				.From("Users")
+				.Go();
 
-			Assert.NotNull(select.Table);
-			Assert.Equal("Users", select.Table.TableName.Segments.First());
+			Assert.NotNull(select.From);
+			Assert.Equal("Users", select.From.TableName.Segments.First());
 		}
 
 		[Fact]
-		public void Where_WithSqlExpression_SetsPredicateProperty()
+		public void Where_WithExpression_SetsWhereProperty()
 		{
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
-			select.Where(SqlExpression.Equal("Id", 5));
+			var select = Sql
+				.Select("Id", "Name")
+				.From("User")
+				.Where(SqlExpression.Equal("Id", 5))
+				.Go();
 
-			Assert.NotNull(select.Predicate);
-			Assert.IsType<SqlBinaryExpression>(select.Predicate);
-			Assert.IsType<SqlColumn>(((SqlBinaryExpression)select.Predicate).Left);
-			Assert.Equal("Id", ((SqlColumn)((SqlBinaryExpression)select.Predicate).Left).ColumnName.Segments.First());
+			Assert.NotNull(select.Where);
+			Assert.IsType<SqlBinaryExpression>(select.Where);
+			Assert.IsType<SqlColumn>(((SqlBinaryExpression)select.Where).Left);
+			Assert.Equal("Id", ((SqlColumn)((SqlBinaryExpression)select.Where).Left).ColumnName.Segments.First());
 
-			Assert.Equal(SqlBinaryOperator.Equal, ((SqlBinaryExpression)select.Predicate).Operator);
+			Assert.Equal(SqlBinaryOperator.Equal, ((SqlBinaryExpression)select.Where).Operator);
 
-			Assert.IsType<SqlConstant>(((SqlBinaryExpression)select.Predicate).Right);
-			Assert.Equal(5, ((SqlConstant)((SqlBinaryExpression)select.Predicate).Right).Value);
+			Assert.IsType<SqlConstant>(((SqlBinaryExpression)select.Where).Right);
+			Assert.Equal(5, ((SqlConstant)((SqlBinaryExpression)select.Where).Right).Value);
 		}
 
 		[Fact]
@@ -69,7 +74,8 @@ namespace Popsql.Tests
 		{
 			var users = new SqlTable("dbo.Users", "u");
 			var profiles = new SqlTable("dbo.Profiles", "p");
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+			var select = Sql
+				.Select("Id", "Name")
 				.From(users);
 
 			Assert.Throws<ArgumentNullException>(() => select.Join(null, SqlExpression.Equal(users + "Id", profiles + "UserId")));
@@ -81,9 +87,10 @@ namespace Popsql.Tests
 			var users = new SqlTable("dbo.Users", "u");
 			var profiles = new SqlTable("dbo.Profiles", "p");
 			var predicate = SqlExpression.Equal(users + "Id", profiles + "UserId");
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+			SqlSelect select = Sql.Select("Id", "Name")
 				.From(users)
-				.Join(profiles, predicate);
+				.Join(profiles, predicate)
+				.Go();
 
 			Assert.Equal(1, select.Joins.Count());
 			var join = select.Joins.First();
@@ -98,7 +105,7 @@ namespace Popsql.Tests
 		{
 			var users = new SqlTable("dbo.Users", "u");
 			var profiles = new SqlTable("dbo.Profiles", "p");
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+			var select = Sql.Select("Id", "Name")
 				.From(users);
 
 			Assert.Throws<ArgumentNullException>(() => select.InnerJoin(null, SqlExpression.Equal(users + "Id", profiles + "UserId")));
@@ -110,9 +117,10 @@ namespace Popsql.Tests
 			var users = new SqlTable("dbo.Users", "u");
 			var profiles = new SqlTable("dbo.Profiles", "p");
 			var predicate = SqlExpression.Equal(users + "Id", profiles + "UserId");
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+			var select = Sql.Select("Id", "Name")
 				.From(users)
-				.InnerJoin(profiles, predicate);
+				.InnerJoin(profiles, predicate)
+				.Go();
 
 			Assert.Equal(1, select.Joins.Count());
 			var join = select.Joins.First();
@@ -127,7 +135,7 @@ namespace Popsql.Tests
 		{
 			var users = new SqlTable("dbo.Users", "u");
 			var profiles = new SqlTable("dbo.Profiles", "p");
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+			var select = Sql.Select("Id", "Name")
 				.From(users);
 
 			Assert.Throws<ArgumentNullException>(() => select.LeftJoin(null, SqlExpression.Equal(users + "Id", profiles + "UserId")));
@@ -139,9 +147,10 @@ namespace Popsql.Tests
 			var users = new SqlTable("dbo.Users", "u");
 			var profiles = new SqlTable("dbo.Profiles", "p");
 			var predicate = SqlExpression.Equal(users + "Id", profiles + "UserId");
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+			var select = Sql.Select("Id", "Name")
 				.From(users)
-				.LeftJoin(profiles, predicate);
+				.LeftJoin(profiles, predicate)
+				.Go();
 
 			Assert.Equal(1, select.Joins.Count());
 			var join = select.Joins.First();
@@ -156,7 +165,7 @@ namespace Popsql.Tests
 		{
 			var users = new SqlTable("dbo.Users", "u");
 			var profiles = new SqlTable("dbo.Profiles", "p");
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+			var select = Sql.Select("Id", "Name")
 				.From(users);
 
 			Assert.Throws<ArgumentNullException>(() => select.RightJoin(null, SqlExpression.Equal(users + "Id", profiles + "UserId")));
@@ -168,9 +177,10 @@ namespace Popsql.Tests
 			var users = new SqlTable("dbo.Users", "u");
 			var profiles = new SqlTable("dbo.Profiles", "p");
 			var predicate = SqlExpression.Equal(users + "Id", profiles + "UserId");
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+			SqlSelect select = Sql.Select("Id", "Name")
 				.From(users)
-				.RightJoin(profiles, predicate);
+				.RightJoin(profiles, predicate)
+				.Go();
 
 			Assert.Equal(1, select.Joins.Count());
 			var join = select.Joins.First();
@@ -188,10 +198,11 @@ namespace Popsql.Tests
 			var addresses = new SqlTable("dbo.Addresses", "a");
 			var profilesPredicate = SqlExpression.Equal(users + "Id", profiles + "UserId");
 			var addressesPredicate = SqlExpression.Equal(users + "Id", addresses + "UserId");
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" })
+			var select = Sql.Select("Id", "Name")
 				.From(users)
 				.LeftJoin(profiles, profilesPredicate)
-				.LeftJoin(addresses, addressesPredicate);
+				.LeftJoin(addresses, addressesPredicate)
+				.Go();
 
 			Assert.Equal(2, select.Joins.Count());
 			var join = select.Joins.First();
@@ -215,7 +226,9 @@ namespace Popsql.Tests
 		[Fact]
 		public void OrderBy_WithNullColumn_ThrowsArgumentNull()
 		{
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
+			var select = Sql
+				.Select("Id", "Name")
+				.From("User");
 
 			Assert.Throws<ArgumentNullException>(() => select.OrderBy((SqlColumn)null));
 		}
@@ -223,7 +236,7 @@ namespace Popsql.Tests
 		[Fact]
 		public void OrderBy_WithNullSorting_ThrowsArgumentNull()
 		{
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
+			var select = Sql.Select("Id", "Name").From("User");
 
 			Assert.Throws<ArgumentNullException>(() => select.OrderBy(null));
 		}
@@ -232,11 +245,29 @@ namespace Popsql.Tests
 		public void OrderBy_WithColumnAndSortOrder_AddsSorting()
 		{
 			SqlColumn column = "dbo.Users.CreatedOn";
-			SqlSelect select = new SqlSelect(new SqlColumn[] { "Id", "Name" });
-			select.OrderBy(column, SqlSortOrder.Descending);
+			SqlSelect select = Sql
+				.Select("Id", "Name")
+				.From("User")
+				.OrderBy(column, SqlSortOrder.Descending)
+				.Go();
 
-			Assert.Equal(1, select.Sorting.Count);
-			var sort = select.Sorting.First();
+			Assert.Equal(1, select.OrderBy.Count);
+			var sort = select.OrderBy.First();
+			Assert.Same(column, sort.Column);
+			Assert.Equal(SqlSortOrder.Descending, sort.SortOrder);
+		}
+		[Fact]
+		public void OrderBy_WithSortExpression_AddsSorting()
+		{
+			SqlColumn column = "dbo.Users.CreatedOn";
+			SqlSelect select = Sql
+				.Select("Id", "Name")
+				.From("User")
+				.OrderBy(column + SqlSortOrder.Descending)
+				.Go();
+
+			Assert.Equal(1, select.OrderBy.Count);
+			var sort = select.OrderBy.First();
 			Assert.Same(column, sort.Column);
 			Assert.Equal(SqlSortOrder.Descending, sort.SortOrder);
 		}
@@ -245,7 +276,7 @@ namespace Popsql.Tests
 		public void Sorting_IsNotNullWhenFirstCalled()
 		{
 			var select = new SqlSelect(new SqlColumn[] { "Id" });
-			Assert.NotNull(select.Sorting);
+			Assert.NotNull(select.OrderBy);
 		}
 
 		[Fact]

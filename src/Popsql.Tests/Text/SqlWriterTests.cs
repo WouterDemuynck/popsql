@@ -23,7 +23,7 @@ namespace Popsql.Tests.Text
 			Assert.Throws<ArgumentNullException>(() => new SqlWriter((TextWriter)null));
 		}
 		[Fact]
-		public void Ctor_WithStringBuilderAndSqlWriterSettings_UsesSpecifiedSettings()
+		public void Ctor_WithStringBuilderAndWriterSettings_UsesSpecifiedSettings()
 		{
 			var settings = new SqlWriterSettings();
 			TestSqlWriter writer = new TestSqlWriter(new StringBuilder(), settings);
@@ -31,7 +31,7 @@ namespace Popsql.Tests.Text
 		}
 
 		[Fact]
-		public void Ctor_WithTextWriterAndSqlWriterSettings_UsesSpecifiedSettings()
+		public void Ctor_WithTextWriterAndWriterSettings_UsesSpecifiedSettings()
 		{
 			var settings = new SqlWriterSettings();
 			TestSqlWriter writer = new TestSqlWriter(new StringWriter(new StringBuilder()), settings);

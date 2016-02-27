@@ -45,5 +45,10 @@
 		/// Represents a function call in SQL.
 		/// </summary>
 		Function,
+		Delete,
+		Insert,
+		Update,
+		From,
+		Assign
 	}
 }

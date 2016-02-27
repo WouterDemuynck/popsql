@@ -71,18 +71,23 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlAssignTests.cs" />
     <Compile Include="SqlBinaryExpressionTests.cs" />
     <Compile Include="SqlConstantTests.cs" />
+    <Compile Include="SqlDeleteTests.cs" />
     <Compile Include="SqlExpressionTests.cs" />
     <Compile Include="SqlFunctionTests.cs" />
     <Compile Include="SqlIdentifierParserTests.cs" />
     <Compile Include="SqlIdentifierTests.cs" />
+    <Compile Include="SqlInsertTests.cs" />
     <Compile Include="SqlJoinTests.cs" />
     <Compile Include="SqlParameterTests.cs" />
     <Compile Include="SqlSelectTests.cs" />
     <Compile Include="SqlColumnTests.cs" />
     <Compile Include="SqlSortTests.cs" />
     <Compile Include="SqlTableTests.cs" />
+    <Compile Include="SqlTests.cs" />
+    <Compile Include="SqlUpdateTests.cs" />
     <Compile Include="SqlValueTests.cs" />
     <Compile Include="Text\SqlKeywordTests.cs" />
     <Compile Include="Text\SqlDialectTests.cs" />
