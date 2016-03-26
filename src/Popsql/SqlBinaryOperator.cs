@@ -45,6 +45,10 @@ namespace Popsql
         /// <summary>
         /// Represents the "like" comparison operator (<c>LIKE</c>).
         /// </summary>
-        Like
+        Like,
+		/// <summary>
+		/// Represents the "in" comparison operator (<c>IN</c>).
+		/// </summary>
+	    In
     }
 }

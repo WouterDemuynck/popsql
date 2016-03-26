@@ -179,12 +179,12 @@ namespace Popsql.Text
                     WriteOpenParenthesis();
                     break;
 
-                case SqlWriterState.StartWhere:
-                case SqlWriterState.StartOn:
-                case SqlWriterState.StartExpression:
-                    WriteOpenParenthesis();
-                    break;
-            }
+				case SqlWriterState.StartWhere:
+				case SqlWriterState.StartOn:
+				case SqlWriterState.StartExpression:
+					WriteOpenParenthesis();
+					break;
+			}
 
             if (!string.IsNullOrWhiteSpace(tableName))
             {
@@ -453,6 +453,10 @@ namespace Popsql.Text
                     Write("OR");
                     break;
 
+				case SqlBinaryOperator.In:
+					Write("IN");
+					break;
+
                 default:
                     throw new InvalidEnumArgumentException("operator", (int)@operator, typeof(SqlBinaryOperator));
             }
@@ -530,10 +534,32 @@ namespace Popsql.Text
             _stateManager.RequestState(SqlWriterState.EndValues);
         }
 
-        /// <summary>
-        /// Writes the start of a SQL DELETE statement to the output stream.
-        /// </summary>
-        public void WriteStartDelete()
+		/// <summary>
+		/// Writes the start of a SQL expression list to the output stream.
+		/// </summary>
+		public void WriteStartList()
+		{
+			EnsureNotDisposed();
+			_stateManager.RequestState(SqlWriterState.StartList);
+		}
+
+		/// <summary>
+		/// Writes the end of a SQL expression list to the output stream.
+		/// </summary>
+		public void WriteEndList()
+		{
+			EnsureNotDisposed();
+			WriteCloseParenthesis();
+			_stateManager.RequestState(SqlWriterState.Expression);
+
+			// Close the expression's parenthesis too.
+			WriteCloseParenthesis();
+		}
+
+		/// <summary>
+		/// Writes the start of a SQL DELETE statement to the output stream.
+		/// </summary>
+		public void WriteStartDelete()
         {
             EnsureNotDisposed();
             Write("DELETE");
@@ -553,11 +579,13 @@ namespace Popsql.Text
             switch (WriteState)
             {
                 case SqlWriterState.StartValues:
+                case SqlWriterState.StartList:
                     Write("(");
                     _hasPendingSpace = false;
                     break;
 
                 case SqlWriterState.Values:
+                case SqlWriterState.List:
                     WriteRaw(",");
                     break;
 
@@ -607,6 +635,10 @@ namespace Popsql.Text
                     _stateManager.RequestState(SqlWriterState.Values);
                     break;
 
+                case SqlWriterState.StartList:
+                    _stateManager.RequestState(SqlWriterState.List);
+                    break;
+
                 case SqlWriterState.Expression:
                     WriteCloseParenthesis();
                     _stateManager.RequestState(new Dictionary<SqlWriterState, SqlWriterState>
@@ -618,13 +650,13 @@ namespace Popsql.Text
             }
         }
 
-        /// <summary>
-        /// Writes the specified SQL parameter to the output stream.
-        /// </summary>
-        /// <param name="parameterName">
-        /// The value to write to the output stream.
-        /// </param>
-        public void WriteParameter(string parameterName)
+		/// <summary>
+		/// Writes the specified SQL parameter to the output stream.
+		/// </summary>
+		/// <param name="parameterName">
+		/// The value to write to the output stream.
+		/// </param>
+		public void WriteParameter(string parameterName)
         {
             EnsureNotDisposed();
 

@@ -63,10 +63,18 @@ namespace Popsql.Text
         /// Indicates that the writer is currently writing a SQL expression.
         /// </summary>
         Expression,
-        /// <summary>
-        /// Indicates that the start of a SQL ORDER BY clause has been written.
-        /// </summary>
-        StartOrderBy,
+		/// <summary>
+		/// Indicates that the start of a SQL expression list has been written.
+		/// </summary>
+		StartList,
+		/// <summary>
+		/// Indicates that the writer is currently writing a SQL expression list.
+		/// </summary>
+		List,
+		/// <summary>
+		/// Indicates that the start of a SQL ORDER BY clause has been written.
+		/// </summary>
+		StartOrderBy,
         /// <summary>
         /// Indicates that the writer is currently writing a SQL ORDER BY clause.
         /// </summary>
@@ -130,6 +138,6 @@ namespace Popsql.Text
         /// <summary>
         /// Indicates that the writer has been closed.
         /// </summary>
-        Closed
+        Closed,
     }
 }

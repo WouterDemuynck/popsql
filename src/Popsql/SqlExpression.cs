@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -201,6 +202,29 @@ namespace Popsql
         {
             return new SqlBinaryExpression(column, SqlBinaryOperator.Like, value ?? SqlConstant.Null);
         }
+
+		/// <summary>
+		/// Creates a <see cref="SqlBinaryExpression"/> that represents an "in" comparison.
+		/// </summary>
+		/// <param name="column">
+		/// A <see cref="SqlColumn"/> to use as the left operand in the expression.
+		/// </param>
+		/// <param name="values">
+		/// A collection of <see cref="SqlValue"/> to use as the right operand in the expression.
+		/// </param>
+		/// <returns>
+		/// A <see cref="SqlBinaryExpression"/> that represents an "in" comparison between
+		/// the value of the specified <paramref name="column"/> and the specified collection of
+		/// <paramref name="values"/>.
+		/// </returns>
+		/// <remarks>
+		/// If you pass <see langword="null"/> for the <paramref name="values"/> argument, it
+		/// will be automatically converted to an empty collection.
+		/// </remarks>
+		public static SqlBinaryExpression In(SqlColumn column, params SqlValue[] values)
+	    {
+		    return new SqlBinaryExpression(column, SqlBinaryOperator.In, new SqlConstant(values ?? Enumerable.Empty<SqlValue>()));
+	    }
 
         /// <summary>
         /// Gets the expression type of this expression.

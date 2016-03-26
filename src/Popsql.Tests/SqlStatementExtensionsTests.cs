@@ -9,8 +9,20 @@ namespace Popsql.Tests
 {
     [TestClass]
     public class SqlStatementExtensionsTests
-    {
-        [TestMethod]
+	{
+		[TestMethod]
+		public void ToSql_WithSelectAndSimpleWhereClause_WritesCorrectSql()
+		{
+			var sql = Sql
+				.Select("Id", "Name", "Email")
+				.From("Users")
+				.Where(SqlExpression.Equal("Id", 5))
+				.ToSql();
+
+			Assert.AreEqual("SELECT [Id], [Name], [Email] FROM [Users] WHERE ([Id] = 5)", sql);
+		}
+
+		[TestMethod]
         public void ToSql_WithSelect_WritesCorrectSql()
         {
             var sql = Sql
@@ -185,7 +197,21 @@ namespace Popsql.Tests
             Assert.AreEqual("SELECT [f].[Id], [f].[Name], [b].[Email] FROM [foo] [f] RIGHT JOIN [bar] [b] ON ([f].[Id] = [b].[FooId]) WHERE ([f].[Id] = 5) ORDER BY [Id] DESC, [Name] ASC", sql);
         }
 
-        [TestMethod]
+		[TestMethod]
+		public void ToSql_WithSelectWithInExpression_WritesCorrectSql()
+		{
+			var sql = Sql
+				.Select("Id", "Name", "Email")
+				.From("Users")
+				.Where(SqlExpression.In("Id", 1, 2, 3, 4, 5, 6, 7, 8, 9))
+				.OrderBy("Id", SqlSortOrder.Descending)
+				.OrderBy("Name")
+				.ToSql();
+
+			Assert.AreEqual("SELECT [Id], [Name], [Email] FROM [Users] WHERE ([Id] IN (1, 2, 3, 4, 5, 6, 7, 8, 9)) ORDER BY [Id] DESC, [Name] ASC", sql);
+		}
+
+		[TestMethod]
         public void ToSql_WithDelete_WritesCorrectSql()
         {
             var sql = Sql

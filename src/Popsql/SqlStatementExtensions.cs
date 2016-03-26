@@ -1,5 +1,7 @@
 ﻿using Popsql.Text;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -592,8 +594,21 @@ namespace Popsql
 
             protected override SqlExpression VisitConstant(SqlConstant expression)
             {
-                _writer.WriteValue(expression.Value);
-                return expression;
+	            IEnumerable<SqlValue> values = expression.Value as IEnumerable<SqlValue>;
+	            if (values != null)
+	            {
+		            _writer.WriteStartList();
+		            foreach (var value in values)
+		            {
+			            Visit(value);
+		            }
+		            _writer.WriteEndList();
+	            }
+	            else
+	            {
+		            _writer.WriteValue(expression.Value);
+	            }
+	            return expression;
             }
 
             protected override SqlExpression VisitParameter(SqlParameter expression)
@@ -622,32 +637,32 @@ namespace Popsql
             }
 
             protected override SqlExpression VisitBinary(SqlBinaryExpression expression)
-            {
-                switch (expression.Left.ExpressionType)
-                {
-                    case SqlExpressionType.Column:
-                        Visit(expression.Left);
-                        break;
+			{
+				switch (expression.Operator)
+				{
+					case SqlBinaryOperator.And:
+					case SqlBinaryOperator.Or:
+						_writer.WriteOpenParenthesis();
+						Visit(expression.Left);
+						break;
 
-                    default:
-                        _writer.WriteOpenParenthesis();
-                        Visit(expression.Left);
-                        break;
-                }
+					default:
+						Visit(expression.Left);
+						break;
+				}
 
                 _writer.WriteOperator(expression.Operator);
 
-                switch (expression.Right.ExpressionType)
+                switch (expression.Operator)
                 {
-                    case SqlExpressionType.Constant:
-                    case SqlExpressionType.Parameter:
-                    case SqlExpressionType.Column:
-                        Visit(expression.Right);
-                        break;
+					case SqlBinaryOperator.And:
+					case SqlBinaryOperator.Or:
+						Visit(expression.Right);
+						_writer.WriteCloseParenthesis();
+						break;
 
-                    default:
+					default:
                         Visit(expression.Right);
-                        _writer.WriteCloseParenthesis();
                         break;
                 }
 

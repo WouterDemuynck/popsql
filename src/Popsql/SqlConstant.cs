@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.SqlServer.Server;
 
 namespace Popsql
 {
     /// <summary>
     /// Represents a constant value in SQL.
     /// </summary>
-    public class SqlConstant : SqlValue
+    public class SqlConstant : SqlValue, IEquatable<SqlConstant>
     {
         /// <summary>
         /// Represents the NULL SQL constant.
@@ -67,5 +68,26 @@ namespace Popsql
             if (value == null) throw new ArgumentNullException("value");
             return new SqlParameter(parameterName, value.Value);
         }
+
+	    public override int GetHashCode()
+	    {
+		    return Value?.GetHashCode() ?? -1;
+	    }
+
+	    public override bool Equals(object obj)
+	    {
+		    var constant = obj as SqlConstant;
+		    if (constant != null)
+		    {
+			    return Equals(constant);
+		    }
+
+		    return false;
+	    }
+
+	    public bool Equals(SqlConstant other)
+	    {
+		    return Value?.Equals(other?.Value) ?? false;
+	    }
     }
 }
