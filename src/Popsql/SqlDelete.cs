@@ -3,31 +3,50 @@ using Popsql.Grammar;
 
 namespace Popsql
 {
-	public class SqlDelete : SqlStatement, ISqlDeleteClause, ISqlDeleteFromClause<SqlDelete>, ISqlWhereClause<SqlDelete>
+	/// <summary>
+	/// Represents a SQL DELETE statement.
+	/// </summary>
+	public class SqlDelete : SqlStatement, ISqlDeleteClause, ISqlDeleteFromClause, ISqlWhereClause<SqlDelete>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlDelete"/> class.
+		/// </summary>
+		public SqlDelete()
+		{
+		}
+
+		/// <summary>
+		/// Returns the expression type of this expression.
+		/// </summary>
 		public override SqlExpressionType ExpressionType 
 			=> SqlExpressionType.Delete;
 
+		/// <summary>
+		/// Gets the table from which to delete rows.
+		/// </summary>
 		public SqlTable From
 		{
 			get;
 			private set;
 		}
 
+		/// <summary>
+		/// Gets the predicate determining which rows are deleted by this SQL DELETE statement.
+		/// </summary>
 		public SqlExpression Where
 		{
 			get;
 			private set;
 		}
 
-		ISqlDeleteFromClause<SqlDelete> ISqlDeleteClause.From(SqlTable table)
+		ISqlDeleteFromClause ISqlDeleteClause.From(SqlTable table)
 		{
 			if (table == null) throw new ArgumentNullException(nameof(table));
 			From = table;
 			return this;
 		}
 
-		ISqlWhereClause<SqlDelete> ISqlDeleteFromClause<SqlDelete>.Where(SqlExpression predicate)
+		ISqlWhereClause<SqlDelete> ISqlDeleteFromClause.Where(SqlExpression predicate)
 		{
 			Where = predicate;
 			return this;

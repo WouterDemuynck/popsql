@@ -10,6 +10,18 @@
 		/// </summary>
 		Select,
 		/// <summary>
+		/// Represents a SQL DELETE statement.
+		/// </summary>
+		Delete,
+		/// <summary>
+		/// Represents a SQL INSERT statement.
+		/// </summary>
+		Insert,
+		/// <summary>
+		/// Represents a SQL UPDATE statement.
+		/// </summary>
+		Update,
+		/// <summary>
 		/// Represents a SQL identifier.
 		/// </summary>
 		Identifier,
@@ -45,12 +57,25 @@
 		/// Represents a function call in SQL.
 		/// </summary>
 		Function,
-		Delete,
-		Insert,
-		Update,
+		/// <summary>
+		/// Represents a SQL FROM clause.
+		/// </summary>
 		From,
+		/// <summary>
+		/// Represents an assignment expression in SQL.
+		/// </summary>
 		Assign,
+		/// <summary>
+		/// Represents a SQL WHERE clause.
+		/// </summary>
 		Where,
-		OrderBy
+		/// <summary>
+		/// Represents a SQL ORDER BY clause.
+		/// </summary>
+		OrderBy,
+		/// <summary>
+		/// Represents a UNION operator in SQL.
+		/// </summary>
+		Union
 	}
 }

@@ -35,21 +35,46 @@ namespace Popsql
         /// </summary>
         public object Value
         {
-            get; }
+            get;
+		}
 
+		/// <summary>
+		/// Serves as the default hash function. 
+		/// </summary>
+		/// <returns>
+		/// A hash code for the current object.
+		/// </returns>
 		public override int GetHashCode()
 		{
 			return Value?.GetHashCode() ?? -1;
 		}
 
-		public override bool Equals(object obj)
+		/// <summary>
+		/// Indicates whether the current object is equal to another object.
+		/// </summary>
+		/// <param name="other">
+		/// An object to compare with this object. 
+		/// </param>
+		/// <returns>
+		/// <see langword="true" /> if the current object is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false" />.
+		/// </returns>
+		public override bool Equals(object other)
 		{
-			if (obj == null || GetType() != obj.GetType())
+			if (other == null || GetType() != other.GetType())
 				return false;
 
-			return Equals((SqlConstant) obj);
+			return Equals((SqlConstant) other);
 		}
 
+		/// <summary>
+		/// Indicates whether the current object is equal to another object.
+		/// </summary>
+		/// <param name="other">
+		/// A <see cref="SqlConstant"/> to compare with this object. 
+		/// </param>
+		/// <returns>
+		/// <see langword="true" /> if the current object is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false" />.
+		/// </returns>
 		public bool Equals(SqlConstant other)
 		{
 			if (other == null) return false;
