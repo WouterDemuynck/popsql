@@ -16,8 +16,8 @@ namespace Popsql
 		/// </param>
 		public SqlIdentifier(string identifier)
 		{
-			if (identifier == null) throw new ArgumentNullException("identifier");
-			if (identifier.Length == 0) throw new ArgumentException("The value of the identifier argument must be a non-empty string.", "identifier");
+			if (identifier == null) throw new ArgumentNullException(nameof(identifier));
+			if (identifier.Length == 0) throw new ArgumentException("The value of the identifier argument must be a non-empty string.", nameof(identifier));
 
 			Segments = SqlIdentifierParser.Parse(identifier);
 		}
@@ -31,7 +31,7 @@ namespace Popsql
 		/// </param>
 		public SqlIdentifier(string[] segments)
 		{
-			if (segments == null) throw new ArgumentNullException("segments");
+			if (segments == null) throw new ArgumentNullException(nameof(segments));
 
 			Segments = segments;
 		}
@@ -39,13 +39,8 @@ namespace Popsql
 		/// <summary>
 		/// Gets the expression type of this expression.
 		/// </summary>
-		public override SqlExpressionType ExpressionType
-		{
-			get
-			{
-				return SqlExpressionType.Identifier;
-			}
-		}
+		public override SqlExpressionType ExpressionType 
+			=> SqlExpressionType.Identifier;
 
 		/// <summary>
 		/// Gets an array containing the path segments that make up this identifier.

@@ -9,7 +9,7 @@ namespace Popsql
     {
         internal SqlSort(SqlColumn column, SqlSortOrder sortOrder)
         {
-            if (column == null) throw new ArgumentNullException("column");
+            if (column == null) throw new ArgumentNullException(nameof(column));
             Column = column;
             SortOrder = sortOrder;
         }
@@ -35,9 +35,7 @@ namespace Popsql
         /// <summary>
         /// Returns the expression type of this expression.
         /// </summary>
-        public override SqlExpressionType ExpressionType
-        {
-            get { return SqlExpressionType.Sort; }
-        }
+        public override SqlExpressionType ExpressionType 
+			=> SqlExpressionType.Sort;
     }
 }

@@ -39,7 +39,7 @@ namespace Popsql
 		/// </exception>
 		public SqlColumn(SqlIdentifier columnName, string alias)
 		{
-			if (columnName == null) throw new ArgumentNullException("columnName");
+			if (columnName == null) throw new ArgumentNullException(nameof(columnName));
 
 			ColumnName = columnName;
 			Alias = alias;
@@ -66,13 +66,8 @@ namespace Popsql
 		/// <summary>
 		/// Gets the expression type of this expression.
 		/// </summary>
-		public override SqlExpressionType ExpressionType
-		{
-			get
-			{
-				return SqlExpressionType.Column;
-			}
-		}
+		public override SqlExpressionType ExpressionType 
+			=> SqlExpressionType.Column;
 
 		/// <summary>
 		/// Implicitly converts a <see cref="string"/> representing a column name to a <see cref="SqlColumn"/> instance.

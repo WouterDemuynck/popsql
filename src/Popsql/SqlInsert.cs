@@ -5,13 +5,12 @@ using Popsql.Grammar;
 
 namespace Popsql
 {
-	public class SqlInsert : SqlStatement, ISqlInsertClause, ISqlIntoClause, ISqlValuesClause
+	public class SqlInsert : SqlStatement, ISqlInsertClause, ISqlValuesClause
 	{
 		private List<IEnumerable<SqlValue>> _values;
 
 		public SqlInsert()
 		{
-			
 		}
 
 		public SqlTable Into
@@ -37,13 +36,8 @@ namespace Popsql
 			}
 		}
 
-		public override SqlExpressionType ExpressionType
-		{
-			get
-			{
-				return SqlExpressionType.Insert;
-			}
-		}
+		public override SqlExpressionType ExpressionType 
+			=> SqlExpressionType.Insert;
 
 		ISqlIntoClause ISqlInsertClause.Into(SqlTable table)
 		{

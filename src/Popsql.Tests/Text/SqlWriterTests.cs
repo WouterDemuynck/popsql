@@ -60,21 +60,11 @@ namespace Popsql.Tests.Text
 			{
 			}
 
-			public SqlDialect DialectTest
-			{
-				get
-				{
-					return Dialect;
-				}
-			}
+			public SqlDialect DialectTest 
+				=> Dialect;
 
-			public SqlWriterSettings SettingsTest
-			{
-				get
-				{
-					return Settings;
-				}
-			}
+			public SqlWriterSettings SettingsTest 
+				=> Settings;
 
 			public void WriteKeywordTest(SqlKeyword keyword)
 			{
@@ -205,13 +195,8 @@ namespace Popsql.Tests.Text
 
 		private class TestTextWriter : TextWriter, IDisposable
 		{
-			public override Encoding Encoding
-			{
-				get
-				{
-					return Encoding.UTF8;
-				}
-			}
+			public override Encoding Encoding 
+				=> Encoding.UTF8;
 
 			protected override void Dispose(bool disposing)
 			{

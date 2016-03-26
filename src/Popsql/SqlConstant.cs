@@ -27,22 +27,15 @@ namespace Popsql
         /// <summary>
         /// Returns the expression type of this expression.
         /// </summary>
-        public override sealed SqlExpressionType ExpressionType
-        {
-            get
-            {
-                return SqlExpressionType.Constant;
-            }
-        }
+        public override sealed SqlExpressionType ExpressionType 
+			=> SqlExpressionType.Constant;
 
-        /// <summary>
+		/// <summary>
         /// The value of this <see cref="SqlConstant"/>.
         /// </summary>
         public object Value
         {
-            get;
-            private set;
-        }
+            get; }
 
 		public override int GetHashCode()
 		{

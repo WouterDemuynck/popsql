@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Popsql.Grammar;
 
 namespace Popsql
 {
 	/// <summary>
 	/// Represents a SQL SELECT statement.
 	/// </summary>
-	public class SqlSelect : SqlStatement, ISqlSelectClause, ISqlSelectFromClause, ISqlSelectWhereClause, ISqlOrderByClause<SqlSelect>
+	public partial class SqlSelect : SqlStatement
 	{
 		private List<SqlJoin> _joins;
 		private List<SqlSort> _orderBy;
@@ -38,7 +36,7 @@ namespace Popsql
 			private set;
 		}
 
-		public SqlTable From
+		public SqlTableExpression From
 		{
 			get;
 			private set;
@@ -47,13 +45,8 @@ namespace Popsql
 		/// <summary>
 		/// Gets the joins used by this <see cref="SqlSelect"/>.
 		/// </summary>
-		public IReadOnlyCollection<SqlJoin> Joins
-		{
-			get
-			{
-				return _joins ?? (_joins = new List<SqlJoin>());
-			}
-		}
+		public IReadOnlyCollection<SqlJoin> Joins 
+			=> _joins ?? (_joins = new List<SqlJoin>());
 
 		public SqlExpression Where
 		{
@@ -64,95 +57,18 @@ namespace Popsql
 		/// <summary>
 		/// Gets the collection of sorting clauses determining the result ordering of this SQL SELECT statement.
 		/// </summary>
-		public IReadOnlyCollection<SqlSort> OrderBy
-		{
-			get
-			{
-				return _orderBy ?? (_orderBy = new List<SqlSort>());
-			}
-		}
+		public IReadOnlyCollection<SqlSort> OrderBy 
+			=> _orderBy ?? (_orderBy = new List<SqlSort>());
 
 		/// <summary>
 		/// Gets the expression type of this expression.
 		/// </summary>
-		public override SqlExpressionType ExpressionType
-		{
-			get
-			{
-				return SqlExpressionType.Select;
-			}
-		}
+		public override SqlExpressionType ExpressionType 
+			=> SqlExpressionType.Select;
 
-		ISqlSelectFromClause ISqlSelectClause.From(SqlTable table)
+		public static SqlSubquery operator +(SqlSelect query, string alias)
 		{
-			if (table == null) throw new ArgumentNullException(nameof(table));
-			From = table;
-			return this;
-		}
-
-		ISqlSelectFromClause ISqlSelectFromClause.Join(SqlTable table, SqlExpression predicate)
-		{
-			return JoinInternal(SqlJoinType.Default, table, predicate);
-		}
-
-		ISqlSelectFromClause ISqlSelectFromClause.InnerJoin(SqlTable table, SqlExpression predicate)
-		{
-			return JoinInternal(SqlJoinType.Inner, table, predicate);
-		}
-
-		ISqlSelectFromClause ISqlSelectFromClause.LeftJoin(SqlTable table, SqlExpression predicate)
-		{
-			return JoinInternal(SqlJoinType.Left, table, predicate);
-		}
-
-		ISqlSelectFromClause ISqlSelectFromClause.RightJoin(SqlTable table, SqlExpression predicate)
-		{
-			return JoinInternal(SqlJoinType.Right, table, predicate);
-		}
-		private SqlSelect JoinInternal(SqlJoinType type, SqlTable table, SqlExpression predicate = null)
-		{
-			if (table == null) throw new ArgumentNullException(nameof(table));
-			if (_joins == null)
-			{
-				_joins = new List<SqlJoin>();
-			}
-			_joins.Add(new SqlJoin(type, table, predicate));
-			return this;
-		}
-
-		ISqlOrderByClause<SqlSelect> ISqlOrderByClause<SqlSelect>.OrderBy(SqlColumn column, SqlSortOrder sortOrder)
-		{
-			if (column == null) throw new ArgumentNullException(nameof(column));
-
-			if (_orderBy == null)
-			{
-				_orderBy = new List<SqlSort>();
-			}
-			_orderBy.Add(column + sortOrder);
-			return this;
-		}
-
-		ISqlOrderByClause<SqlSelect> ISqlOrderByClause<SqlSelect>.OrderBy(SqlSort sortExpression)
-		{
-			if (sortExpression == null) throw new ArgumentNullException(nameof(sortExpression));
-
-			if (_orderBy == null)
-			{
-				_orderBy = new List<SqlSort>();
-			}
-			_orderBy.Add(sortExpression);
-			return this;
-		}
-
-		ISqlSelectWhereClause ISqlSelectFromClause.Where(SqlExpression predicate)
-		{
-			Where = predicate;
-			return this;
-		}
-
-		SqlSelect ISqlGo<SqlSelect>.Go()
-		{
-			return this;
+			return new SqlSubquery(query, alias);
 		}
 	}
 }

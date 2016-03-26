@@ -4,7 +4,7 @@ using Popsql.Grammar;
 
 namespace Popsql
 {
-	public class SqlUpdate : SqlStatement, ISqlUpdateClause, ISqlSetClause, ISqlWhereClause<SqlUpdate>
+	public class SqlUpdate : SqlStatement, ISqlSetClause, ISqlWhereClause<SqlUpdate>
 	{
 		private List<SqlAssign> _values;
 
@@ -23,13 +23,8 @@ namespace Popsql
 		/// <summary>
 		/// Gets the values assigned by this <see cref="SqlUpdate"/>.
 		/// </summary>
-		public IEnumerable<SqlAssign> Values
-		{
-			get
-			{
-				return _values ?? (_values = new List<SqlAssign>());
-			}
-		}
+		public IEnumerable<SqlAssign> Values 
+			=> _values ?? (_values = new List<SqlAssign>());
 
 		/// <summary>
 		/// Gets the predicate determining which rows are updated by this SQL UPDATE statement.
@@ -40,13 +35,8 @@ namespace Popsql
 			private set;
 		}
 
-		public override SqlExpressionType ExpressionType
-		{
-			get
-			{
-				return SqlExpressionType.Update;
-			}
-		}
+		public override SqlExpressionType ExpressionType 
+			=> SqlExpressionType.Update;
 
 		ISqlSetClause ISqlUpdateClause.Set(SqlColumn column, SqlValue value)
 		{

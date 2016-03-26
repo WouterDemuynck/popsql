@@ -8,8 +8,8 @@ namespace Popsql
 	{
 		public static string[] Parse(string identifier)
 		{
-			if (identifier == null) throw new ArgumentNullException("identifier");
-			if (identifier.Length == 0) throw new ArgumentException("The value of the identifier argument must be a non-empty string.", "identifier");
+			if (identifier == null) throw new ArgumentNullException(nameof(identifier));
+			if (identifier.Length == 0) throw new ArgumentException("The value of the identifier argument must be a non-empty string.", nameof(identifier));
 
 			var tokens = new List<string>();
 			StringBuilder currentToken = new StringBuilder();
@@ -22,7 +22,7 @@ namespace Popsql
 				switch (currentChar)
 				{
 					case '\"':
-						if (isQuoted && !isDelimited)
+						if (isQuoted)
 						{
 							// Look forward to see if this quote is escaped.
 							if ((currentIndex < (identifier.Length - 1) && identifier[currentIndex + 1]  == '\"'))

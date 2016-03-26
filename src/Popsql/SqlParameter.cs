@@ -19,7 +19,7 @@ namespace Popsql
         /// </param>
         public SqlParameter(string parameterName, object value)
         {
-            if (string.IsNullOrWhiteSpace(parameterName)) throw new ArgumentNullException("parameterName");
+            if (string.IsNullOrWhiteSpace(parameterName)) throw new ArgumentNullException(nameof(parameterName));
             ParameterName = parameterName;
             Value = value;
         }
@@ -27,15 +27,10 @@ namespace Popsql
         /// <summary>
         /// Returns the expression type of this expression.
         /// </summary>
-        public override sealed SqlExpressionType ExpressionType
-        {
-            get
-            {
-                return SqlExpressionType.Parameter;
-            }
-        }
+        public override sealed SqlExpressionType ExpressionType 
+			=> SqlExpressionType.Parameter;
 
-        /// <summary>
+		/// <summary>
         /// Gets the parameter name name of this <see cref="SqlParameter"/>.
         /// </summary>
         public string ParameterName

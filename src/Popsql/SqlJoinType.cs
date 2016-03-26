@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Popsql
+﻿namespace Popsql
 {
     /// <summary>
     /// Describes the join types for a SQL JOIN clause.

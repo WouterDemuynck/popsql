@@ -49,6 +49,8 @@
 		Insert,
 		Update,
 		From,
-		Assign
+		Assign,
+		Where,
+		OrderBy
 	}
 }

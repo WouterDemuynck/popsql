@@ -12,8 +12,6 @@ namespace Popsql.Text
 	{
 		private TextWriter _writer;
 		private readonly bool _canDisposeWriter;
-		private readonly SqlDialect _dialect;
-		private readonly SqlWriterSettings _settings;
 		private bool _isDisposed;
 		private bool _hasPendingSpace;
 
@@ -102,8 +100,8 @@ namespace Popsql.Text
 
 			_writer = new StringWriter(builder, CultureInfo.InvariantCulture);
 			_canDisposeWriter = true;
-			_dialect = dialect;
-			_settings = settings;
+			Dialect = dialect;
+			Settings = settings;
 		}
 
 		/// <summary>
@@ -186,8 +184,8 @@ namespace Popsql.Text
 
 			_writer = writer;
 			_canDisposeWriter = false;
-			_dialect = dialect;
-			_settings = settings;
+			Dialect = dialect;
+			Settings = settings;
 		}
 
 		/// <summary>
@@ -203,10 +201,7 @@ namespace Popsql.Text
 		/// </summary>
 		protected SqlDialect Dialect
 		{
-			get
-			{
-				return _dialect;
-			}
+			get;
 		}
 
 		/// <summary>
@@ -214,10 +209,7 @@ namespace Popsql.Text
 		/// </summary>
 		protected SqlWriterSettings Settings
 		{
-			get
-			{
-				return _settings;
-			}
+			get;
 		}
 
 		/// <summary>

@@ -39,12 +39,7 @@ namespace Popsql
 		/// <summary>
 		/// Gets the expression type of this expression.
 		/// </summary>
-		public override SqlExpressionType ExpressionType
-		{
-			get
-			{
-				return SqlExpressionType.Function;
-			}
-		}
+		public override SqlExpressionType ExpressionType 
+			=> SqlExpressionType.Function;
 	}
 }

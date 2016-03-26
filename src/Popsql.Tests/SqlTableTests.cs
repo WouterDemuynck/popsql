@@ -45,7 +45,7 @@ namespace Popsql.Tests
 		public void ExpressionType_ReturnsTable()
 		{
 			var table = new SqlTable("[dbo].[Users]");
-			Assert.Equal(SqlExpressionType.Column, table.ExpressionType);
+			Assert.Equal(SqlExpressionType.Table, table.ExpressionType);
 		}
 
 		[Fact]

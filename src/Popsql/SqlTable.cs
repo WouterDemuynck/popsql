@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Popsql
 {
 	/// <summary> 
 	/// Represents a table in a SQL statement. 
 	/// </summary> 
-	public class SqlTable : SqlExpression
+	public class SqlTable : SqlTableExpression
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlTable"/> class using the
@@ -42,11 +39,11 @@ namespace Popsql
 		/// an empty string, or a string containing only white-space characters.
 		/// </exception>
 		public SqlTable(SqlIdentifier tableName, string alias)
+			: base(alias)
 		{
-			if (tableName == null) throw new ArgumentNullException("tableName");
+			if (tableName == null) throw new ArgumentNullException(nameof(tableName));
 
 			TableName = tableName;
-			Alias = alias;
 		}
 
 		/// <summary>
@@ -55,27 +52,6 @@ namespace Popsql
 		public SqlIdentifier TableName
 		{
 			get;
-			private set;
-		}
-
-		/// <summary>
-		/// Gets the alias used for the table.
-		/// </summary>
-		public string Alias
-		{
-			get;
-			private set;
-		}
-
-		/// <summary>
-		/// Gets the expression type of this expression.
-		/// </summary>
-		public override SqlExpressionType ExpressionType
-		{
-			get
-			{
-				return SqlExpressionType.Column;
-			}
 		}
 
 		/// <summary> 

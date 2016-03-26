@@ -16,10 +16,7 @@ namespace Popsql.Tests
 		[Fact]
 		public void Ctor_WithColumns_SetsColumnsProperty()
 		{
-			var columns = new List<SqlColumn>();
-			columns.Add("Id");
-			columns.Add("Name");
-			columns.Add("Email");
+			var columns = new List<SqlColumn> { "Id", "Name", "Email" };
 			var query = new SqlSelect(columns);
 
 			Assert.NotNull(query.Select);
@@ -33,12 +30,18 @@ namespace Popsql.Tests
 		public void From_WithNullTable_ThrowsArgumentNull()
 		{
 			var select = Sql.Select("Id", "Name");
-			Assert.Throws<ArgumentNullException>(() => select.From(null));
+			Assert.Throws<ArgumentNullException>(() => select.From((SqlTable) null));
 		}
 
+		[Fact]
+		public void From_WithNullSubquery_ThrowsArgumentNull()
+		{
+			var select = Sql.Select("Id", "Name");
+			Assert.Throws<ArgumentNullException>(() => select.From((SqlSubquery) null));
+		}
 
 		[Fact]
-		public void From_WithTable_SetsTableProperty()
+		public void From_WithTable_SetsFromProperty()
 		{
 			var select = Sql
 				.Select("Id", "Name")
@@ -46,7 +49,27 @@ namespace Popsql.Tests
 				.Go();
 
 			Assert.NotNull(select.From);
-			Assert.Equal("Users", select.From.TableName.Segments.First());
+			Assert.IsType<SqlTable>(select.From);
+			Assert.Equal("Users", ((SqlTable)select.From).TableName.Segments.Single());
+		}
+
+
+		[Fact]
+		public void From_WithSubQuery_SetsFromProperty()
+		{
+			var subquery = Sql
+				.Select()
+				.From("Users")
+				.Go() + "u";
+
+			var select = Sql
+				.Select("Id", "Name")
+				.From(subquery)
+				.Go();
+
+			Assert.NotNull(select.From);
+			Assert.IsType<SqlSubquery>(select.From);
+			Assert.Same(subquery, select.From);
 		}
 
 		[Fact]
@@ -256,6 +279,7 @@ namespace Popsql.Tests
 			Assert.Same(column, sort.Column);
 			Assert.Equal(SqlSortOrder.Descending, sort.SortOrder);
 		}
+
 		[Fact]
 		public void OrderBy_WithSortExpression_AddsSorting()
 		{
@@ -263,6 +287,40 @@ namespace Popsql.Tests
 			SqlSelect select = Sql
 				.Select("Id", "Name")
 				.From("User")
+				.OrderBy(column + SqlSortOrder.Descending)
+				.Go();
+
+			Assert.Equal(1, select.OrderBy.Count);
+			var sort = select.OrderBy.First();
+			Assert.Same(column, sort.Column);
+			Assert.Equal(SqlSortOrder.Descending, sort.SortOrder);
+		}
+
+		[Fact]
+		public void OrderBy_WithWhereClauesAndWithColumnAndSortOrder_AddsSorting()
+		{
+			SqlColumn column = "dbo.Users.CreatedOn";
+			SqlSelect select = Sql
+				.Select("Id", "Name")
+				.From("User")
+				.Where(SqlExpression.Equal("Id", 8))
+				.OrderBy(column, SqlSortOrder.Descending)
+				.Go();
+
+			Assert.Equal(1, select.OrderBy.Count);
+			var sort = select.OrderBy.First();
+			Assert.Same(column, sort.Column);
+			Assert.Equal(SqlSortOrder.Descending, sort.SortOrder);
+		}
+
+		[Fact]
+		public void OrderBy_WithWhereClauesAndSortExpression_AddsSorting()
+		{
+			SqlColumn column = "dbo.Users.CreatedOn";
+			SqlSelect select = Sql
+				.Select("Id", "Name")
+				.From("User")
+				.Where(SqlExpression.Equal("Id", 8))
 				.OrderBy(column + SqlSortOrder.Descending)
 				.Go();
 

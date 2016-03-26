@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Popsql
 {
@@ -38,9 +35,7 @@ namespace Popsql
         /// <summary>
         /// Returns the expression type of this expression.
         /// </summary>
-        public override SqlExpressionType ExpressionType
-        {
-            get { return SqlExpressionType.Assign; }
-        }
+        public override SqlExpressionType ExpressionType 
+			=> SqlExpressionType.Assign;
     }
 }

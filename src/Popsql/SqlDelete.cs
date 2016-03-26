@@ -5,13 +5,8 @@ namespace Popsql
 {
 	public class SqlDelete : SqlStatement, ISqlDeleteClause, ISqlDeleteFromClause<SqlDelete>, ISqlWhereClause<SqlDelete>
 	{
-		public override SqlExpressionType ExpressionType
-		{
-			get
-			{
-				return SqlExpressionType.Delete;
-			}
-		}
+		public override SqlExpressionType ExpressionType 
+			=> SqlExpressionType.Delete;
 
 		public SqlTable From
 		{
