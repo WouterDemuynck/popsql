@@ -78,6 +78,8 @@
     <Compile Include="SqlIdentifier.cs" />
     <Compile Include="SqlIdentifierParser.cs" />
     <Compile Include="SqlInsert.cs" />
+    <Compile Include="SqlInsert.InsertClause.cs" />
+    <Compile Include="SqlInsert.ValuesClass.cs" />
     <Compile Include="SqlJoin.cs" />
     <Compile Include="SqlJoinType.cs" />
     <Compile Include="SqlOrderBy.cs" />
@@ -104,6 +106,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SqlDelete.DeleteClause.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="SqlInsert.IntoClause.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

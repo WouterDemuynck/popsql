@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Popsql.Grammar;
+﻿using System.Collections.Generic;
 
 namespace Popsql
 {
 	/// <summary>
 	/// Represents a SQL INSERT INTO statement.
 	/// </summary>
-	public class SqlInsert : SqlStatement, ISqlInsertClause, ISqlValuesClause
+	public partial class SqlInsert : SqlStatement
 	{
 		private List<IEnumerable<SqlValue>> _values;
 
@@ -57,36 +54,5 @@ namespace Popsql
 		/// </summary>
 		public override SqlExpressionType ExpressionType 
 			=> SqlExpressionType.Insert;
-
-		ISqlIntoClause ISqlInsertClause.Into(SqlTable table)
-		{
-			if (table == null) throw new ArgumentNullException(nameof(table));
-			Into = table;
-			return this;
-		}
-
-		ISqlIntoClause ISqlInsertClause.Into(SqlTable table, params SqlColumn[] columns)
-		{
-			if (table == null) throw new ArgumentNullException(nameof(table));
-			Into = table;
-			Columns = columns;
-			return this;
-		}
-
-		ISqlValuesClause ISqlIntoClause.Values(params SqlValue[] values)
-		{
-			if (values == null || !values.Any()) throw new ArgumentNullException(nameof(values));
-			if (_values == null)
-			{
-				_values = new List<IEnumerable<SqlValue>>();
-			}
-			_values.Add(values);
-			return this;
-		}
-
-		SqlInsert ISqlGo<SqlInsert>.Go()
-		{
-			return this;
-		}
 	}
 }
