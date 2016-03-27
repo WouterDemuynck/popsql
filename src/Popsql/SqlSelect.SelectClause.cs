@@ -6,12 +6,12 @@ namespace Popsql
 	{
 		ISqlSelectFromClause ISqlSelectClause.From(SqlTable table)
 		{
-			return new SqlSelectFrom(this, table);
+			return new FromClause(this, table);
 		}
 
 		ISqlSelectFromClause ISqlSelectClause.From(SqlSubquery query)
 		{
-			return new SqlSelectFrom(this, query);
+			return new FromClause(this, query);
 		}
 	}
 }

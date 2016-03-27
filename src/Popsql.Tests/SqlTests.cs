@@ -16,5 +16,28 @@ namespace Popsql.Tests
 				.OrderBy(users + "Name")
 				.Go();
 		}
+
+		public void Delete_WithRealLifeQuery_ReturnsQuery()
+		{
+			SqlTable users = "User";
+
+			var query = Sql
+				.Delete()
+				.From(users)
+				.Where(SqlExpression.Equal(users + "Id", 5))
+				.Go();
+		}
+
+		public void Insert_WithRealLifeQuery_ReturnsQuery()
+		{
+			SqlTable users = "User";
+
+			var query = Sql
+				.Insert()
+				.Into(users, users + "Name", users + "Email")
+				.Values("John Doe", "john.doe@ac.edu")
+				.Go();
+
+		}
 	}
 }

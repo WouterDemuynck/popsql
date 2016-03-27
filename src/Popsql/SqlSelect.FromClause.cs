@@ -6,16 +6,16 @@ namespace Popsql
 {
 	public partial class SqlSelect
 	{
-		private class SqlSelectFrom : SqlFrom<SqlSelect>, ISqlSelectFromClause
+		private class FromClause : SqlFrom<SqlSelect>, ISqlSelectFromClause
 		{
-			public SqlSelectFrom(SqlSelect parent, SqlTable table)
+			public FromClause(SqlSelect parent, SqlTable table)
 				: base(parent)
 			{
 				if (table == null) throw new ArgumentNullException(nameof(table));
 				Parent.From = table;
 			}
 
-			public SqlSelectFrom(SqlSelect parent, SqlSubquery query)
+			public FromClause(SqlSelect parent, SqlSubquery query)
 				: base(parent)
 			{
 				if (query == null) throw new ArgumentNullException(nameof(query));
