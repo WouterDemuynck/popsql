@@ -79,7 +79,7 @@
     <Compile Include="SqlIdentifierParser.cs" />
     <Compile Include="SqlInsert.cs" />
     <Compile Include="SqlInsert.InsertClause.cs" />
-    <Compile Include="SqlInsert.ValuesClass.cs" />
+    <Compile Include="SqlInsert.ValuesClause.cs" />
     <Compile Include="SqlJoin.cs" />
     <Compile Include="SqlJoinType.cs" />
     <Compile Include="SqlOrderBy.cs" />

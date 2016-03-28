@@ -95,6 +95,5 @@ namespace Popsql
 			}
 			return new SqlColumn(identifier, null);
 		}
-
 	}
 }
