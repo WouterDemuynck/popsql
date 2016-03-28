@@ -7,7 +7,7 @@ namespace Popsql
 	/// <summary>
 	/// Represents a SQL UPDATE statement.
 	/// </summary>
-	public class SqlUpdate : SqlStatement, ISqlSetClause, ISqlWhereClause<SqlUpdate>
+	public partial class SqlUpdate : SqlStatement
 	{
 		private List<SqlAssign> _values;
 
@@ -56,29 +56,5 @@ namespace Popsql
 		/// </summary>
 		public override SqlExpressionType ExpressionType 
 			=> SqlExpressionType.Update;
-
-		ISqlSetClause ISqlUpdateClause.Set(SqlColumn column, SqlValue value)
-		{
-			if (column == null) throw new ArgumentNullException(nameof(column));
-			if (value == null) value = SqlConstant.Null;
-
-			if (_values == null)
-			{
-				_values = new List<SqlAssign>();
-			}
-			_values.Add(new SqlAssign(column, value));
-			return this;
-		}
-
-		ISqlWhereClause<SqlUpdate> ISqlSetClause.Where(SqlExpression predicate)
-		{
-			Where = predicate;
-			return this;
-		}
-
-		SqlUpdate ISqlGo<SqlUpdate>.Go()
-		{
-			return this;
-		}
 	}
 }
