@@ -12,7 +12,7 @@ namespace Popsql
 		where TParent : SqlStatement
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SqlFrom"/> class using the
+		/// Initializes a new instance of the <see cref="SqlFrom{TParent}"/> class using the
 		/// specified <paramref name="parent"/>.
 		/// </summary>
 		/// <param name="parent">

@@ -3,7 +3,7 @@ using System;
 namespace Popsql.Grammar
 {
 	/// <summary>
-	/// Provides grammar for the SQL INSERT INTO clause.
+	/// Provides the grammar for the SQL INSERT INTO clause.
 	/// </summary>
 	public interface ISqlIntoClause
 	{

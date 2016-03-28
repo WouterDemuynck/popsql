@@ -1,7 +1,7 @@
 namespace Popsql.Grammar
 {
 	/// <summary>
-	/// Provides grammar for the SQL DELETE FROM clause.
+	/// Provides the grammar for the SQL DELETE FROM clause.
 	/// </summary>
 	public interface ISqlDeleteFromClause : ISqlFromClause<SqlDelete>
 	{
