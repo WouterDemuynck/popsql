@@ -1,15 +1,28 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Popsql.Grammar;
 
 namespace Popsql
 {
-	public partial class SqlDelete : ISqlDeleteClause
+	public partial class SqlDelete
 	{
-		ISqlDeleteFromClause ISqlDeleteClause.From(SqlTable table)
+		internal class DeleteClause : SqlClause<SqlDelete>, ISqlDeleteClause
 		{
-			if (table == null) throw new ArgumentNullException(nameof(table));
-			From = table;
-			return new FromClause(this);
+			public DeleteClause() 
+				: base(new SqlDelete())
+			{
+			}
+
+			ISqlDeleteFromClause ISqlDeleteClause.From(SqlTable table)
+			{
+				if (table == null) throw new ArgumentNullException(nameof(table));
+				Parent.From = table;
+				return new FromClause(Parent);
+			}
+
+			[ExcludeFromCodeCoverage]
+			public override SqlExpressionType ExpressionType
+				=> Parent.ExpressionType;
 		}
 	}
 }

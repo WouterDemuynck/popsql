@@ -1,17 +1,34 @@
-﻿using Popsql.Grammar;
+﻿using System.Collections.Generic;
+using Popsql.Grammar;
 
 namespace Popsql
 {
-	public partial class SqlSelect : ISqlSelectClause
+	public partial class SqlSelect
 	{
-		ISqlSelectFromClause ISqlSelectClause.From(SqlTable table)
+		internal class SelectClause : SqlClause<SqlSelect>, ISqlSelectClause
 		{
-			return new FromClause(this, table);
-		}
+			public SelectClause(SqlSelect parent)
+				: base(parent)
+			{
+			}
 
-		ISqlSelectFromClause ISqlSelectClause.From(SqlSubquery query)
-		{
-			return new FromClause(this, query);
+			public SelectClause(IEnumerable<SqlColumn> columns) 
+				: base(new SqlSelect(columns))
+			{
+			}
+
+			ISqlSelectFromClause ISqlSelectClause.From(SqlTable table)
+			{
+				return new FromClause(Parent, table);
+			}
+
+			ISqlSelectFromClause ISqlSelectClause.From(SqlSubquery query)
+			{
+				return new FromClause(Parent, query);
+			}
+
+			public override SqlExpressionType ExpressionType
+				=> Parent.ExpressionType;
 		}
 	}
 }

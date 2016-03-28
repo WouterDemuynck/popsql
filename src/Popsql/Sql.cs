@@ -18,7 +18,7 @@ namespace Popsql
 		/// </returns>
 		public static ISqlSelectClause Select(params SqlColumn[] columns)
 		{
-			return new SqlSelect(columns);
+			return new SqlSelect.SelectClause(columns);
 		}
 
 		/// <summary>
@@ -29,7 +29,7 @@ namespace Popsql
 		/// </returns>
 		public static ISqlDeleteClause Delete()
 		{
-			return new SqlDelete();
+			return new SqlDelete.DeleteClause();
 		}
 
 		/// <summary>
@@ -40,7 +40,7 @@ namespace Popsql
 		/// </returns>
 		public static ISqlInsertClause Insert()
 		{
-			return new SqlInsert();
+			return new SqlInsert.InsertClause();
 		}
 
 		/// <summary>
@@ -54,7 +54,7 @@ namespace Popsql
 		/// </returns>
 		public static ISqlUpdateClause Update(SqlTable table)
 		{
-			return new SqlUpdate(table);
+			return new SqlUpdate.UpdateClause(table);
 		}
 	}
 }

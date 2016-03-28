@@ -1,23 +1,36 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Popsql.Grammar;
 
 namespace Popsql
 {
-	public partial class SqlInsert : ISqlInsertClause
+	public partial class SqlInsert
 	{
-		ISqlIntoClause ISqlInsertClause.Into(SqlTable table)
+		internal class InsertClause : SqlClause<SqlInsert>, ISqlInsertClause
 		{
-			if (table == null) throw new ArgumentNullException(nameof(table));
-			Into = table;
-			return new IntoClause(this);
-		}
+			public InsertClause()
+				: base(new SqlInsert())
+			{
+			}
 
-		ISqlIntoClause ISqlInsertClause.Into(SqlTable table, params SqlColumn[] columns)
-		{
-			if (table == null) throw new ArgumentNullException(nameof(table));
-			Into = table;
-			Columns = columns;
-			return new IntoClause(this);
+			ISqlIntoClause ISqlInsertClause.Into(SqlTable table)
+			{
+				if (table == null) throw new ArgumentNullException(nameof(table));
+				Parent.Into = table;
+				return new IntoClause(Parent);
+			}
+
+			ISqlIntoClause ISqlInsertClause.Into(SqlTable table, params SqlColumn[] columns)
+			{
+				if (table == null) throw new ArgumentNullException(nameof(table));
+				Parent.Into = table;
+				Parent.Columns = columns;
+				return new IntoClause(Parent);
+			}
+
+			[ExcludeFromCodeCoverage]
+			public override SqlExpressionType ExpressionType
+				=> Parent.ExpressionType;
 		}
 	}
 }
