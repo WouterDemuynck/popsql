@@ -37,7 +37,17 @@ namespace Popsql.Tests
 				.Into(users, users + "Name", users + "Email")
 				.Values("John Doe", "john.doe@ac.edu")
 				.Go();
+		}
+		public void Update_WithRealLifeQuery_ReturnsQuery()
+		{
+			SqlTable users = "User";
 
+			var query = Sql
+				.Update(users)
+				.Set(users + "Name", "John Doe")
+				.Set(users + "Email", "john.doe@ac.edu")
+				.Where(SqlExpression.Equal(users + "Id", 5))
+				.Go();
 		}
 	}
 }
