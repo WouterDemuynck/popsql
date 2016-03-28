@@ -9,9 +9,10 @@ namespace Popsql
 	{
 		private class SetClause : SqlClause<SqlUpdate>, ISqlSetClause
 		{
-			public SetClause(SqlUpdate parent) 
+			public SetClause(SqlUpdate parent, SqlColumn column, SqlValue value) 
 				: base(parent)
 			{
+				((ISqlUpdateClause)this).Set(column, value);
 			}
 
 			ISqlSetClause ISqlUpdateClause.Set(SqlColumn column, SqlValue value)

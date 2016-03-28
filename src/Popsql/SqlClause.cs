@@ -9,6 +9,7 @@ namespace Popsql
 	/// The type of the parent SQL statement to which this clause belongs.
 	/// </typeparam>
 	public abstract class SqlClause<TParent> : SqlExpression
+		where TParent : SqlStatement
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlClause{TParent}"/> class using
