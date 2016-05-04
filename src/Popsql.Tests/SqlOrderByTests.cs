@@ -8,7 +8,7 @@ namespace Popsql.Tests
 		[Fact]
 		public void ExpressionType_ReturnsOrderBy()
 		{
-			var orderBy = new SqlOrderBy<SqlSelect>(new SqlSelect(Enumerable.Empty<SqlColumn>()));
+			var orderBy = new SqlOrderBy();
 			Assert.Equal(SqlExpressionType.OrderBy, orderBy.ExpressionType);
 		}
 	}

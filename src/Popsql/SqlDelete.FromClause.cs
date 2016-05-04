@@ -4,7 +4,7 @@ namespace Popsql
 {
 	public partial class SqlDelete
 	{
-		private class FromClause : SqlFrom<SqlDelete>, ISqlDeleteFromClause
+		private class FromClause : OwnedBy<SqlDelete>, ISqlDeleteFromClause
 		{
 			public FromClause(SqlDelete parent) 
 				: base(parent)
@@ -13,7 +13,7 @@ namespace Popsql
 
 			ISqlWhereClause<SqlDelete> ISqlDeleteFromClause.Where(SqlExpression predicate)
 			{
-				Parent.Where = predicate;
+				Parent.Where = new SqlWhere(predicate);
 				return new WhereClause(Parent, predicate);
 			}
 

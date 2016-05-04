@@ -1,4 +1,5 @@
 ﻿using System;
+using Popsql.Visitors;
 
 namespace Popsql
 {
@@ -12,7 +13,7 @@ namespace Popsql
             if (table == null) throw new ArgumentNullException(nameof(table));
             Type = type;
             Table = table;
-            Predicate = predicate;
+            On = new SqlOn(predicate);
         }
 
 	    /// <summary>
@@ -34,7 +35,7 @@ namespace Popsql
 	    /// <summary>
 	    /// Gets the predicate used for determining which rows are joined by this SQL JOIN expression.
 	    /// </summary>
-	    public SqlExpression Predicate
+	    public SqlOn On
 	    {
 		    get;
 	    }
@@ -44,5 +45,13 @@ namespace Popsql
         /// </summary>
         public override SqlExpressionType ExpressionType 
 			=> SqlExpressionType.Join;
+
+	    public override void Accept(ISqlVisitor visitor)
+	    {
+		    base.Accept(visitor);
+
+			Table?.Accept(visitor);
+			On?.Accept(visitor);
+	    }
     }
 }

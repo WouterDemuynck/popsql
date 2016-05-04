@@ -30,7 +30,7 @@ namespace Popsql.Tests
 				.Go();
 
 			Assert.NotNull(insert.Into);
-			Assert.Equal("Users", insert.Into.TableName.Segments.First());
+			Assert.Equal("Users", ((SqlTable)insert.Into.Table).TableName.Segments.First());
 		}
 
 		[Fact]

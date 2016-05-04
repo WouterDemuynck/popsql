@@ -6,20 +6,20 @@ namespace Popsql
 {
 	public partial class SqlSelect
 	{
-		private class FromClause : SqlFrom<SqlSelect>, ISqlSelectFromClause
+		private class FromClause : OwnedBy<SqlSelect>, ISqlSelectFromClause
 		{
 			public FromClause(SqlSelect parent, SqlTable table)
 				: base(parent)
 			{
 				if (table == null) throw new ArgumentNullException(nameof(table));
-				Parent.From = table;
+				Parent.From = new SqlFrom(table);
 			}
 
 			public FromClause(SqlSelect parent, SqlSubquery query)
 				: base(parent)
 			{
 				if (query == null) throw new ArgumentNullException(nameof(query));
-				Parent.From = query;
+				Parent.From = new SqlFrom(query);
 			}
 
 			ISqlOrderByClause<SqlSelect> ISqlOrderByClause<SqlSelect>.OrderBy(SqlColumn column, SqlSortOrder sortOrder)

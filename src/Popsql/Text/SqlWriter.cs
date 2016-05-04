@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -218,11 +219,183 @@ namespace Popsql.Text
 		/// <param name="keyword">
 		/// The <see cref="SqlKeyword"/> to write to the output stream.
 		/// </param>
-		protected void WriteKeyword(SqlKeyword keyword)
+		public void WriteKeyword(SqlKeyword keyword)
 		{
+			EnsureNotDisposed();
 			Write(Settings.WriteKeywordsInLowerCase 
 				? keyword.Keyword.ToLowerInvariant() 
 				: keyword.Keyword.ToUpperInvariant());
+		}
+
+		/// <summary>
+		/// Writes the specified <paramref name="identifier"/> to the output stream.
+		/// </summary>
+		/// <param name="identifier">
+		/// The <see cref="SqlIdentifier"/> to write to the output stream.
+		/// </param>
+		public void WriteIdentifier(SqlIdentifier identifier)
+		{
+			EnsureNotDisposed();
+			if (identifier == null) throw new ArgumentNullException(nameof(identifier));
+
+			for (int index = 0; index < identifier.Segments.Length; index++)
+			{
+				var segment = identifier.Segments[index];
+				if (index > 0)
+				{
+					WriteRaw(".");
+					WriteRaw(Dialect.FormatTableName(segment));
+				}
+				else
+				{
+					Write(Dialect.FormatTableName(segment));
+				}
+			}
+		}
+
+		/// <summary>
+		/// Writes the specified operator to the output stream.
+		/// </summary>
+		/// <param name="operator">
+		/// The operator to write to the output stream.
+		/// </param>
+		public void WriteOperator(SqlBinaryOperator @operator)
+		{
+			EnsureNotDisposed();
+
+			switch (@operator)
+			{
+				case SqlBinaryOperator.And:
+					Write("AND");
+					break;
+
+				case SqlBinaryOperator.Equal:
+					Write("=");
+					break;
+
+				case SqlBinaryOperator.GreaterThan:
+					Write(">");
+					break;
+
+				case SqlBinaryOperator.GreaterThanOrEqual:
+					Write(">=");
+					break;
+
+				case SqlBinaryOperator.LessThan:
+					Write("<");
+					break;
+
+				case SqlBinaryOperator.LessThanOrEqual:
+					Write("<=");
+					break;
+
+				case SqlBinaryOperator.Like:
+					Write("LIKE");
+					break;
+
+				case SqlBinaryOperator.NotEqual:
+					Write("<>");
+					break;
+
+				case SqlBinaryOperator.Or:
+					Write("OR");
+					break;
+
+				default:
+					throw new InvalidEnumArgumentException(nameof(@operator), (int)@operator, typeof(SqlBinaryOperator));
+			}
+		}
+
+		/// <summary>
+		/// Writes the specified sort order to the output stream.
+		/// </summary>
+		/// <param name="sortOrder">
+		/// The sort order to write to the output stream.
+		/// </param>
+		public void WriteSortOrder(SqlSortOrder sortOrder)
+		{
+			EnsureNotDisposed();
+			switch (sortOrder)
+			{
+				case SqlSortOrder.Ascending:
+					if (Settings.WriteAscendingSortOrder)
+					{
+						WriteKeyword(SqlKeywords.Ascending);
+					}
+					break;
+
+				case SqlSortOrder.Descending:
+					WriteKeyword(SqlKeywords.Descending);
+					break;
+
+				default:
+					throw new InvalidEnumArgumentException(nameof(sortOrder), (int)sortOrder, typeof(SqlBinaryOperator));
+			}
+		}
+
+		/// <summary>
+		/// Writes the specified SQL value to the output stream.
+		/// </summary>
+		/// <param name="value">
+		/// The value to write to the output stream.
+		/// </param>
+		public void WriteValue(object value)
+		{
+			EnsureNotDisposed();
+
+			if (value == null)
+			{
+				Write(SqlNull);
+				return;
+			}
+
+			switch (Type.GetTypeCode(value.GetType()))
+			{
+				case TypeCode.String:
+				case TypeCode.Char:
+					Write(Dialect.FormatString(Convert.ToString(value, CultureInfo.InvariantCulture)));
+					break;
+
+				case TypeCode.Byte:
+				case TypeCode.Int16:
+				case TypeCode.Int32:
+				case TypeCode.Int64:
+				case TypeCode.SByte:
+				case TypeCode.UInt16:
+				case TypeCode.UInt32:
+				case TypeCode.UInt64:
+					Write(Convert.ToString(value, CultureInfo.InvariantCulture));
+					break;
+
+				case TypeCode.Single:
+				case TypeCode.Double:
+				case TypeCode.Decimal:
+					Write(Convert.ToString(value, CultureInfo.InvariantCulture));
+					break;
+
+				default:
+					Write(Dialect.FormatString(Convert.ToString(value, CultureInfo.InvariantCulture)));
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Writes an opening parenthesis to the output stream.
+		/// </summary>
+		public void WriteOpenParenthesis()
+		{
+			EnsureNotDisposed();
+			Write("(");
+			_hasPendingSpace = false;
+		}
+
+		/// <summary>
+		/// Writes an closing parenthesis to the output stream.
+		/// </summary>
+		public void WriteCloseParenthesis()
+		{
+			EnsureNotDisposed();
+			WriteRaw(")");
 		}
 
 		/// <summary>
@@ -233,6 +406,7 @@ namespace Popsql.Text
 		/// </param>
 		protected void Write(string value)
 		{
+			EnsureNotDisposed();
 			if (_hasPendingSpace)
 			{
 				WriteRaw(" ");
@@ -249,8 +423,9 @@ namespace Popsql.Text
 		/// <param name="value">
 		/// The <see cref="String"/> to write to the output stream.
 		/// </param>
-		protected void WriteRaw(string value)
+		public void WriteRaw(string value)
 		{
+			EnsureNotDisposed();
 			_writer.Write(value);
 		}
 

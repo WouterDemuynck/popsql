@@ -24,5 +24,17 @@
 			get;
 			set;
 		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether or not ascending sort order (ASC) is explicitly written.
+		/// </summary>
+		/// <value>
+		/// <see langword="true"/> to explicitly write ascending sort order (ASC); otherwise <see langword="false"/>
+		/// </value>
+		public bool WriteAscendingSortOrder
+		{
+			get;
+			set;
+		}
 	}
 }

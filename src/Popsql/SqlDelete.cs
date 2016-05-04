@@ -1,5 +1,6 @@
 ﻿using System;
 using Popsql.Grammar;
+using Popsql.Visitors;
 
 namespace Popsql
 {
@@ -24,7 +25,7 @@ namespace Popsql
 		/// <summary>
 		/// Gets the table from which to delete rows.
 		/// </summary>
-		public SqlTable From
+		public SqlFrom From
 		{
 			get;
 			private set;
@@ -33,10 +34,18 @@ namespace Popsql
 		/// <summary>
 		/// Gets the predicate determining which rows are deleted by this SQL DELETE statement.
 		/// </summary>
-		public SqlExpression Where
+		public SqlWhere Where
 		{
 			get;
 			private set;
+		}
+
+		public override void Accept(ISqlVisitor visitor)
+		{
+			base.Accept(visitor);
+
+			From?.Accept(visitor);
+			Where?.Accept(visitor);
 		}
 	}
 }

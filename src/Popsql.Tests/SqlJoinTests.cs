@@ -20,8 +20,9 @@ namespace Popsql.Tests
 
 			Assert.NotNull(expression.Table);
 			Assert.Same(table, expression.Table);
-			Assert.NotNull(expression.Predicate);
-			Assert.Same(predicate, expression.Predicate);
+			Assert.NotNull(expression.On);
+			Assert.NotNull(expression.On.Predicate);
+			Assert.Same(predicate, expression.On.Predicate);
 			Assert.Equal(SqlJoinType.Left, expression.Type);
 		}
 

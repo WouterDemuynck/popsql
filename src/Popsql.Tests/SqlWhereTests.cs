@@ -8,7 +8,7 @@ namespace Popsql.Tests
 		[Fact]
 		public void ExpressionType_ReturnsWhere()
 		{
-			var where = new SqlWhere<SqlSelect>(new SqlSelect(Enumerable.Empty<SqlColumn>()));
+			var where = new SqlWhere(SqlExpression.Equal("Id", 5));
 			Assert.Equal(SqlExpressionType.Where, where.ExpressionType);
 		} 
 	}

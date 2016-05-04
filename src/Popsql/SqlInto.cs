@@ -4,21 +4,21 @@ using Popsql.Visitors;
 namespace Popsql
 {
 	/// <summary>
-	/// Represents a SQL FROM statement beloning to a specific SQL statement.
+	/// Represents a SQL INTO clause of a SQL INSERT statement.
 	/// </summary>
-	public class SqlFrom : SqlClause
+	public class SqlInto : SqlClause
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SqlFrom"/> class.
+		/// Initializes a new instance of the <see cref="SqlInto"/> class.
 		/// </summary>
-		public SqlFrom(SqlTableExpression table)
+		public SqlInto(SqlTableExpression table)
 		{
 			if (table == null) throw new ArgumentNullException(nameof(table));
 			Table = table;
 		}
 
 		/// <summary>
-		/// Gets the <see cref="SqlTableExpression"/> from which rows are selected.
+		/// Gets the <see cref="SqlTableExpression"/> into which rows are inserted.
 		/// </summary>
 		public SqlTableExpression Table
 		{
@@ -29,7 +29,7 @@ namespace Popsql
 		/// Gets the expression type of this expression.
 		/// </summary>
 		public override SqlExpressionType ExpressionType 
-			=> SqlExpressionType.From;
+			=> SqlExpressionType.Into;
 
 		public override void Accept(ISqlVisitor visitor)
 		{

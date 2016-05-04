@@ -1,4 +1,5 @@
 ﻿using System;
+using Popsql.Visitors;
 
 namespace Popsql
 {
@@ -37,5 +38,13 @@ namespace Popsql
         /// </summary>
         public override SqlExpressionType ExpressionType 
 			=> SqlExpressionType.Sort;
+
+		public override void Accept(ISqlVisitor visitor)
+		{
+			base.Accept(visitor);
+
+			Column?.Accept(visitor);
+			SortOrder.Accept(visitor);
+		}
     }
 }

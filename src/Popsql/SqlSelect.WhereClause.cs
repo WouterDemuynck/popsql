@@ -4,12 +4,12 @@ namespace Popsql
 {
 	public partial class SqlSelect
 	{
-		private class WhereClause : SqlWhere<SqlSelect>, ISqlSelectWhereClause
+		private class WhereClause : OwnedBy<SqlSelect>, ISqlSelectWhereClause
 		{
 			public WhereClause(SqlSelect parent, SqlExpression predicate) 
 				: base(parent)
 			{
-				Parent.Where = predicate;
+				Parent.Where = new SqlWhere(predicate);
 			}
 
 			public ISqlOrderByClause<SqlSelect> OrderBy(SqlSort sortExpression)

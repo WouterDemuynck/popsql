@@ -7,7 +7,7 @@ namespace Popsql
 {
 	public partial class SqlUpdate
 	{
-		private class WhereClause : SqlWhere<SqlUpdate>, ISqlWhereClause<SqlUpdate>
+		private class WhereClause : OwnedBy<SqlUpdate>, ISqlWhereClause<SqlUpdate>
 		{
 			public WhereClause(SqlUpdate parent) 
 				: base(parent)

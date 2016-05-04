@@ -76,6 +76,26 @@
 		/// <summary>
 		/// Represents a UNION operator in SQL.
 		/// </summary>
-		Union
+		Union,
+		/// <summary>
+		/// Represents a SQL subquery in SQL.
+		/// </summary>
+		Subquery,
+		/// <summary>
+		/// Represents a SQL JOIN ON clause.
+		/// </summary>
+		On,
+		/// <summary>
+		/// Represents a SQL INSERT INTO clause.
+		/// </summary>
+		Into,
+		/// <summary>
+		/// Represents a SQL UPDATE SET clause.
+		/// </summary>
+		Set,
+		/// <summary>
+		/// Represents a SQL INSERT VALUES clause.
+		/// </summary>
+		Values
 	}
 }

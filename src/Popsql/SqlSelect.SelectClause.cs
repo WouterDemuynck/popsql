@@ -6,7 +6,7 @@ namespace Popsql
 {
 	public partial class SqlSelect
 	{
-		internal class SelectClause : SqlClause<SqlSelect>, ISqlSelectClause
+		internal class SelectClause : OwnedBy<SqlSelect>, ISqlSelectClause
 		{
 			public SelectClause(IEnumerable<SqlColumn> columns) 
 				: base(new SqlSelect(columns))
@@ -22,10 +22,6 @@ namespace Popsql
 			{
 				return new FromClause(Parent, query);
 			}
-
-			[ExcludeFromCodeCoverage]
-			public override SqlExpressionType ExpressionType
-				=> Parent.ExpressionType;
 		}
 	}
 }

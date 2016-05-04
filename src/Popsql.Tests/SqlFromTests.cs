@@ -8,13 +8,12 @@ namespace Popsql.Tests
 		[Fact]
 		public void ExpressionType_ReturnsFrom()
 		{
-			var parent = new SqlSelect(Enumerable.Empty<SqlColumn>());
-			var from = new TestSqlFrom(parent);
+			var from = new SqlFrom((SqlTable)"Users");
 
 			Assert.Equal(SqlExpressionType.From, from.ExpressionType);
 		}
 
-		private class TestSqlFrom : SqlFrom<SqlSelect>
+		private class TestSqlFrom : OwnedBy<SqlSelect>
 		{
 			public TestSqlFrom(SqlSelect parent)
 				: base(parent)

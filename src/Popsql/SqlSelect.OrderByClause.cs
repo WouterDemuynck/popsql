@@ -6,7 +6,7 @@ namespace Popsql
 {
 	public partial class SqlSelect
 	{
-		private class OrderByClause : SqlOrderBy<SqlSelect>, ISqlOrderByClause<SqlSelect>
+		private class OrderByClause : OwnedBy<SqlSelect>, ISqlOrderByClause<SqlSelect>
 		{
 			public OrderByClause(SqlSelect parent, SqlColumn column, SqlSortOrder sortOrder)
 				: base(parent)
@@ -24,11 +24,7 @@ namespace Popsql
 			{
 				if (column == null) throw new ArgumentNullException(nameof(column));
 
-				if (Parent._orderBy == null)
-				{
-					Parent._orderBy = new List<SqlSort>();
-				}
-				Parent._orderBy.Add(column + sortOrder);
+				Parent.OrderBy.Add(column + sortOrder);
 				return this;
 			}
 
@@ -36,11 +32,7 @@ namespace Popsql
 			{
 				if (sortExpression == null) throw new ArgumentNullException(nameof(sortExpression));
 
-				if (Parent._orderBy == null)
-				{
-					Parent._orderBy = new List<SqlSort>();
-				}
-				Parent._orderBy.Add(sortExpression);
+				Parent.OrderBy.Add(sortExpression);
 				return this;
 			}
 

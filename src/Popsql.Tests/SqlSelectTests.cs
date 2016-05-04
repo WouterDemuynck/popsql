@@ -49,8 +49,8 @@ namespace Popsql.Tests
 				.Go();
 
 			Assert.NotNull(select.From);
-			Assert.IsType<SqlTable>(select.From);
-			Assert.Equal("Users", ((SqlTable)select.From).TableName.Segments.Single());
+			Assert.IsType<SqlTable>(select.From.Table);
+			Assert.Equal("Users", ((SqlTable)select.From.Table).TableName.Segments.Single());
 		}
 
 
@@ -68,8 +68,9 @@ namespace Popsql.Tests
 				.Go();
 
 			Assert.NotNull(select.From);
-			Assert.IsType<SqlSubquery>(select.From);
-			Assert.Same(subquery, select.From);
+			Assert.NotNull(select.From.Table);
+			Assert.IsType<SqlSubquery>(select.From.Table);
+			Assert.Same(subquery, select.From.Table);
 		}
 
 		[Fact]
@@ -82,14 +83,15 @@ namespace Popsql.Tests
 				.Go();
 
 			Assert.NotNull(select.Where);
-			Assert.IsType<SqlBinaryExpression>(select.Where);
-			Assert.IsType<SqlColumn>(((SqlBinaryExpression)select.Where).Left);
-			Assert.Equal("Id", ((SqlColumn)((SqlBinaryExpression)select.Where).Left).ColumnName.Segments.First());
+			Assert.NotNull(select.Where.Predicate);
+			Assert.IsType<SqlBinaryExpression>(select.Where.Predicate);
+			Assert.IsType<SqlColumn>(((SqlBinaryExpression)select.Where.Predicate).Left);
+			Assert.Equal("Id", ((SqlColumn)((SqlBinaryExpression)select.Where.Predicate).Left).ColumnName.Segments.First());
 
-			Assert.Equal(SqlBinaryOperator.Equal, ((SqlBinaryExpression)select.Where).Operator);
+			Assert.Equal(SqlBinaryOperator.Equal, ((SqlBinaryExpression)select.Where.Predicate).Operator);
 
-			Assert.IsType<SqlConstant>(((SqlBinaryExpression)select.Where).Right);
-			Assert.Equal(5, ((SqlConstant)((SqlBinaryExpression)select.Where).Right).Value);
+			Assert.IsType<SqlConstant>(((SqlBinaryExpression)select.Where.Predicate).Right);
+			Assert.Equal(5, ((SqlConstant)((SqlBinaryExpression)select.Where.Predicate).Right).Value);
 		}
 
 		[Fact]
@@ -119,7 +121,9 @@ namespace Popsql.Tests
 			var join = select.Joins.First();
 
 			Assert.Same(profiles, join.Table);
-			Assert.Same(predicate, join.Predicate);
+			Assert.NotNull(join.On);
+			Assert.NotNull(join.On.Predicate);
+			Assert.Same(predicate, join.On.Predicate);
 			Assert.Equal(SqlJoinType.Default, join.Type);
 		}
 
@@ -149,7 +153,7 @@ namespace Popsql.Tests
 			var join = select.Joins.First();
 
 			Assert.Same(profiles, join.Table);
-			Assert.Same(predicate, join.Predicate);
+			Assert.Same(predicate, join.On.Predicate);
 			Assert.Equal(SqlJoinType.Inner, join.Type);
 		}
 
@@ -179,7 +183,9 @@ namespace Popsql.Tests
 			var join = select.Joins.First();
 
 			Assert.Same(profiles, join.Table);
-			Assert.Same(predicate, join.Predicate);
+			Assert.NotNull(join.On);
+			Assert.NotNull(join.On.Predicate);
+			Assert.Same(predicate, join.On.Predicate);
 			Assert.Equal(SqlJoinType.Left, join.Type);
 		}
 
@@ -209,7 +215,9 @@ namespace Popsql.Tests
 			var join = select.Joins.First();
 
 			Assert.Same(profiles, join.Table);
-			Assert.Same(predicate, join.Predicate);
+			Assert.NotNull(join.On);
+			Assert.NotNull(join.On.Predicate);
+			Assert.Same(predicate, join.On.Predicate);
 			Assert.Equal(SqlJoinType.Right, join.Type);
 		}
 
@@ -230,12 +238,16 @@ namespace Popsql.Tests
 			Assert.Equal(2, select.Joins.Count());
 			var join = select.Joins.First();
 			Assert.Same(profiles, join.Table);
-			Assert.Same(profilesPredicate, join.Predicate);
+			Assert.NotNull(join.On);
+			Assert.NotNull(join.On.Predicate);
+			Assert.Same(profilesPredicate, join.On.Predicate);
 			Assert.Equal(SqlJoinType.Left, join.Type);
 
 			join = select.Joins.Last();
 			Assert.Same(addresses, join.Table);
-			Assert.Same(addressesPredicate, join.Predicate);
+			Assert.NotNull(join.On);
+			Assert.NotNull(join.On.Predicate);
+			Assert.Same(addressesPredicate, join.On.Predicate);
 			Assert.Equal(SqlJoinType.Left, join.Type);
 		}
 

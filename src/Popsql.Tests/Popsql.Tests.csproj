@@ -73,7 +73,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlAssignTests.cs" />
     <Compile Include="SqlBinaryExpressionTests.cs" />
-    <Compile Include="SqlClauseTests.cs" />
     <Compile Include="SqlConstantTests.cs" />
     <Compile Include="SqlDeleteTests.cs" />
     <Compile Include="SqlExpressionTests.cs" />

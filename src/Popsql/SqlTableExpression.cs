@@ -1,4 +1,6 @@
-﻿namespace Popsql
+﻿using Popsql.Visitors;
+
+namespace Popsql
 {
 	/// <summary>
 	/// Represents a SQL table expression.

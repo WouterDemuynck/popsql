@@ -54,5 +54,20 @@
 		{
 			return "[" + columnName + "]";
 		}
+
+		/// <summary>
+		/// Formats the specified string for the current SQL dialect. The default implementation 
+		/// returns the table name enclosed in single quotes.
+		/// </summary>
+		/// <param name="value">
+		/// The SQL string to format.
+		/// </param>
+		/// <returns>
+		/// The formatted SQL string.
+		/// </returns>
+		public virtual string FormatString(string value)
+		{
+			return "'" + value + "'";
+		}
 	}
 }

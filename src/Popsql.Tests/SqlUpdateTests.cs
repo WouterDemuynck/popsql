@@ -42,9 +42,9 @@ namespace Popsql.Tests
 				.Set("Name", null)
 				.Go();
 
-			Assert.NotNull(update.Values);
-			Assert.Equal(1, update.Values.Count());
-			Assert.Same(SqlConstant.Null, update.Values.Single().Value);
+			Assert.NotNull(update.Set);
+			Assert.Equal(1, update.Set.Count());
+			Assert.Same(SqlConstant.Null, update.Set.Single().Value);
 			
 		}
 
@@ -56,9 +56,9 @@ namespace Popsql.Tests
 				.Set("Name", "Joan Doe")
 				.Go();
 
-			Assert.Equal(1, update.Values.Count());
-			Assert.Equal("Name", update.Values.First().Column.ColumnName.Segments.Single());
-			Assert.Equal(new SqlConstant("Joan Doe"), update.Values.First().Value);
+			Assert.Equal(1, update.Set.Count());
+			Assert.Equal("Name", update.Set.First().Column.ColumnName.Segments.Single());
+			Assert.Equal(new SqlConstant("Joan Doe"), update.Set.First().Value);
 		}
 
 		[Fact]
@@ -98,21 +98,22 @@ namespace Popsql.Tests
 				.Go();
 
 			Assert.NotNull(update.Where);
-			Assert.IsType<SqlBinaryExpression>(update.Where);
-			Assert.IsType<SqlColumn>(((SqlBinaryExpression)update.Where).Left);
-			Assert.Equal("Id", ((SqlColumn)((SqlBinaryExpression)update.Where).Left).ColumnName.Segments.First());
+			Assert.NotNull(update.Where.Predicate);
+			Assert.IsType<SqlBinaryExpression>(update.Where.Predicate);
+			Assert.IsType<SqlColumn>(((SqlBinaryExpression)update.Where.Predicate).Left);
+			Assert.Equal("Id", ((SqlColumn)((SqlBinaryExpression)update.Where.Predicate).Left).ColumnName.Segments.First());
 
-			Assert.Equal(SqlBinaryOperator.Equal, ((SqlBinaryExpression)update.Where).Operator);
+			Assert.Equal(SqlBinaryOperator.Equal, ((SqlBinaryExpression)update.Where.Predicate).Operator);
 
-			Assert.IsType<SqlConstant>(((SqlBinaryExpression)update.Where).Right);
-			Assert.Equal(5, ((SqlConstant)((SqlBinaryExpression)update.Where).Right).Value);
+			Assert.IsType<SqlConstant>(((SqlBinaryExpression)update.Where.Predicate).Right);
+			Assert.Equal(5, ((SqlConstant)((SqlBinaryExpression)update.Where.Predicate).Right).Value);
 		}
 
 		[Fact]
 		public void Values_IsNotNullWhenFirstCalled()
 		{
 			var update = new SqlUpdate("Users");
-			Assert.NotNull(update.Values);
+			Assert.NotNull(update.Set);
 		}
 
 		[Fact]

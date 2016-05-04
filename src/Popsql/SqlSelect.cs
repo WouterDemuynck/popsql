@@ -9,7 +9,7 @@ namespace Popsql
 	public partial class SqlSelect : SqlStatement
 	{
 		private List<SqlJoin> _joins;
-		private List<SqlSort> _orderBy;
+		private SqlOrderBy _orderBy;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlSelect"/> class using the
@@ -39,7 +39,7 @@ namespace Popsql
 		/// <summary>
 		/// Gets the table from which rows are selected by this SQL SELECT statement.
 		/// </summary>
-		public SqlTableExpression From
+		public SqlFrom From
 		{
 			get;
 			private set;
@@ -54,7 +54,7 @@ namespace Popsql
 		/// <summary>
 		/// Gets the predicate determining which rows are selected by this SQL SELECT statement.
 		/// </summary>
-		public SqlExpression Where
+		public SqlWhere Where
 		{
 			get;
 			private set;
@@ -63,8 +63,8 @@ namespace Popsql
 		/// <summary>
 		/// Gets the collection of sorting clauses determining the result ordering of this SQL SELECT statement.
 		/// </summary>
-		public IReadOnlyCollection<SqlSort> OrderBy 
-			=> _orderBy ?? (_orderBy = new List<SqlSort>());
+		public SqlOrderBy OrderBy
+			=> _orderBy = (_orderBy ?? new SqlOrderBy());
 
 		/// <summary>
 		/// Gets the expression type of this expression.

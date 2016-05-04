@@ -1,4 +1,5 @@
 ﻿using System;
+using Popsql.Visitors;
 
 namespace Popsql
 {
@@ -61,5 +62,13 @@ namespace Popsql
             get;
             private set;
         }
+
+		public override void Accept(ISqlVisitor visitor)
+		{
+			base.Accept(visitor);
+			Left?.Accept(visitor);
+			Operator.Accept(visitor);
+			Right.Accept(visitor);
+		}
     }
 }

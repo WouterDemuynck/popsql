@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using Popsql.Grammar;
+using Popsql.Visitors;
 
 namespace Popsql
 {
@@ -9,7 +8,7 @@ namespace Popsql
 	/// </summary>
 	public partial class SqlUpdate : SqlStatement
 	{
-		private List<SqlAssign> _values;
+		private SqlSet _set;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlUpdate"/> class using
@@ -33,19 +32,18 @@ namespace Popsql
 		public SqlTable Table
 		{
 			get;
-			private set;
 		}
 
 		/// <summary>
 		/// Gets the values assigned by this <see cref="SqlUpdate"/>.
 		/// </summary>
-		public IEnumerable<SqlAssign> Values 
-			=> _values ?? (_values = new List<SqlAssign>());
+		public SqlSet Set
+			=> _set = (_set ?? new SqlSet());
 
 		/// <summary>
 		/// Gets the predicate determining which rows are updated by this SQL UPDATE statement.
 		/// </summary>
-		public SqlExpression Where
+		public SqlWhere Where
 		{
 			get;
 			private set;
@@ -56,5 +54,14 @@ namespace Popsql
 		/// </summary>
 		public override SqlExpressionType ExpressionType 
 			=> SqlExpressionType.Update;
+
+		public override void Accept(ISqlVisitor visitor)
+		{
+			base.Accept(visitor);
+
+			Table?.Accept(visitor);
+			Set?.Accept(visitor);
+			Where?.Accept(visitor);
+		}
 	}
 }

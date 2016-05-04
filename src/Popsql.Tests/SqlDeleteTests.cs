@@ -30,7 +30,7 @@ namespace Popsql.Tests
 				.Go();
 
 			Assert.NotNull(delete.From);
-			Assert.Equal("Users", delete.From.TableName.Segments.First());
+			Assert.Equal("Users", ((SqlTable)delete.From.Table).TableName.Segments.First());
 		}
 
 		[Fact]
@@ -43,14 +43,15 @@ namespace Popsql.Tests
 				.Go();
 
 			Assert.NotNull(delete.Where);
-			Assert.IsType<SqlBinaryExpression>(delete.Where);
-			Assert.IsType<SqlColumn>(((SqlBinaryExpression)delete.Where).Left);
-			Assert.Equal("Id", ((SqlColumn)((SqlBinaryExpression)delete.Where).Left).ColumnName.Segments.First());
+			Assert.NotNull(delete.Where.Predicate);
+			Assert.IsType<SqlBinaryExpression>(delete.Where.Predicate);
+			Assert.IsType<SqlColumn>(((SqlBinaryExpression)delete.Where.Predicate).Left);
+			Assert.Equal("Id", ((SqlColumn)((SqlBinaryExpression)delete.Where.Predicate).Left).ColumnName.Segments.First());
 
-			Assert.Equal(SqlBinaryOperator.Equal, ((SqlBinaryExpression)delete.Where).Operator);
+			Assert.Equal(SqlBinaryOperator.Equal, ((SqlBinaryExpression)delete.Where.Predicate).Operator);
 
-			Assert.IsType<SqlConstant>(((SqlBinaryExpression)delete.Where).Right);
-			Assert.Equal(5, ((SqlConstant)((SqlBinaryExpression)delete.Where).Right).Value);
+			Assert.IsType<SqlConstant>(((SqlBinaryExpression)delete.Where.Predicate).Right);
+			Assert.Equal(5, ((SqlConstant)((SqlBinaryExpression)delete.Where.Predicate).Right).Value);
 		}
 		
 		[Fact]

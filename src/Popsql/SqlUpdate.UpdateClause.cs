@@ -7,16 +7,12 @@ namespace Popsql
 {
 	public partial class SqlUpdate
 	{
-		internal class UpdateClause : SqlClause<SqlUpdate>, ISqlUpdateClause
+		internal class UpdateClause : OwnedBy<SqlUpdate>, ISqlUpdateClause
 		{
 			public UpdateClause(SqlTable table) 
 				: base(new SqlUpdate(table))
 			{
 			}
-
-			[ExcludeFromCodeCoverage]
-			public override SqlExpressionType ExpressionType
-				=> Parent.ExpressionType;
 
 			ISqlSetClause ISqlUpdateClause.Set(SqlColumn column, SqlValue value)
 			{

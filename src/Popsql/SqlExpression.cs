@@ -1,10 +1,13 @@
-﻿namespace Popsql
+﻿using System;
+using Popsql.Visitors;
+
+namespace Popsql
 {
 	/// <summary>
 	/// Provides the base class for SQL expressions and provides <see langword="static"/> factory methods
 	/// for creating specific SQL expressions.
 	/// </summary>
-	public abstract class SqlExpression
+	public abstract class SqlExpression : ISqlVisitable
 	{
 		/// <summary>
 		/// Creates a <see cref="SqlBinaryExpression"/> that represents an equality comparison.
@@ -34,6 +37,12 @@
 		public abstract SqlExpressionType ExpressionType
 		{
 			get;
+		}
+
+		public virtual void Accept(ISqlVisitor visitor)
+		{
+			if (visitor == null) throw new ArgumentNullException(nameof(visitor));
+			visitor.Visit(this);
 		}
 	}
 }

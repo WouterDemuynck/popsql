@@ -1,29 +1,30 @@
 using System;
+using Popsql.Visitors;
 
 namespace Popsql
 {
 	/// <summary>
 	/// Represents a SQL WHERE statement beloning to a specific SQL statement.
 	/// </summary>
-	/// <typeparam name="TParent">
-	/// The type of <see cref="SqlStatement"/> that is the parent of this clause.
-	/// </typeparam>
-	public class SqlWhere<TParent> : SqlClause<TParent> 
-		where TParent : SqlStatement
+	public class SqlWhere : SqlClause
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SqlWhere{TParent}"/> class
+		/// Initializes a new instance of the <see cref="SqlWhere"/> class
 		/// using the specified parent statement.
 		/// </summary>
-		/// <param name="parent">
-		/// The <see cref="SqlStatement"/> to which this clause belongs.
-		/// </param>
-		/// <exception cref="ArgumentNullException">
-		/// Thrown when the <paramref name="parent"/> argument is <see langword="null"/>.
-		/// </exception>
-		public SqlWhere(TParent parent) 
-			: base(parent)
+		public SqlWhere(SqlExpression predicate)
 		{
+			if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+			Predicate = predicate;
+		}
+
+		/// <summary>
+		/// Gets the predicate this SQL WHERE clause uses.
+		/// </summary>
+		public SqlExpression Predicate
+		{
+			get;
+			private set;
 		}
 
 		/// <summary>
@@ -31,5 +32,11 @@ namespace Popsql
 		/// </summary>
 		public override SqlExpressionType ExpressionType 
 			=> SqlExpressionType.Where;
+
+		public override void Accept(ISqlVisitor visitor)
+		{
+			base.Accept(visitor);
+			Predicate?.Accept(visitor);
+		}
 	}
 }

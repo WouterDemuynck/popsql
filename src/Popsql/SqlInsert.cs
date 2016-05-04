@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Popsql.Visitors;
 
 namespace Popsql
 {
@@ -7,7 +8,7 @@ namespace Popsql
 	/// </summary>
 	public partial class SqlInsert : SqlStatement
 	{
-		private List<IEnumerable<SqlValue>> _values;
+		private SqlValues _values;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlInsert"/> class.
@@ -19,7 +20,7 @@ namespace Popsql
 		/// <summary>
 		/// Gets the table into which this <see cref="SqlInsert" /> inserts rows.
 		/// </summary>
-		public SqlTable Into
+		public SqlInto Into
 		{
 			get;
 			private set;
@@ -37,22 +38,22 @@ namespace Popsql
 		/// <summary>
 		/// Gets the collection of values to be inserted by this <see cref="SqlInsert"/>.
 		/// </summary>
-		public IEnumerable<IEnumerable<SqlValue>> Values
-		{
-			get
-			{
-				if (_values == null)
-				{
-					_values = new List<IEnumerable<SqlValue>>();
-				}
-				return _values.ToArray();
-			}
-		}
+		public SqlValues Values
+			=> _values = (_values ?? new SqlValues());
 
 		/// <summary>
 		/// Returns the expression type of this expression.
 		/// </summary>
 		public override SqlExpressionType ExpressionType 
 			=> SqlExpressionType.Insert;
+
+		public override void Accept(ISqlVisitor visitor)
+		{
+			base.Accept(visitor);
+
+			Into?.Accept(visitor);
+			Columns?.Accept(visitor);
+			Values?.Accept(visitor);
+		}
 	}
 }
