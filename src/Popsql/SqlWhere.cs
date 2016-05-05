@@ -36,7 +36,7 @@ namespace Popsql
 		public override void Accept(ISqlVisitor visitor)
 		{
 			base.Accept(visitor);
-			Predicate?.Accept(visitor);
+			Predicate.Accept(visitor);
 		}
 	}
 }

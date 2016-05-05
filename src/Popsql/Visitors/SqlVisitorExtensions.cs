@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Popsql.Visitors
 {
-	public static class VisitorExtensions
+	public static class SqlVisitorExtensions
 	{
 		public static void Accept(this IEnumerable<SqlColumn> source, ISqlVisitor visitor)
 		{

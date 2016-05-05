@@ -77,5 +77,17 @@
 		/// Represents the SQL INSERT VALUES keyword.
 		/// </summary>
 		public static readonly SqlKeyword Values = "VALUES";
+		/// <summary>
+		/// Represents the SQL AND keyword.
+		/// </summary>
+		public static readonly SqlKeyword And = "AND";
+		/// <summary>
+		/// Represents the SQL LIKE keyword.
+		/// </summary>
+		public static readonly SqlKeyword Like = "LIKE";
+		/// <summary>
+		/// Represents the SQL OR keyword.
+		/// </summary>
+		public static readonly SqlKeyword Or = "OR";
 	}
 }

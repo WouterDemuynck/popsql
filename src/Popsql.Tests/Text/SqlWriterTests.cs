@@ -1,6 +1,8 @@
 ﻿using Popsql.Text;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -38,55 +40,6 @@ namespace Popsql.Tests.Text
 			Assert.Same(settings, writer.SettingsTest);
 		}
 
-		private class TestSqlWriter : SqlWriter
-		{
-			public TestSqlWriter(StringBuilder builder) 
-				: base(builder)
-			{
-			}
-
-			public TestSqlWriter(StringBuilder builder, SqlDialect dialect) 
-				: base(builder, dialect)
-			{
-			}
-
-			public TestSqlWriter(StringBuilder builder, SqlWriterSettings settings) 
-				: base(builder, settings)
-			{
-			}
-
-			public TestSqlWriter(TextWriter writer, SqlWriterSettings settings) 
-				: base(writer, settings)
-			{
-			}
-
-			public SqlDialect DialectTest 
-				=> Dialect;
-
-			public SqlWriterSettings SettingsTest 
-				=> Settings;
-
-			public void WriteKeywordTest(SqlKeyword keyword)
-			{
-				WriteKeyword(keyword);
-			}
-
-			public void WriteTest(string value)
-			{
-				Write(value);
-			}
-
-			public void WriteRawTest(string value)
-			{
-				WriteRaw(value);
-			}
-
-			public void EnsureNotDisposedTest()
-			{
-				EnsureNotDisposed();
-			}
-		}
-
 		[Fact]
 		public void Ctor_WithTextWriterAndNullDialect_ThrowsArgumentNull()
 		{
@@ -110,12 +63,117 @@ namespace Popsql.Tests.Text
 		}
 
 		[Fact]
+		public void WriteSortOrder_WithInvalidSortOrder_ThrowsInvalidEnumArgument()
+		{
+			Assert.Throws<InvalidEnumArgumentException>(() =>
+			{
+				var builder = new StringBuilder();
+				using (var writer = new SqlWriter(builder))
+				{
+					writer.WriteSortOrder((SqlSortOrder)int.MaxValue);
+				}
+			});
+		}
+
+		[Fact]
+		public void WriteSortOrder_WithWriteAscendingSortOrder_WritesSortOrder()
+		{
+			var sortOrders = new[] {SqlSortOrder.Ascending, SqlSortOrder.Descending };
+			var expected = new[] { "ASC", "DESC" };
+
+			for (int index = 0; index < sortOrders.Length; index++)
+			{
+				var builder = new StringBuilder();
+				using (var writer = new SqlWriter(builder, new SqlWriterSettings { WriteAscendingSortOrder = true }))
+				{
+					writer.WriteSortOrder(sortOrders[index]);
+				}
+
+				Assert.Equal(expected[index], builder.ToString());
+			}
+		}
+
+		[Fact]
+		public void WriteSortOrder_WithoutWriteAscendingSortOrder_WritesSortOrder()
+		{
+			var sortOrders = new[] { SqlSortOrder.Ascending, SqlSortOrder.Descending };
+			var expected = new[] { "", "DESC" };
+
+			for (int index = 0; index < sortOrders.Length; index++)
+			{
+				var builder = new StringBuilder();
+				using (var writer = new SqlWriter(builder))
+				{
+					writer.WriteSortOrder(sortOrders[index]);
+				}
+
+				Assert.Equal(expected[index], builder.ToString());
+			}
+		}
+
+		[Fact]
+		public void WriteValue_WithNullValue_WritesNull()
+		{
+			var builder = new StringBuilder();
+			using (var writer = new TestSqlWriter(builder))
+			{
+				writer.WriteValue(null);
+			}
+			Assert.Equal("NULL", builder.ToString());
+		}
+
+		[Fact]
+		public void WriteValue_WithInteger_WritesInteger()
+		{
+			var builder = new StringBuilder();
+			using (var writer = new TestSqlWriter(builder))
+			{
+				writer.WriteValue(long.MaxValue);
+			}
+			Assert.Equal(long.MaxValue.ToString(CultureInfo.InvariantCulture), builder.ToString());
+		}
+
+		[Fact]
+		public void WriteValue_WithFloatingPoint_WritesFloatingPoint()
+		{
+			var builder = new StringBuilder();
+			using (var writer = new TestSqlWriter(builder))
+			{
+				writer.WriteValue(Math.PI);
+			}
+			Assert.Equal(Math.PI.ToString(CultureInfo.InvariantCulture), builder.ToString());
+		}
+
+		[Fact]
+		public void WriteValue_WithString_WritesString()
+		{
+			var builder = new StringBuilder();
+			using (var writer = new TestSqlWriter(builder))
+			{
+				writer.WriteValue("The rain in spain falls mainly on the plain.");
+			}
+			Assert.Equal("'The rain in spain falls mainly on the plain.'", builder.ToString());
+		}
+
+		[Fact]
+		public void WriteValue_WithOther_WritesDouble()
+		{
+			var value = new { id = 5 };
+			var builder = new StringBuilder();
+			using (var writer = new TestSqlWriter(builder))
+			{
+				writer.WriteValue(value);
+			}
+			Assert.Equal($"'{Convert.ToString(value, CultureInfo.InvariantCulture)}'", builder.ToString());
+		}
+
+		[Fact]
 		public void WriteKeyword_WritesKeyword()
 		{
 			var builder = new StringBuilder();
 			using (var writer = new TestSqlWriter(builder))
 			{
-				writer.WriteKeywordTest(SqlKeywords.Select);
+				writer.WriteKeyword(SqlKeywords.Select);
 			}
 			Assert.Equal("SELECT", builder.ToString());
 		}
@@ -131,10 +189,66 @@ namespace Popsql.Tests.Text
 
 			using (var writer = new TestSqlWriter(builder, settings)) 
 			{
-				writer.WriteKeywordTest(SqlKeywords.Select);
+				writer.WriteKeyword(SqlKeywords.Select);
 			}
 
 			Assert.Equal("select", builder.ToString());
+		}
+
+		[Fact]
+		public void WriteIdentifier_WithNullIdentifier_ThrowsArgumentNull()
+		{
+			Assert.Throws<ArgumentNullException>(() =>
+			{
+				var builder = new StringBuilder();
+				using (var writer = new SqlWriter(builder))
+				{
+					writer.WriteIdentifier(null);
+				}
+			});
+		}
+
+		[Fact]
+		public void WriteIdentifier_WritesIdentifier()
+		{
+			var builder = new StringBuilder();
+			using (var writer = new SqlWriter(builder))
+			{
+				writer.WriteIdentifier("Blog.dbo.User");
+			}
+
+			Assert.Equal("[Blog].[dbo].[User]", builder.ToString());
+		}
+
+		[Fact]
+		public void WriteOperator_WritesOperator()
+		{
+			var operators = new[] { SqlBinaryOperator.And, SqlBinaryOperator.Equal, SqlBinaryOperator.GreaterThan, SqlBinaryOperator.GreaterThanOrEqual, SqlBinaryOperator.LessThan, SqlBinaryOperator.LessThanOrEqual, SqlBinaryOperator.Like, SqlBinaryOperator.NotEqual, SqlBinaryOperator.Or };
+			var expected = new[] { "AND", "=", ">", ">=", "<", "<=", "LIKE", "<>", "OR" };
+
+			for (int index = 0; index < operators.Length; index++)
+			{
+				var builder = new StringBuilder();
+				using (var writer = new SqlWriter(builder))
+				{
+					writer.WriteOperator(operators[index]);
+				}
+
+				Assert.Equal(expected[index], builder.ToString());
+			}
+		}
+
+		[Fact]
+		public void WriteOperator_WithInvalidOperator_ThrowsInvalidEnumArgument()
+		{
+			Assert.Throws<InvalidEnumArgumentException>(() =>
+			{
+				var builder = new StringBuilder();
+				using (var writer = new SqlWriter(builder))
+				{
+					writer.WriteOperator((SqlBinaryOperator)int.MaxValue);
+				}
+			});
 		}
 
 		[Fact]
@@ -228,6 +342,49 @@ namespace Popsql.Tests.Text
 			var writer = new SqlWriter(new StringBuilder());
 			writer.Dispose();
 			writer.Dispose();
+		}
+		private class TestSqlWriter : SqlWriter
+		{
+			public TestSqlWriter(StringBuilder builder)
+				: base(builder)
+			{
+			}
+
+			public TestSqlWriter(StringBuilder builder, SqlDialect dialect)
+				: base(builder, dialect)
+			{
+			}
+
+			public TestSqlWriter(StringBuilder builder, SqlWriterSettings settings)
+				: base(builder, settings)
+			{
+			}
+
+			public TestSqlWriter(TextWriter writer, SqlWriterSettings settings)
+				: base(writer, settings)
+			{
+			}
+
+			public SqlDialect DialectTest
+				=> Dialect;
+
+			public SqlWriterSettings SettingsTest
+				=> Settings;
+
+			public void WriteTest(string value)
+			{
+				Write(value);
+			}
+
+			public void WriteRawTest(string value)
+			{
+				WriteRaw(value);
+			}
+
+			public void EnsureNotDisposedTest()
+			{
+				EnsureNotDisposed();
+			}
 		}
 	}
 }

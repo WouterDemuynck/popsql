@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Moq;
+using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoMoq;
+using Popsql.Visitors;
 using Xunit;
 
 namespace Popsql.Tests
@@ -130,6 +134,42 @@ namespace Popsql.Tests
 			var query = new SqlInsert();
 
 			Assert.Equal(SqlExpressionType.Insert, query.ExpressionType);
+		}
+
+		[Fact]
+		public void Accept_WithoutInto_VisitsEverything()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+
+			var query = new SqlInsert();
+
+			query.Accept(mock.Object);
+
+			mock.Verify(_ => _.Visit(It.IsAny<SqlInsert>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlInto>()), Times.Never);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlColumn>()), Times.Never);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlValues>()), Times.Once);
+		}
+
+		[Fact]
+		public void Accept_WithColumns_VisitsEverything()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+
+			var query = Sql
+				.Insert()
+				.Into("User")
+				.Values(1)
+				.Go();
+
+			query.Accept(mock.Object);
+
+			mock.Verify(_ => _.Visit(It.IsAny<SqlInsert>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlInto>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlColumn>()), Times.Never);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlValues>()), Times.Once);
 		}
 	}
 }

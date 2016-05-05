@@ -81,9 +81,9 @@ namespace Popsql.Visitors
 					Visit((SqlTable)expression);
 					break;
 
-				case SqlExpressionType.Union:
-					// TODO: Union not supported yet.
-					break;
+				// TODO: Union not supported yet.
+				//case SqlExpressionType.Union:
+				//break;
 
 				case SqlExpressionType.Update:
 					Visit((SqlUpdate)expression);

@@ -7,6 +7,7 @@ TestResults
 
 # Visual Studio User Data
 *.suo
+*.user
 
 # NuGet Stuff
 NuGet.exe

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Popsql.Grammar;
 using Popsql.Text;
@@ -95,7 +96,6 @@ namespace Popsql
 
 			public SqlWriterVisitor(SqlWriter writer)
 			{
-				if (writer == null) throw new ArgumentNullException(nameof(writer));
 				_writer = writer;
 			}
 
@@ -107,6 +107,18 @@ namespace Popsql
 			public override void Visit(SqlDelete expression)
 			{
 				_writer.WriteKeyword(SqlKeywords.Delete);
+			}
+
+			public override void Visit(SqlSubquery expression)
+			{
+				// TODO: This is weird and should actually be handled in SqlSubquery.Accept().
+				_writer.WriteOpenParenthesis();
+				expression.Query.Accept(this);
+				_writer.WriteCloseParenthesis();
+				if (expression.Alias != null)
+				{
+					_writer.WriteIdentifier(expression.Alias);
+				}
 			}
 
 			public override void Visit(SqlTable expression)
@@ -175,7 +187,7 @@ namespace Popsql
 			public override void Visit(IEnumerable<SqlColumn> expressions)
 			{
 				_writer.WriteOpenParenthesis();
-				expressions?.For(
+				expressions.For(
 					(index, expression) =>
 					{
 						if (index > 0) _writer.WriteRaw(",");
@@ -191,7 +203,7 @@ namespace Popsql
 
 			public override void Visit(IEnumerable<SqlValue> expressions)
 			{
-				expressions?.For(
+				expressions.For(
 					(index, expression) =>
 					{
 						if (index > 0) _writer.WriteRaw(",");
@@ -201,7 +213,7 @@ namespace Popsql
 
 			public override void Visit(IEnumerable<SqlSort> expressions)
 			{
-				expressions?.For(
+				expressions.For(
 					(index, expression) =>
 					{
 						if (index > 0) _writer.WriteRaw(",");
@@ -211,7 +223,7 @@ namespace Popsql
 
 			public override void Visit(IEnumerable<SqlAssign> expressions)
 			{
-				expressions?.For(
+				expressions.For(
 					(index, expression) =>
 					{
 						if (index > 0) _writer.WriteRaw(",");
@@ -221,7 +233,7 @@ namespace Popsql
 
 			public override void Visit(IEnumerable<IEnumerable<SqlValue>> expressions)
 			{
-				expressions?.For(
+				expressions.For(
 					(index, expression) =>
 					{
 						if (index > 0) _writer.WriteRaw(",");
@@ -254,10 +266,15 @@ namespace Popsql
 			public override void Visit(SqlBinaryExpression expression)
 			{
 				bool useParentheses = expression.Operator == SqlBinaryOperator.And ||
-				                      expression.Operator == SqlBinaryOperator.Or;
+									  expression.Operator == SqlBinaryOperator.Or;
 
+				// TODO: The accept code should be in the class itself.
 				if (useParentheses) _writer.WriteOpenParenthesis();
-				base.Visit(expression);
+				expression.Left.Accept(this);
+				if (useParentheses) _writer.WriteCloseParenthesis();
+				expression.Operator.Accept(this);
+				if (useParentheses) _writer.WriteOpenParenthesis();
+				expression.Right.Accept(this);
 				if (useParentheses) _writer.WriteCloseParenthesis();
 			}
 

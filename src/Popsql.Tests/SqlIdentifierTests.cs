@@ -115,5 +115,62 @@ namespace Popsql.Tests
 			Assert.Equal("[dbo]", identifier.Segments[1]);
 			Assert.Equal("\"Users\"", identifier.Segments[2]);
 		}
+
+		[Fact]
+		public void GetHashCode_WithEqualArgument_ReturnsSameHashCode()
+		{
+			int expected = new SqlIdentifier("[a].[ab].[abc]").GetHashCode();
+			int actual = new SqlIdentifier("a.ab.abc").GetHashCode();
+			
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		public void GetHashCode_WithDifferentArgument_ReturnsDifferentHashCode()
+		{
+			int expected = new SqlIdentifier("[a].[ab]").GetHashCode();
+			int actual = new SqlIdentifier("a.ab.abc").GetHashCode();
+
+			Assert.NotEqual(expected, actual);
+		}
+
+		[Fact]
+		public void Equals_WithNullArgument_ReturnsFalse()
+		{
+			SqlIdentifier first = new SqlIdentifier("a.ab");
+
+			Assert.False(first.Equals((object)null));
+			Assert.False(first.Equals((SqlIdentifier)null));
+		}
+
+		[Fact]
+		public void Equals_WithDifferentArgument_ReturnsFalse()
+		{
+			SqlIdentifier first = new SqlIdentifier("a.ab");
+			SqlIdentifier second = new SqlIdentifier("b.ab");
+
+			Assert.False(first.Equals(second));
+			Assert.False(first.Equals((object)second));
+		}
+
+		[Fact]
+		public void Equals_WithEqualArgument_ReturnsTrue()
+		{
+			int expected = new SqlIdentifier("[a].[ab].[abc]").GetHashCode();
+			int actual = new SqlIdentifier("a.ab.abc").GetHashCode();
+
+			Assert.True(expected.Equals(actual));
+			Assert.True(expected.Equals((object)actual));
+		}
+
+		[Fact]
+		public void Equals_WithArgumentOfDifferentType_ReturnsFalse()
+		{
+			SqlIdentifier first = new SqlIdentifier("a.ab");
+			string second = "The rain in Spain falls mainly on the plain.";
+
+			Assert.False(first.Equals(second));
+			Assert.False(first.Equals((object)second));
+		}
 	}
 }

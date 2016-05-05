@@ -20,7 +20,6 @@ namespace Popsql.Tests
 			Assert.Equal("Id", assign.Column.ColumnName.Segments.Single());
 		}
 
-
 		[Fact]
 		public void Ctor_WithValue_SetsValueProperty()
 		{
@@ -29,6 +28,16 @@ namespace Popsql.Tests
 
 			Assert.NotNull(assign.Value);
 			Assert.Equal(expected, assign.Value);
+		}
+
+		[Fact]
+		public void Ctor_WithNullValue_SetsValuePropertyToNull()
+		{
+			var expected = SqlConstant.Null;
+			var assign = new SqlAssign("Id", null);
+
+			Assert.NotNull(assign.Value);
+			Assert.Same(expected, assign.Value);
 		}
 
 		[Fact]

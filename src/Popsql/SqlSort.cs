@@ -43,7 +43,7 @@ namespace Popsql
 		{
 			base.Accept(visitor);
 
-			Column?.Accept(visitor);
+			Column.Accept(visitor);
 			SortOrder.Accept(visitor);
 		}
     }

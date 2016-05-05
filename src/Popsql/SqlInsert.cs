@@ -53,7 +53,7 @@ namespace Popsql
 
 			Into?.Accept(visitor);
 			Columns?.Accept(visitor);
-			Values?.Accept(visitor);
+			Values.Accept(visitor);
 		}
 	}
 }

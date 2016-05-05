@@ -43,7 +43,7 @@ namespace Popsql
 		{
 			base.Accept(visitor);
 
-			_assignExpressions?.Accept(visitor);
+			_assignExpressions.Accept(visitor);
 		}
 
 		internal void Add(SqlAssign assignExpression)

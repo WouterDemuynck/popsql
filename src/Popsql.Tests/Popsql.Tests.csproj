@@ -43,6 +43,18 @@
     <AssemblyOriginatorKeyFile>..\Popsql.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Moq, Version=4.2.1510.2205, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ploeh.AutoFixture, Version=3.45.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoFixture.3.45.1\lib\net40\Ploeh.AutoFixture.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ploeh.AutoFixture.AutoMoq, Version=3.45.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoFixture.AutoMoq.3.45.1\lib\net40\Ploeh.AutoFixture.AutoMoq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
@@ -70,6 +82,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="EnumerableExtensionsTests.cs" />
+    <Compile Include="OwnedByTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlAssignTests.cs" />
     <Compile Include="SqlBinaryExpressionTests.cs" />
@@ -81,22 +95,29 @@
     <Compile Include="SqlIdentifierParserTests.cs" />
     <Compile Include="SqlIdentifierTests.cs" />
     <Compile Include="SqlInsertTests.cs" />
+    <Compile Include="SqlIntoTests.cs" />
     <Compile Include="SqlJoinTests.cs" />
+    <Compile Include="SqlOnTests.cs" />
     <Compile Include="SqlOrderByTests.cs" />
     <Compile Include="SqlParameterTests.cs" />
     <Compile Include="SqlSelectTests.cs" />
     <Compile Include="SqlColumnTests.cs" />
+    <Compile Include="SqlSetTests.cs" />
     <Compile Include="SqlSortTests.cs" />
+    <Compile Include="SqlStatementExtensionsTests.cs" />
     <Compile Include="SqlSubqueryTests.cs" />
     <Compile Include="SqlTableTests.cs" />
     <Compile Include="SqlTests.cs" />
     <Compile Include="SqlUpdateTests.cs" />
+    <Compile Include="SqlValuesTests.cs" />
     <Compile Include="SqlValueTests.cs" />
     <Compile Include="SqlWhereTests.cs" />
     <Compile Include="Text\SqlKeywordTests.cs" />
     <Compile Include="Text\SqlDialectTests.cs" />
     <Compile Include="Text\SqlWriterSettingsTests.cs" />
     <Compile Include="Text\SqlWriterTests.cs" />
+    <Compile Include="Visitors\SqlVisitorExtensionsTests.cs" />
+    <Compile Include="Visitors\SqlVisitorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Popsql\Popsql.csproj">
@@ -105,6 +126,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

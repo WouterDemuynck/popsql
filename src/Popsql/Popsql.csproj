@@ -116,7 +116,7 @@
     <Compile Include="Visitors\ISqlVisitable.cs" />
     <Compile Include="Visitors\ISqlVisitor.cs" />
     <Compile Include="Visitors\SqlVisitor.cs" />
-    <Compile Include="Visitors\VisitorExtensions.cs" />
+    <Compile Include="Visitors\SqlVisitorExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SqlDelete.DeleteClause.cs" />

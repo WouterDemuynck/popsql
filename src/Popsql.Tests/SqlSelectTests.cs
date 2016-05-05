@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Moq;
+using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoMoq;
+using Popsql.Visitors;
 using Xunit;
 
 namespace Popsql.Tests
@@ -355,6 +359,28 @@ namespace Popsql.Tests
 			var query = new SqlSelect(new SqlColumn[] { "Id" });
 
 			Assert.Equal(SqlExpressionType.Select, query.ExpressionType);
+		}
+
+		[Fact]
+		public void Accept_WithoutWhere_VisitsEverything()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+
+			var query = Sql
+				.Select("Id", "Name")
+				.From("User")
+				.Go();
+
+			query.Accept(mock.Object);
+			
+			mock.Verify(_ => _.Visit(It.IsAny<SqlSelect>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlFrom>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlTable>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlColumn>()), Times.Exactly(2));
+			mock.Verify(_ => _.Visit(It.IsAny<SqlWhere>()), Times.Never);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlJoin>()), Times.Never);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlOrderBy>()), Times.Never);
 		}
 	}
 }

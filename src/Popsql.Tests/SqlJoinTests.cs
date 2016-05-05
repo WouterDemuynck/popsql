@@ -1,4 +1,6 @@
 ﻿using System;
+using Moq;
+using Popsql.Visitors;
 using Xunit;
 
 namespace Popsql.Tests

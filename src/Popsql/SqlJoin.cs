@@ -50,8 +50,8 @@ namespace Popsql
 	    {
 		    base.Accept(visitor);
 
-			Table?.Accept(visitor);
-			On?.Accept(visitor);
+			Table.Accept(visitor);
+			On.Accept(visitor);
 	    }
     }
 }

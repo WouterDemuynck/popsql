@@ -43,7 +43,7 @@ namespace Popsql
 		{
 			base.Accept(visitor);
 
-			_sortExpressions?.Accept(visitor);
+			_sortExpressions.Accept(visitor);
 		}
 
 		internal void Add(SqlSort sortExpression)

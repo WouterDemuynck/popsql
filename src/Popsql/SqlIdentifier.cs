@@ -1,11 +1,13 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Popsql
 {
 	/// <summary>
 	/// Represents a SQL identifier, e.g. a database name, a table name, a column name, ...
 	/// </summary>
-	public class SqlIdentifier : SqlExpression
+	public class SqlIdentifier : SqlExpression, IEquatable<SqlIdentifier>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlIdentifier"/> class by parsing the
@@ -39,7 +41,7 @@ namespace Popsql
 		/// <summary>
 		/// Gets the expression type of this expression.
 		/// </summary>
-		public override SqlExpressionType ExpressionType 
+		public override SqlExpressionType ExpressionType
 			=> SqlExpressionType.Identifier;
 
 		/// <summary>
@@ -48,7 +50,6 @@ namespace Popsql
 		public string[] Segments
 		{
 			get;
-			private set;
 		}
 
 		/// <summary>
@@ -63,6 +64,52 @@ namespace Popsql
 		public static implicit operator SqlIdentifier(string identifier)
 		{
 			return new SqlIdentifier(identifier);
+		}
+
+		/// <summary>
+		/// Serves as the default hash function. 
+		/// </summary>
+		/// <returns>
+		/// A hash code for the current object.
+		/// </returns>
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				return Segments.Aggregate(17, (current, segment) => current * 23 + segment.GetHashCode());
+			}
+		}
+
+		/// <summary>
+		/// Indicates whether the current object is equal to another object.
+		/// </summary>
+		/// <param name="other">
+		/// An object to compare with this object. 
+		/// </param>
+		/// <returns>
+		/// <see langword="true" /> if the current object is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false" />.
+		/// </returns>
+		public override bool Equals(object other)
+		{
+			if (other == null || GetType() != other.GetType())
+				return false;
+											  
+			return Equals((SqlIdentifier)other);
+		}
+
+		/// <summary>
+		/// Indicates whether the current object is equal to another object.
+		/// </summary>
+		/// <param name="other">
+		/// A <see cref="SqlIdentifier"/> to compare with this object. 
+		/// </param>
+		/// <returns>
+		/// <see langword="true" /> if the current object is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false" />.
+		/// </returns>
+		public bool Equals(SqlIdentifier other)
+		{
+			if (other == null) return false;
+			return Segments.SequenceEqual(other.Segments);
 		}
 	}
 }

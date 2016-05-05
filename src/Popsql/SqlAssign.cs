@@ -12,7 +12,7 @@ namespace Popsql
         {
 			if (column == null) throw new ArgumentNullException(nameof(column));
             Column = column;
-            Value = value;
+            Value = value ?? SqlConstant.Null;
         }
 
         /// <summary>
@@ -42,9 +42,9 @@ namespace Popsql
 	    public override void Accept(ISqlVisitor visitor)
 	    {
 		    base.Accept(visitor);
-			Column?.Accept(visitor);
+			Column.Accept(visitor);
 			visitor.Visit(SqlBinaryOperator.Equal);
-			Value?.Accept(visitor);
+			Value.Accept(visitor);
 	    }
     }
 }

@@ -40,10 +40,7 @@ namespace Popsql
 			private set;
 		}
 
-		public override void Accept(ISqlVisitor visitor)
-		{
-			base.Accept(visitor);
-			Query?.Accept(visitor);
-		}
+		public override SqlExpressionType ExpressionType
+			=> SqlExpressionType.Subquery;
 	}
 }

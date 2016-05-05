@@ -11,18 +11,18 @@
 		public static readonly SqlDialect Default = new SqlDialect();
 
 		/// <summary>
-		/// Formats the specified table name for the current SQL dialect. The default implementation 
-		/// returns the table name enclosed in square brackets.
+		/// Formats the specified identifier name for the current SQL dialect. The default implementation 
+		/// returns the identifier name enclosed in square brackets.
 		/// </summary>
-		/// <param name="tableName">
-		/// The table name to format.
+		/// <param name="identifier">
+		/// The identifier to format.
 		/// </param>
 		/// <returns>
-		/// The formatted table name.
+		/// The formatted SQL identifier.
 		/// </returns>
-		public virtual string FormatTableName(string tableName)
+		public virtual string FormatIdentifier(string identifier)
 		{
-			return "[" + tableName + "]";
+			return "[" + identifier + "]";
 		}
 
 		/// <summary>
@@ -38,21 +38,6 @@
 		public virtual string FormatParameterName(string parameterName)
 		{
 			return "@" + parameterName;
-		}
-
-		/// <summary>
-		/// Formats the specified column name for the current SQL dialect. The default implementation
-		/// returns the column name enclosed in square brackets.
-		/// </summary>
-		/// <param name="columnName">
-		/// The column name to format.
-		/// </param>
-		/// <returns>
-		/// The formatted column name.
-		/// </returns>
-		public virtual string FormatColumnName(string columnName)
-		{
-			return "[" + columnName + "]";
 		}
 
 		/// <summary>

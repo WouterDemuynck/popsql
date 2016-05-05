@@ -244,11 +244,11 @@ namespace Popsql.Text
 				if (index > 0)
 				{
 					WriteRaw(".");
-					WriteRaw(Dialect.FormatTableName(segment));
+					WriteRaw(Dialect.FormatIdentifier(segment));
 				}
 				else
 				{
-					Write(Dialect.FormatTableName(segment));
+					Write(Dialect.FormatIdentifier(segment));
 				}
 			}
 		}
@@ -266,7 +266,7 @@ namespace Popsql.Text
 			switch (@operator)
 			{
 				case SqlBinaryOperator.And:
-					Write("AND");
+					WriteKeyword(SqlKeywords.And);
 					break;
 
 				case SqlBinaryOperator.Equal:
@@ -290,7 +290,7 @@ namespace Popsql.Text
 					break;
 
 				case SqlBinaryOperator.Like:
-					Write("LIKE");
+					WriteKeyword(SqlKeywords.Like);
 					break;
 
 				case SqlBinaryOperator.NotEqual:
@@ -298,7 +298,7 @@ namespace Popsql.Text
 					break;
 
 				case SqlBinaryOperator.Or:
-					Write("OR");
+					WriteKeyword(SqlKeywords.Or);
 					break;
 
 				default:
@@ -404,7 +404,7 @@ namespace Popsql.Text
 		/// <param name="value">
 		/// The <see cref="String"/> to write to the output stream.
 		/// </param>
-		protected void Write(string value)
+		public void Write(string value)
 		{
 			EnsureNotDisposed();
 			if (_hasPendingSpace)
