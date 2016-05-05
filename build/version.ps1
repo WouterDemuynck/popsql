@@ -44,15 +44,16 @@ $build = Get-ScriptDirectory
 $buildTools = Join-Path $build 'BuildTools.dll'
 Add-Type -Path $buildTools
 
-
 $assemblyVersion = "$majorVersion.$minorVersion.$patchVersion"
-$assemblyFileVersion = [BuildTools.VersionNumberGenerator]::GenerateVersion(3, 0, [BuildTools.BuildNumberType]::YearMonthDay, [BuildTools.RevisionNumberType]::HourMinute, $(Get-Date -Date "2012-09-29 00:00:00Z")).ToString()
+$assemblyFileVersion = [BuildTools.VersionNumberGenerator]::GenerateVersion($majorVersion, $minorVersion, [BuildTools.BuildNumberType]::YearMonthDay, [BuildTools.RevisionNumberType]::HourMinute, $(Get-Date -Date "2012-09-29 00:00:00Z")).ToString()
 $assemblyInfoVersion = "$packageVersion"
 
+Write-Host "Assembly Version: $assemblyVersion"
+Write-Host "Assembly File Version: $assemblyFileVersion"
+Write-Host "Assembly Informational Version: $assemblyInfoVersion"
+
 foreach ($file in (Get-ChildItem -path $src -include 'AssemblyInfo.cs' -recurse))
-{
-	Write-Host "Updating  '$($o.FullName)' -> $Version"
-	
+{	
 	$assemblyVersionPattern = '(AssemblyVersion\()("[^"]*")(\))'
 	$fileVersionPattern = '(AssemblyFileVersion\()("[^"]*")(\))'
 	$assemblyInfoPattern = '(AssemblyInformationalVersion\()("[^"]*")(\))'
