@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>popsql</id>
-    <version>2.0.0-alpha</version>
+    <version>2.0.0-alpha-$commitId$</version>
     <title>Popsql</title>
     <authors>Wouter Demuynck</authors>
     <description>Popsql is a library eliminating the need for magic SQL strings in your code.</description>
