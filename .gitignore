@@ -4,3 +4,15 @@ obj
 
 # mstest test results
 TestResults
+
+# Visual Studio User Data
+*.suo
+*.user
+
+# NuGet Stuff
+NuGet.exe
+*.nupkg
+src/packages
+
+# Windows left-overs
+Thumbs.db
