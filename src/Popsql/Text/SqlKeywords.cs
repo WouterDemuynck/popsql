@@ -93,5 +93,9 @@
 		/// Represents the SQL IN keyword.
 		/// </summary>
 		public static readonly SqlKeyword In = "IN";
+		/// <summary>
+		/// Represents the SQL UNION keyword.
+		/// </summary>
+		public static readonly SqlKeyword Union = "UNION";
 	}
 }

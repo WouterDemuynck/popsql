@@ -22,6 +22,18 @@ namespace Popsql
 		}
 
 		/// <summary>
+		/// Creates a <see cref="SqlUnion"/> that combines the specified <see cref="SqlSelect"/> <paramref name="statements"/>.
+		/// </summary>
+		/// <param name="statements"></param>
+		/// <returns>
+		/// A <see cref="SqlUnion"/> that combines the specified <see cref="SqlSelect"/> <paramref name="statements"/>.
+		/// </returns>
+		public static SqlUnion Union(params SqlSelect[] statements)
+		{
+			return new SqlUnion(statements);
+		}
+
+		/// <summary>
 		/// Creates a <see cref="SqlDelete"/> that deletes rows from a table.
 		/// </summary>
 		/// <returns>

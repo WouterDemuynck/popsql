@@ -108,6 +108,7 @@
     <Compile Include="SqlSubqueryTests.cs" />
     <Compile Include="SqlTableTests.cs" />
     <Compile Include="SqlTests.cs" />
+    <Compile Include="SqlUnionTests.cs" />
     <Compile Include="SqlUpdateTests.cs" />
     <Compile Include="SqlValueListTests.cs" />
     <Compile Include="SqlValuesTests.cs" />

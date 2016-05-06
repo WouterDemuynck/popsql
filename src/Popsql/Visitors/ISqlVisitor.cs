@@ -270,5 +270,13 @@ namespace Popsql.Visitors
 		/// The expression to visit.
 		/// </param>
 		void Visit(SqlValueList expression);
+
+		/// <summary>
+		/// Visits the specified <see cref="SqlUnion"/>.
+		/// </summary>
+		/// <param name="expression">
+		/// The expression to visit.
+		/// </param>
+		void Visit(SqlUnion expression);
 	}
 }

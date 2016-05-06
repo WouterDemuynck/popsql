@@ -5,6 +5,21 @@ namespace Popsql.Tests
 	public class SqlTests
 	{
 		[Fact]
+		public void Union_WithRealLifeQuery_ReturnsQuery()
+		{
+			SqlTable suppliers = new SqlTable("Supplier", "s");
+			SqlTable customers = new SqlTable("Customer", "c");
+			var actual = Sql
+				.Union(
+					Sql.Select(suppliers + "City").From(suppliers).Go(),
+					Sql.Select(customers + "City").From(customers).Go())
+				.ToSql();
+
+			const string expected = "(SELECT [s].[City] FROM [Supplier] [s]) UNION (SELECT [c].[City] FROM [Customer] [c])";
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
 		public void Select_WithRealLifeQuery_ReturnsQuery()
 		{
 			SqlTable users = new SqlTable("User", "u");

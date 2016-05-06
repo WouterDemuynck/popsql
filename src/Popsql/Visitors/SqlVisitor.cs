@@ -85,10 +85,10 @@ namespace Popsql.Visitors
 				case SqlExpressionType.Table:
 					Visit((SqlTable)expression);
 					break;
-
-				// TODO: Union not supported yet.
-				//case SqlExpressionType.Union:
-				//break;
+					
+				case SqlExpressionType.Union:
+					Visit((SqlUnion)expression);
+				break;
 
 				case SqlExpressionType.Update:
 					Visit((SqlUpdate)expression);
@@ -117,6 +117,16 @@ namespace Popsql.Visitors
 				default:
 					throw new InvalidOperationException("Unknown type of expression found.");
 			}
+		}
+
+		/// <summary>
+		/// Visits the specified <see cref="SqlUnion"/>.
+		/// </summary>
+		/// <param name="expression">
+		/// The expression to visit.
+		/// </param>
+		public virtual void Visit(SqlUnion expression)
+		{
 		}
 
 		/// <summary>

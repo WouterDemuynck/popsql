@@ -31,6 +31,19 @@ namespace Popsql
 			if (sql == null) throw new ArgumentNullException(nameof(sql));
 			return sql.Go().ToSqlInternal();
 		}
+		/// <summary>
+		/// Converts the specified <see cref="SqlUnion"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlUnion"/> to convert to SQL text.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlUnion sql)
+		{
+			return sql.ToSqlInternal();
+		}
 
 		/// <summary>
 		/// Converts the specified <see cref="SqlSelect"/> expression tree to SQL text.
@@ -191,6 +204,18 @@ namespace Popsql
 				_writer.WriteOpenParenthesis();
 				expression.Values.Accept(this);
 				_writer.WriteCloseParenthesis();
+			}
+
+			public override void Visit(SqlUnion expression)
+			{
+				expression.Statements.For(
+					(index, statement) =>
+					{
+						if (index > 0) _writer.WriteKeyword(SqlKeywords.Union);
+						_writer.WriteOpenParenthesis();
+						statement.Accept(this);
+						_writer.WriteCloseParenthesis();
+					});
 			}
 
 			public override void Visit(SqlValues expression)

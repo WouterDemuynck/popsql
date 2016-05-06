@@ -192,6 +192,17 @@ namespace Popsql.Tests.Visitors
 		}
 
 		[Fact]
+		public void VisitExpression_WithSqlUnion_DispatchesVisit()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+			var visitor = mock.Object;
+
+			visitor.Visit((SqlExpression)new SqlUnion(new SqlSelect(new[] { new SqlColumn("City") })));
+			mock.Verify(_ => _.Visit(It.IsAny<SqlUnion>()), Times.Once);
+		}
+
+		[Fact]
 		public void VisitValue_WithSqlConstant_DispatchesVisit()
 		{
 			var fixture = new Fixture().Customize(new AutoMoqCustomization());
