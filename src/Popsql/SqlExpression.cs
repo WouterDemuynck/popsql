@@ -207,6 +207,13 @@ namespace Popsql
 			get;
 		}
 
+		/// <summary>
+		/// Accepts the specified <paramref name="visitor"/> and dispatches calls to the specific visitor
+		/// methods for this object.
+		/// </summary>
+		/// <param name="visitor">
+		/// The <see cref="ISqlVisitor" /> to visit this object with.
+		/// </param>
 		public virtual void Accept(ISqlVisitor visitor)
 		{
 			if (visitor == null) throw new ArgumentNullException(nameof(visitor));

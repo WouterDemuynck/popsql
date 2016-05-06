@@ -13,6 +13,18 @@ namespace Popsql
 	/// </summary>
 	public static class SqlStatementExtensions
 	{
+		/// <summary>
+		/// Converts the specified expression tree builder to SQL text.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of SQL statement the expression tree builder creates.
+		/// </typeparam>
+		/// <param name="sql">
+		/// An expression tree builder representing a SQL statement.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree builder.
+		/// </returns>
 		public static string ToSql<T>(this ISqlGo<T> sql)
 			where T : SqlStatement
 		{

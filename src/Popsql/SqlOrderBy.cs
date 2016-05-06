@@ -26,19 +26,41 @@ namespace Popsql
 		public override SqlExpressionType ExpressionType
 			=> SqlExpressionType.OrderBy;
 
+		/// <summary>
+		/// Returns an enumerator that iterates through the collection.
+		/// </summary>
+		/// <returns>
+		/// An enumerator that can be used to iterate through the collection.
+		/// </returns>
 		public IEnumerator<SqlSort> GetEnumerator()
 		{
 			return _sortExpressions.GetEnumerator();
 		}
 
+		/// <summary>
+		/// Returns an enumerator that iterates through the collection.
+		/// </summary>
+		/// <returns>
+		/// An enumerator that can be used to iterate through the collection.
+		/// </returns>
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
 
+		/// <summary>
+		/// Gets the number of sort expressions in this SQL ORDER BY clause.
+		/// </summary>
 		public int Count
 			=> _sortExpressions.Count;
 
+		/// <summary>
+		/// Accepts the specified <paramref name="visitor"/> and dispatches calls to the specific visitor
+		/// methods for this object.
+		/// </summary>
+		/// <param name="visitor">
+		/// The <see cref="ISqlVisitor" /> to visit this object with.
+		/// </param>
 		public override void Accept(ISqlVisitor visitor)
 		{
 			base.Accept(visitor);

@@ -40,6 +40,13 @@ namespace Popsql
 			private set;
 		}
 
+		/// <summary>
+		/// Accepts the specified <paramref name="visitor"/> and dispatches calls to the specific visitor
+		/// methods for this object.
+		/// </summary>
+		/// <param name="visitor">
+		/// The <see cref="ISqlVisitor" /> to visit this object with.
+		/// </param>
 		public override void Accept(ISqlVisitor visitor)
 		{
 			base.Accept(visitor);

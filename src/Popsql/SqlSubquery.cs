@@ -40,6 +40,9 @@ namespace Popsql
 			private set;
 		}
 
+		/// <summary>
+		/// Gets the expression type of this expression.
+		/// </summary>
 		public override SqlExpressionType ExpressionType
 			=> SqlExpressionType.Subquery;
 	}
