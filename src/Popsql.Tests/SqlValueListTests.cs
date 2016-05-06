@@ -15,7 +15,7 @@ namespace Popsql.Tests
 		[Fact]
 		public void Ctor_WithValues_SetsValuesProperty()
 		{
-			var list = new SqlValueList(Enumerable.Range(1, 6).Cast<SqlValue>());
+			var list = new SqlValueList(Enumerable.Range(1, 6).Select(i => new SqlConstant(i)));
 
 			Assert.NotNull(list.Values);
 			var values = list.Values.ToArray();
