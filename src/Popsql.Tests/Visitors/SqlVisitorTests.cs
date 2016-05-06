@@ -214,6 +214,17 @@ namespace Popsql.Tests.Visitors
 		}
 
 		[Fact]
+		public void VisitValue_WithSqlValueList_DispatchesVisit()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+			var visitor = mock.Object;
+
+			visitor.Visit((SqlValue)new SqlValueList(Enumerable.Range(1, 6).Select(i => new SqlConstant(i))));
+			mock.Verify(_ => _.Visit(It.IsAny<SqlValueList>()), Times.Once);
+		}
+
+		[Fact]
 		public void Visit_WithSqlSortOrder_DispatchesVisit()
 		{
 			var fixture = new Fixture().Customize(new AutoMoqCustomization());

@@ -89,5 +89,9 @@
 		/// Represents the SQL OR keyword.
 		/// </summary>
 		public static readonly SqlKeyword Or = "OR";
+		/// <summary>
+		/// Represents the SQL IN keyword.
+		/// </summary>
+		public static readonly SqlKeyword In = "IN";
 	}
 }

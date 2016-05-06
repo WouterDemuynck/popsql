@@ -94,6 +94,10 @@ namespace Popsql.Visitors
 					Visit((SqlUpdate)expression);
 					break;
 
+				case SqlExpressionType.ValueList:
+					Visit((SqlValueList)expression);
+					break;
+
 				case SqlExpressionType.Values:
 					Visit((SqlValues)expression);
 					break;
@@ -354,9 +358,23 @@ namespace Popsql.Visitors
 					Visit((SqlParameter)expression);
 					break;
 
+				case SqlExpressionType.ValueList:
+					Visit((SqlValueList)expression);
+					break;
+
 				default:
 					throw new InvalidOperationException("Unknown type of expression found.");
 			}
+		}
+
+		/// <summary>
+		/// Visits the specified <see cref="SqlValueList"/>.
+		/// </summary>
+		/// <param name="expression">
+		/// The expression to visit.
+		/// </param>
+		public virtual void Visit(SqlValueList expression)
+		{
 		}
 
 		/// <summary>

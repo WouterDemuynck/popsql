@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Popsql.Visitors;
 
 namespace Popsql
@@ -197,6 +198,47 @@ namespace Popsql
 		public static SqlBinaryExpression Like(SqlColumn column, SqlValue value)
 		{
 			return new SqlBinaryExpression(column, SqlBinaryOperator.Like, value ?? SqlConstant.Null);
+		}
+
+		/// <summary>
+		/// Creates a <see cref="SqlBinaryExpression"/> that represents an "in" comparison.
+		/// </summary>
+		/// <param name="column">
+		/// A <see cref="SqlColumn"/> to use as the left operand in the expression.
+		/// </param>
+		/// <param name="values">
+		/// A collection of <see cref="SqlValue"/> to use as the right operand in the expression.
+		/// </param>
+		/// <returns>
+		/// A <see cref="SqlBinaryExpression"/> that represents an "in" comparison between
+		/// the value of the specified <paramref name="column"/> and the specified collection of
+		/// <paramref name="values"/>.
+		/// </returns>
+		/// <remarks>
+		/// If you pass <see langword="null"/> for the <paramref name="values"/> argument, it
+		/// will be automatically converted to an empty collection.
+		/// </remarks>
+		public static SqlBinaryExpression In(SqlColumn column, params SqlValue[] values)
+		{
+			return new SqlBinaryExpression(column, SqlBinaryOperator.In, new SqlValueList(values ?? Enumerable.Empty<SqlValue>()));
+		}
+
+		/// <summary>
+		/// Creates a <see cref="SqlBinaryExpression"/> that represents an "in" comparison.
+		/// </summary>
+		/// <param name="column">
+		/// A <see cref="SqlColumn"/> to use as the left operand in the expression.
+		/// </param>
+		/// <param name="query">
+		/// A <see cref="SqlSubquery"/> to use as the right operand in the expression.
+		/// </param>
+		/// <returns>
+		/// A <see cref="SqlBinaryExpression"/> that represents an "in" comparison between
+		/// the value of the specified <paramref name="column"/> and the specified <paramref name="query"/>.
+		/// </returns>
+		public static SqlBinaryExpression In(SqlColumn column, SqlSubquery query)
+		{
+			return new SqlBinaryExpression(column, SqlBinaryOperator.In, query);
 		}
 
 		/// <summary>

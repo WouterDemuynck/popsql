@@ -96,6 +96,10 @@
 		/// <summary>
 		/// Represents a SQL INSERT VALUES clause.
 		/// </summary>
-		Values
+		Values,
+		/// <summary>
+		/// Represents a SQL expression list.
+		/// </summary>
+		ValueList
 	}
 }

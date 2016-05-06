@@ -19,6 +19,7 @@ namespace Popsql
 				: base(parent)
 			{
 				if (query == null) throw new ArgumentNullException(nameof(query));
+				if (query.Alias == null) throw new ArgumentException("An alias is required for subqueries in a FROM clause.", nameof(query));
 				Parent.From = new SqlFrom(query);
 			}
 

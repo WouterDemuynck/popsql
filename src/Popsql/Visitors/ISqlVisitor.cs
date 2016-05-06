@@ -262,5 +262,13 @@ namespace Popsql.Visitors
 		/// The <see cref="SqlSortOrder"/> to visit.
 		/// </param>
 		void Visit(SqlSortOrder sortOrder);
+
+		/// <summary>
+		/// Visits the specified <see cref="SqlValueList"/>.
+		/// </summary>
+		/// <param name="expression">
+		/// The expression to visit.
+		/// </param>
+		void Visit(SqlValueList expression);
 	}
 }

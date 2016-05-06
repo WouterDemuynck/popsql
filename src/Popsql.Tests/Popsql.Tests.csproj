@@ -109,6 +109,7 @@
     <Compile Include="SqlTableTests.cs" />
     <Compile Include="SqlTests.cs" />
     <Compile Include="SqlUpdateTests.cs" />
+    <Compile Include="SqlValueListTests.cs" />
     <Compile Include="SqlValuesTests.cs" />
     <Compile Include="SqlValueTests.cs" />
     <Compile Include="SqlWhereTests.cs" />

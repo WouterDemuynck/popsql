@@ -45,6 +45,14 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void From_WithNullSubquery_ThrowsArgument()
+		{
+			var select = Sql.Select("Id", "Name");
+			var subquery = new SqlSubquery(Sql.Select("Id", "Name").From("User").Go());
+			Assert.Throws<ArgumentException>(() => select.From(subquery));
+		}
+
+		[Fact]
 		public void From_WithTable_SetsFromProperty()
 		{
 			var select = Sql

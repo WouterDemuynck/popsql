@@ -132,6 +132,39 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void ToSql_WithSqlSelectWithInUsingValues_ReturnsSql()
+		{
+			const string expected = "SELECT [Id], [FirstName], [LastName], [Age] FROM [Profile] WHERE [FirstName] IN ('John', 'Joe', 'Jimmy', 'Joel')";
+			var actual = Sql
+				.Select("Id", "FirstName", "LastName", "Age")
+				.From("Profile")
+				.Where(SqlExpression.In("FirstName", "John", "Joe", "Jimmy", "Joel"))
+				.Go()
+				.ToSql();
+
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		public void ToSql_WithSqlSelectWithInUsingSubQuery_ReturnsSql()
+		{
+			const string expected = "SELECT [Id], [FirstName], [LastName], [Age] FROM [Profile] WHERE [FirstName] IN (SELECT [FirstName] FROM [Profile] WHERE [Age] >= 18)";
+			var subquery = new SqlSubquery(Sql
+				.Select("FirstName")
+				.From("Profile")
+				.Where(SqlExpression.GreaterThanOrEqual("Age", 18))
+				.Go());
+			var actual = Sql
+				.Select("Id", "FirstName", "LastName", "Age")
+				.From("Profile")
+				.Where(SqlExpression.In("FirstName", subquery))
+				.Go()
+				.ToSql();
+
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
 		public void ToSql_WithNullSqlDelete_ThrowsArgumentNull()
 		{
 			Assert.Throws<ArgumentNullException>(() => ((SqlDelete)null).ToSql());

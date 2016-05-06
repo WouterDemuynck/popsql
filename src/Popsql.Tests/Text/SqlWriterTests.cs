@@ -223,8 +223,8 @@ namespace Popsql.Tests.Text
 		[Fact]
 		public void WriteOperator_WritesOperator()
 		{
-			var operators = new[] { SqlBinaryOperator.And, SqlBinaryOperator.Equal, SqlBinaryOperator.GreaterThan, SqlBinaryOperator.GreaterThanOrEqual, SqlBinaryOperator.LessThan, SqlBinaryOperator.LessThanOrEqual, SqlBinaryOperator.Like, SqlBinaryOperator.NotEqual, SqlBinaryOperator.Or };
-			var expected = new[] { "AND", "=", ">", ">=", "<", "<=", "LIKE", "<>", "OR" };
+			var operators = new[] { SqlBinaryOperator.And, SqlBinaryOperator.Equal, SqlBinaryOperator.GreaterThan, SqlBinaryOperator.GreaterThanOrEqual, SqlBinaryOperator.LessThan, SqlBinaryOperator.LessThanOrEqual, SqlBinaryOperator.Like, SqlBinaryOperator.NotEqual, SqlBinaryOperator.Or, SqlBinaryOperator.In };
+			var expected = new[] { "AND", "=", ">", ">=", "<", "<=", "LIKE", "<>", "OR", "IN" };
 
 			for (int index = 0; index < operators.Length; index++)
 			{

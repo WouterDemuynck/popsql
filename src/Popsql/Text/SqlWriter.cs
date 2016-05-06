@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -299,6 +300,10 @@ namespace Popsql.Text
 
 				case SqlBinaryOperator.Or:
 					WriteKeyword(SqlKeywords.Or);
+					break;
+
+				case SqlBinaryOperator.In:
+					WriteKeyword(SqlKeywords.In);
 					break;
 
 				default:

@@ -9,13 +9,7 @@ namespace Popsql.Tests
 		public void Ctor_WithNullQuery_ThrowsArgumentNull()
 		{
 			Assert.Throws<ArgumentNullException>(() => new SqlSubquery(null, null));
-		}
-
-		[Fact]
-		public void Ctor_WithNullAlias_ThrowsArgumentNull()
-		{
-			var query = Sql.Select("Id", "Name").From("Users").Go();
-			Assert.Throws<ArgumentNullException>(() => new SqlSubquery(query, null));
+			Assert.Throws<ArgumentNullException>(() => new SqlSubquery(null));
 		}
 
 		[Fact]

@@ -296,39 +296,60 @@ namespace Popsql.Tests
 			Assert.Equal(5, ((SqlParameter)expression.Right).Value);
 		}
 
-		//[Fact]
-		//public void In_WithNullColumn_ThrowsArgumentNull()
-		//{
-		//	Assert.Throws<ArgumentNullException>(() => SqlExpression.In(null, null));
-		//}
+		[Fact]
+		public void In_WithNullColumn_ThrowsArgumentNull()
+		{
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.In(null, (SqlValue[])null));
+		}
 
-		//[Fact]
-		//public void In_WithNullValue_DoesNotThrow()
-		//{
-		//	var expression = SqlExpression.In("Id", null);
-		//}
+		[Fact]
+		public void In_WithNullValue_DoesNotThrow()
+		{
+			var expression = SqlExpression.In("Id", (SqlValue[])null);
+		}
 
-		//[Fact]
-		//public void In_WithColumnAndValues_ReturnsCorrectExpression()
-		//{
-		//	var expression = SqlExpression.In("Id", 1, 2, 3, 4, 5, 6);
+		[Fact]
+		public void In_WithNullSubquery_ThrowsArgumentNull()
+		{
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.In("Id", (SqlSubquery)null));
+		}
 
-		//	Assert.IsType(expression.Left, typeof(SqlColumn));
-		//	Assert.Equal("Id", ((SqlColumn)expression.Left).ColumnName);
+		[Fact]
+		public void In_WithColumnAndValues_ReturnsCorrectExpression()
+		{
+			var expression = SqlExpression.In("Id", 1, 2, 3, 4, 5, 6);
 
-		//	Assert.Equal(SqlBinaryOperator.In, expression.Operator);
+			Assert.IsType<SqlColumn>(expression.Left);
+			Assert.Equal("Id", ((SqlColumn)expression.Left).ColumnName);
 
-		//	Assert.IsType(expression.Right, typeof(SqlConstant));
-		//	Assert.IsType(((SqlConstant)expression.Right).Value, typeof(IEnumerable<SqlValue>));
+			Assert.Equal(SqlBinaryOperator.In, expression.Operator);
 
-		//	var values = ((IEnumerable<SqlValue>)((SqlConstant)expression.Right).Value).ToArray();
-		//	Assert.Equal(6, values.Length);
-		//	Assert.Equal(1, values[0]);
-		//	Assert.Equal(2, values[1]);
-		//	Assert.Equal(3, values[2]);
-		//	Assert.Equal(4, values[3]);
-		//	Assert.Equal(5, values[4]);
-		//	Assert.Equal(6, values[5]);
-		//}
+			Assert.IsType<SqlValueList>(expression.Right);
+			Assert.IsAssignableFrom<IEnumerable<SqlValue>>(((SqlValueList)expression.Right).Values);
+
+			var values = ((SqlValueList)expression.Right).Values.ToArray();
+			Assert.Equal(6, values.Length);
+			Assert.Equal(1, values[0]);
+			Assert.Equal(2, values[1]);
+			Assert.Equal(3, values[2]);
+			Assert.Equal(4, values[3]);
+			Assert.Equal(5, values[4]);
+			Assert.Equal(6, values[5]);
+		}
+
+		[Fact]
+		public void In_WithColumnAndSubquery_ReturnsCorrectExpression()
+		{
+			var subquery = new SqlSubquery(Sql.Select("Age").From("Profile").Go(), "a");
+			var expression = SqlExpression.In("Id", subquery);
+
+			Assert.IsType<SqlColumn>(expression.Left);
+			Assert.Equal("Id", ((SqlColumn)expression.Left).ColumnName);
+
+			Assert.Equal(SqlBinaryOperator.In, expression.Operator);
+
+			Assert.IsType<SqlSubquery>(expression.Right);
+			Assert.Same(subquery, expression.Right);
+		}
 	}
 }

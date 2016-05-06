@@ -186,6 +186,13 @@ namespace Popsql
 				_writer.WriteKeyword(SqlKeywords.From);
 			}
 
+			public override void Visit(SqlValueList expression)
+			{
+				_writer.WriteOpenParenthesis();
+				expression.Values.Accept(this);
+				_writer.WriteCloseParenthesis();
+			}
+
 			public override void Visit(SqlValues expression)
 			{
 				_writer.WriteKeyword(SqlKeywords.Values);
