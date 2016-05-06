@@ -385,6 +385,20 @@ namespace Popsql.Text
 		}
 
 		/// <summary>
+		/// Writes the specified SQL parameter to the output stream.
+		/// </summary>
+		/// <param name="parameterName">
+		/// The value to write to the output stream.
+		/// </param>
+		public void WriteParameter(string parameterName)
+		{
+			EnsureNotDisposed();
+
+			if (string.IsNullOrEmpty(parameterName)) throw new ArgumentNullException(nameof(parameterName));
+			Write(Dialect.FormatParameterName(parameterName));
+		}
+
+		/// <summary>
 		/// Writes an opening parenthesis to the output stream.
 		/// </summary>
 		public void WriteOpenParenthesis()
@@ -453,11 +467,6 @@ namespace Popsql.Text
 		protected virtual void Dispose(bool isDisposing)
 		{
 			if (_isDisposed) return;
-
-			if (isDisposing)
-			{
-				//_stateManager.Close();
-			}
 
 			if (_canDisposeWriter && _writer != null)
 			{

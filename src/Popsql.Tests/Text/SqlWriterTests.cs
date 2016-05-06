@@ -196,6 +196,34 @@ namespace Popsql.Tests.Text
 		}
 
 		[Fact]
+		public void WriteParameter_WithNullParameterName_ThrowsArgumentNull()
+		{
+			Assert.Throws<ArgumentNullException>(() =>
+			{
+				var builder = new StringBuilder();
+				using (var writer = new TestSqlWriter(builder))
+				{
+					writer.WriteParameter(null);
+				}
+			});
+		}
+
+
+		[Fact]
+		public void WriteParameter_WithParameterName_WritesParameter()
+		{
+			string expected;
+			var builder = new StringBuilder();
+			using (var writer = new TestSqlWriter(builder))
+			{
+				writer.WriteParameter("Id");
+				expected = writer.DialectTest.FormatParameterName("Id");
+			}
+
+			Assert.Equal(expected, builder.ToString());
+		}
+
+		[Fact]
 		public void WriteIdentifier_WithNullIdentifier_ThrowsArgumentNull()
 		{
 			Assert.Throws<ArgumentNullException>(() =>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Popsql.Grammar;
 using Popsql.Text;
@@ -11,13 +10,13 @@ namespace Popsql
 	/// <summary>
 	/// Provides extension methods for writing SQL expression trees to SQL text.
 	/// </summary>
-	public static class SqlStatementExtensions
+	public static class ToSqlExtensions
 	{
 		/// <summary>
-		/// Converts the specified expression tree builder to SQL text.
+		/// Converts the specified SQL expression tree builder to SQL text.
 		/// </summary>
 		/// <typeparam name="T">
-		/// The type of SQL statement the expression tree builder creates.
+		/// The type of SQL statement the SQL expression tree builder creates.
 		/// </typeparam>
 		/// <param name="sql">
 		/// An expression tree builder representing a SQL statement.
@@ -31,6 +30,7 @@ namespace Popsql
 			if (sql == null) throw new ArgumentNullException(nameof(sql));
 			return sql.Go().ToSqlInternal();
 		}
+
 		/// <summary>
 		/// Converts the specified <see cref="SqlUnion"/> expression tree to SQL text.
 		/// </summary>
@@ -101,14 +101,18 @@ namespace Popsql
 			return sql.ToSqlInternal();
 		}
 
-		private static string ToSqlInternal(this SqlStatement sql)
+		internal static string ToSqlInternal(this SqlStatement sql, Action<SqlParameter> onParameterVisited = null)
 		{
 			if (sql == null) throw new ArgumentNullException(nameof(sql));
 
 			StringBuilder builder = new StringBuilder();
 			using (SqlWriter writer = new SqlWriter(builder))
 			{
-				var visitor = new SqlWriterVisitor(writer);
+				var visitor = new SqlWriterVisitor(writer)
+				{
+					ParameterVisited = onParameterVisited
+				};
+
 				sql.Accept(visitor);
 			}
 
@@ -122,6 +126,18 @@ namespace Popsql
 			public SqlWriterVisitor(SqlWriter writer)
 			{
 				_writer = writer;
+			}
+
+			public Action<SqlParameter> ParameterVisited
+			{
+				get;
+				set;
+			}
+
+			public override void Visit(SqlParameter expression)
+			{
+				_writer.WriteParameter(expression.ParameterName);
+				ParameterVisited?.Invoke(expression);
 			}
 
 			public override void Visit(SqlSelect expression)

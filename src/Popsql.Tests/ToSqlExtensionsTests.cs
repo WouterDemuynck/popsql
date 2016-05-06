@@ -4,10 +4,10 @@ using Xunit;
 
 namespace Popsql.Tests
 {
-	public class SqlStatementExtensionsTests
+	public class ToSqlExtensionsTests
 	{
 		[Fact]
-		public void ToSql_WithNullGo_ThrowsArgumentNull()
+		public void ToSql_WithNullSqlGo_ThrowsArgumentNull()
 		{
 			Assert.Throws<ArgumentNullException>(() => ((ISqlGo<SqlSelect>)null).ToSql());
 		}
@@ -33,6 +33,20 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void ToSql_WithSqlSelectWithParameter_ReturnsSql()
+		{
+			const string expected = "SELECT [Id], [Name] FROM [User] WHERE [Id] = @Id";
+			var actual = Sql
+				.Select("Id", "Name")
+				.From("User")
+				.Where(SqlExpression.Equal("Id", "Id" + (SqlConstant)42))
+				.Go()
+				.ToSql();
+
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
 		public void ToSql_WithSqlSelectWithoutWhere_ReturnsSql()
 		{
 			const string expected = "SELECT [Id], [Name] FROM [User]";
@@ -48,11 +62,11 @@ namespace Popsql.Tests
 		[Fact]
 		public void ToSql_WithSqlSelectFromSubQuery_ReturnsSql()
 		{
-			const string expected = "SELECT [Id], [Name] FROM (SELECT [Id], [Name] FROM [User]) [a] WHERE [Id] = 5";
+			const string expected = "SELECT [Id], [Name] FROM (SELECT [Id], [Name] FROM [User]) [a] WHERE [Id] = 42";
 			var actual = Sql
 				.Select("Id", "Name")
 				.From(new SqlSubquery(Sql.Select("Id", "Name").From("User").Go(), "a"))
-				.Where(SqlExpression.Equal("Id", 5))
+				.Where(SqlExpression.Equal("Id", 42))
 				.Go()
 				.ToSql();
 
@@ -139,6 +153,20 @@ namespace Popsql.Tests
 				.Select("Id", "FirstName", "LastName", "Age")
 				.From("Profile")
 				.Where(SqlExpression.In("FirstName", "John", "Joe", "Jimmy", "Joel"))
+				.Go()
+				.ToSql();
+
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		public void ToSql_WithSqlSelectWithInUsingParameters_ReturnsSql()
+		{
+			const string expected = "SELECT [Id], [FirstName], [LastName], [Age] FROM [Profile] WHERE [FirstName] IN (@__0, @__1, @__2, @__3)";
+			var actual = Sql
+				.Select("Id", "FirstName", "LastName", "Age")
+				.From("Profile")
+				.Where(SqlExpression.In("FirstName", "__0" + (SqlConstant)"John", "__1" + (SqlConstant)"Joe", "__2" + (SqlConstant)"Jimmy", "__3" + (SqlConstant)"Joel"))
 				.Go()
 				.ToSql();
 

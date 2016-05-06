@@ -63,13 +63,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlClause.cs" />
     <Compile Include="OwnedBy.cs" />
+    <Compile Include="ToCommandExtensions.cs" />
     <Compile Include="SqlUnion.cs" />
     <Compile Include="SqlValueList.cs" />
     <Compile Include="SqlInto.cs" />
     <Compile Include="SqlOn.cs" />
     <Compile Include="SqlSelect.Visitable.cs" />
     <Compile Include="SqlSet.cs" />
-    <Compile Include="SqlStatementExtensions.cs" />
+    <Compile Include="ToSqlExtensions.cs" />
     <Compile Include="SqlUpdate.WhereClause.cs" />
     <Compile Include="SqlUpdate.SetClause.cs" />
     <Compile Include="SqlUpdate.UpdateClause.cs" />
