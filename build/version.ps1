@@ -40,7 +40,7 @@ $generatedVersion = [BuildTools.VersionNumberGenerator]::GenerateVersion($majorV
 $packageVersion = "$majorVersion.$minorVersion.$patchVersion"
 if (-not $prereleaseVersion -eq "")
 {
-	$packageVersion = "$packageVersion-$prereleaseVersion-$($generatedVersion.Build)-$($generatedVersion.Revision)"
+	$packageVersion = "$packageVersion-$prereleaseVersion.$($generatedVersion.Build).$($generatedVersion.Revision)"
 }
 
 $assemblyVersion = "$majorVersion.$minorVersion.$patchVersion"
