@@ -134,6 +134,16 @@ namespace Popsql
 				set;
 			}
 
+			public override void Visit(SqlGroupBy expression)
+			{
+				_writer.WriteKeyword(SqlKeywords.GroupBy);
+			}
+
+			public override void Visit(SqlHaving expression)
+			{
+				_writer.WriteKeyword(SqlKeywords.Having);
+			}
+
 			public override void Visit(SqlParameter expression)
 			{
 				_writer.WriteParameter(expression.ParameterName);
@@ -213,6 +223,15 @@ namespace Popsql
 			public override void Visit(SqlFrom expression)
 			{
 				_writer.WriteKeyword(SqlKeywords.From);
+			}
+
+			public override void Visit(SqlFunction expression)
+			{
+				_writer.Write(expression.FunctionName);
+				_writer.WriteRaw("(");
+				_writer.ClearPendingSpace();
+				expression.Arguments.Accept(this);
+				_writer.WriteCloseParenthesis();
 			}
 
 			public override void Visit(SqlValueList expression)

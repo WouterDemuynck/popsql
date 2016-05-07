@@ -193,6 +193,37 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void ToSql_WithSqlSelectWithGroupBy_ReturnsSql()
+		{
+			const string expected = "SELECT [p].[City], AVG([p].[Age]) FROM [Profile] [p] GROUP BY ([p].[City])";
+			var p = new SqlTable("Profile", "p");
+			var actual = Sql
+				.Select(p + "City", new SqlFunction("AVG", new[] { p + "Age" }))
+				.From(p)
+				.GroupBy(p + "City")
+				.Go()
+				.ToSql();
+
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		public void ToSql_WithSqlSelectWithGroupByAndHaving_ReturnsSql()
+		{
+			const string expected = "SELECT [p].[City], AVG([p].[Age]) FROM [Profile] [p] GROUP BY ([p].[City]) HAVING [p].[City] IN ('New York', 'London', 'Paris')";
+			var p = new SqlTable("Profile", "p");
+			var actual = Sql
+				.Select(p + "City", new SqlFunction("AVG", new[] { p + "Age" }))
+				.From(p)
+				.GroupBy(p + "City")
+				.Having(SqlExpression.In(p + "City", "New York", "London", "Paris"))
+				.Go()
+				.ToSql();
+
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
 		public void ToSql_WithNullSqlDelete_ThrowsArgumentNull()
 		{
 			Assert.Throws<ArgumentNullException>(() => ((SqlDelete)null).ToSql());

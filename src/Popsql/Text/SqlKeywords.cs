@@ -97,5 +97,13 @@
 		/// Represents the SQL UNION keyword.
 		/// </summary>
 		public static readonly SqlKeyword Union = "UNION";
+		/// <summary>
+		/// Represents the SQL GROUP BY keyword.
+		/// </summary>
+		public static readonly SqlKeyword GroupBy = "GROUP BY";
+		/// <summary>
+		/// Represents the SQL HAVING keyword.
+		/// </summary>
+		public static readonly SqlKeyword Having = "HAVING";
 	}
 }

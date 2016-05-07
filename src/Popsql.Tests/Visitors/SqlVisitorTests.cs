@@ -97,6 +97,30 @@ namespace Popsql.Tests.Visitors
 		}
 
 		[Fact]
+		public void VisitExpression_WithSqlGroupBy_DispatchesVisit()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+			var visitor = mock.Object;
+
+			visitor.Visit((SqlExpression)new SqlGroupBy("Id"));
+			mock.Verify(_ => _.Visit(It.IsAny<SqlExpression>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlGroupBy>()), Times.Once);
+		}
+
+		[Fact]
+		public void VisitExpression_WithSqlHaving_DispatchesVisit()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+			var visitor = mock.Object;
+
+			visitor.Visit((SqlExpression)new SqlHaving(SqlExpression.Equal("Id", 42)));
+			mock.Verify(_ => _.Visit(It.IsAny<SqlExpression>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlHaving>()), Times.Once);
+		}
+
+		[Fact]
 		public void VisitExpression_WithSqlSubquery_DispatchesVisit()
 		{
 			var fixture = new Fixture().Customize(new AutoMoqCustomization());

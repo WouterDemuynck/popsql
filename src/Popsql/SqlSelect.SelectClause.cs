@@ -8,7 +8,7 @@ namespace Popsql
 	{
 		internal class SelectClause : OwnedBy<SqlSelect>, ISqlSelectClause
 		{
-			public SelectClause(IEnumerable<SqlColumn> columns) 
+			public SelectClause(SqlValue[] columns) 
 				: base(new SqlSelect(columns))
 			{
 			}

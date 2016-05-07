@@ -66,6 +66,14 @@ namespace Popsql.Visitors
 					Visit((SqlOrderBy)expression);
 					break;
 
+				case SqlExpressionType.GroupBy:
+					Visit((SqlGroupBy)expression);
+					break;
+
+				case SqlExpressionType.Having:
+					Visit((SqlHaving)expression);
+					break;
+
 				case SqlExpressionType.Parameter:
 					Visit((SqlParameter)expression);
 					break;
@@ -85,10 +93,10 @@ namespace Popsql.Visitors
 				case SqlExpressionType.Table:
 					Visit((SqlTable)expression);
 					break;
-					
+
 				case SqlExpressionType.Union:
 					Visit((SqlUnion)expression);
-				break;
+					break;
 
 				case SqlExpressionType.Update:
 					Visit((SqlUpdate)expression);
@@ -256,6 +264,26 @@ namespace Popsql.Visitors
 		/// The expression to visit.
 		/// </param>
 		public virtual void Visit(SqlOrderBy expression)
+		{
+		}
+
+		/// <summary>
+		/// Visits the specified <see cref="SqlGroupBy"/>.
+		/// </summary>
+		/// <param name="expression">
+		/// The expression to visit.
+		/// </param>
+		public virtual void Visit(SqlGroupBy expression)
+		{
+		}
+
+		/// <summary>
+		/// Visits the specified <see cref="SqlHaving"/>.
+		/// </summary>
+		/// <param name="expression">
+		/// The expression to visit.
+		/// </param>
+		public virtual void Visit(SqlHaving expression)
 		{
 		}
 

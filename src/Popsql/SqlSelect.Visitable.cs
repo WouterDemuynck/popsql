@@ -25,6 +25,7 @@ namespace Popsql
 			From.Accept(visitor);
 			Joins.ForEach(join => join.Accept(visitor));
 			Where?.Accept(visitor);
+			GroupBy?.Accept(visitor);
 			OrderBy.IfAny(orderBy => OrderBy.Accept(visitor));
 		}
 	}

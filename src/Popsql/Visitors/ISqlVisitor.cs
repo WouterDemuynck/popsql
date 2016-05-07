@@ -278,5 +278,21 @@ namespace Popsql.Visitors
 		/// The expression to visit.
 		/// </param>
 		void Visit(SqlUnion expression);
+
+		/// <summary>
+		/// Visits the specified <see cref="SqlGroupBy"/>.
+		/// </summary>
+		/// <param name="expression">
+		/// The expression to visit.
+		/// </param>
+		void Visit(SqlGroupBy expression);
+
+		/// <summary>
+		/// Visits the specified <see cref="SqlHaving"/>.
+		/// </summary>
+		/// <param name="expression">
+		/// The expression to visit.
+		/// </param>
+		void Visit(SqlHaving expression);
 	}
 }

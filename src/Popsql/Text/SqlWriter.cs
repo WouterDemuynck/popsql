@@ -405,7 +405,7 @@ namespace Popsql.Text
 		{
 			EnsureNotDisposed();
 			Write("(");
-			_hasPendingSpace = false;
+			ClearPendingSpace();
 		}
 
 		/// <summary>
@@ -429,7 +429,7 @@ namespace Popsql.Text
 			if (_hasPendingSpace)
 			{
 				WriteRaw(" ");
-				_hasPendingSpace = false;
+				ClearPendingSpace();
 			}
 
 			WriteRaw(value);
@@ -446,6 +446,14 @@ namespace Popsql.Text
 		{
 			EnsureNotDisposed();
 			_writer.Write(value);
+		}
+
+		/// <summary>
+		/// Removes any pending white-space.
+		/// </summary>
+		protected internal void ClearPendingSpace()
+		{
+			_hasPendingSpace = false;
 		}
 
 		/// <summary>

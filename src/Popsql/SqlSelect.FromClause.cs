@@ -58,6 +58,11 @@ namespace Popsql
 				return JoinInternal(SqlJoinType.Right, table, predicate);
 			}
 
+			public ISqlGroupByClause GroupBy(SqlColumn column)
+			{
+				return new GroupByClause(Parent, column);
+			}
+
 			private ISqlSelectFromClause JoinInternal(SqlJoinType type, SqlTable table, SqlExpression predicate = null)
 			{
 				if (table == null) throw new ArgumentNullException(nameof(table));

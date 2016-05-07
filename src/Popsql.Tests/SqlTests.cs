@@ -37,6 +37,21 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void Select_WithGroupByWithRealLifeQuery_ReturnsQuery()
+		{
+			SqlTable profiles = new SqlTable("Profile", "p");
+			var actual = Sql
+				.Select(profiles + "Age", new SqlFunction("COUNT", new[] { profiles + "Id" }))
+				.From(profiles)
+				.GroupBy(profiles + "Age")
+				.Having(SqlExpression.GreaterThanOrEqual(profiles + "Age", 18))
+				.ToSql();
+
+			const string expected = "SELECT [p].[Age], COUNT([p].[Id]) FROM [Profile] [p] GROUP BY ([p].[Age]) HAVING [p].[Age] >= 18";
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
 		public void Delete_WithRealLifeQuery_ReturnsQuery()
 		{
 			SqlTable users = "User";

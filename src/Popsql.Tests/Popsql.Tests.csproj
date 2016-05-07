@@ -94,6 +94,7 @@
     <Compile Include="SqlExpressionTests.cs" />
     <Compile Include="SqlFromTests.cs" />
     <Compile Include="SqlFunctionTests.cs" />
+    <Compile Include="SqlGroupByTests.cs" />
     <Compile Include="SqlIdentifierParserTests.cs" />
     <Compile Include="SqlIdentifierTests.cs" />
     <Compile Include="SqlInsertTests.cs" />

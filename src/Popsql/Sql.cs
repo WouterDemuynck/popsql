@@ -22,6 +22,20 @@ namespace Popsql
 		}
 
 		/// <summary>
+		/// Creates a <see cref="SqlSelect"/> that selects the specified <paramref name="columns"/> from a table.
+		/// </summary>
+		/// <param name="columns">
+		/// The columns to select from the table.
+		/// </param>
+		/// <returns>
+		/// A <see cref="SqlSelect"/> that selects the specified <paramref name="columns"/> from a table.
+		/// </returns>
+		public static ISqlSelectClause Select(params SqlValue[] columns)
+		{
+			return new SqlSelect.SelectClause(columns);
+		}
+
+		/// <summary>
 		/// Creates a <see cref="SqlUnion"/> that combines the specified <see cref="SqlSelect"/> <paramref name="statements"/>.
 		/// </summary>
 		/// <param name="statements"></param>

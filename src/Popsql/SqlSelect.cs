@@ -21,7 +21,7 @@ namespace Popsql
 		/// <exception cref="ArgumentNullException">
 		/// Thrown when the <paramref name="columns"/> argument is <see langword="null"/>.
 		/// </exception>
-		public SqlSelect(IEnumerable<SqlColumn> columns)
+		public SqlSelect(IEnumerable<SqlValue> columns)
 		{
 			if (columns == null) throw new ArgumentNullException(nameof(columns));
 			Select = columns;
@@ -55,6 +55,15 @@ namespace Popsql
 		/// Gets the predicate determining which rows are selected by this SQL SELECT statement.
 		/// </summary>
 		public SqlWhere Where
+		{
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets the collection of sorting clauses determining the result ordering of this SQL SELECT statement.
+		/// </summary>
+		public SqlGroupBy GroupBy
 		{
 			get;
 			private set;

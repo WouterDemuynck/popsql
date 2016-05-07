@@ -22,6 +22,11 @@ namespace Popsql
 				return new OrderByClause(Parent, column, sortOrder);
 			}
 
+			public ISqlGroupByClause GroupBy(SqlColumn column)
+			{
+				return new GroupByClause(Parent, column);
+			}
+
 			public SqlSelect Go()
 			{
 				return Parent;

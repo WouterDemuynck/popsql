@@ -100,6 +100,14 @@
 		/// <summary>
 		/// Represents a SQL expression list.
 		/// </summary>
-		ValueList
+		ValueList,
+		/// <summary>
+		/// Represents a SQL GROUP BY clause.
+		/// </summary>
+		GroupBy,
+		/// <summary>
+		/// Represents a SQL GROUP BY HAVING clause.
+		/// </summary>
+		Having
 	}
 }
