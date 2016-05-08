@@ -83,6 +83,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Dialects\MySqlDialectTests.cs" />
+    <Compile Include="Dialects\SqlDialectTests.cs" />
     <Compile Include="EnumerableExtensionsTests.cs" />
     <Compile Include="Mocking\MockRepositoryExtensions.cs" />
     <Compile Include="OwnedByTests.cs" />
@@ -119,7 +121,6 @@
     <Compile Include="SqlValueTests.cs" />
     <Compile Include="SqlWhereTests.cs" />
     <Compile Include="Text\SqlKeywordTests.cs" />
-    <Compile Include="Text\SqlDialectTests.cs" />
     <Compile Include="Text\SqlWriterSettingsTests.cs" />
     <Compile Include="Text\SqlWriterTests.cs" />
     <Compile Include="Visitors\SqlVisitorExtensionsTests.cs" />

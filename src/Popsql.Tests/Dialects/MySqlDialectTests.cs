@@ -1,15 +1,16 @@
-﻿using Popsql.Text;
+using Moq;
+using Popsql.Dialects;
 using Xunit;
 
-namespace Popsql.Tests.Text
+namespace Popsql.Tests.Dialects
 {
-	public class SqlDialectTests
+	public class MySqlDialectTests
 	{
 		[Fact]
 		public void FormatTableName_ReturnsFormattedTableName()
 		{
-			var expected = "[Users]";
-			var dialect = new SqlDialect();
+			var expected = "`Users`";
+			var dialect = new MySqlDialect();
 
 			var actual = dialect.FormatIdentifier("Users");
 
@@ -19,8 +20,8 @@ namespace Popsql.Tests.Text
 		[Fact]
 		public void FormatParameterName_ReturnsFormattedParameterName()
 		{
-			var expected = "@Parameter";
-			var dialect = new SqlDialect();
+			var expected = "?Parameter";
+			var dialect = new MySqlDialect();
 
 			var actual = dialect.FormatParameterName("Parameter");
 

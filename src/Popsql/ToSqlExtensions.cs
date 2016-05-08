@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
+using Popsql.Dialects;
 using Popsql.Grammar;
 using Popsql.Text;
 using Popsql.Visitors;
@@ -27,8 +29,29 @@ namespace Popsql
 		public static string ToSql<T>(this ISqlGo<T> sql)
 			where T : SqlStatement
 		{
+			return sql.ToSql(null);
+		}
+
+		/// <summary>
+		/// Converts the specified SQL expression tree builder to SQL text.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of SQL statement the SQL expression tree builder creates.
+		/// </typeparam>
+		/// <param name="sql">
+		/// An expression tree builder representing a SQL statement.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> used to format the SQL text.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree builder.
+		/// </returns>
+		public static string ToSql<T>(this ISqlGo<T> sql, SqlDialect dialect)
+			where T : SqlStatement
+		{
 			if (sql == null) throw new ArgumentNullException(nameof(sql));
-			return sql.Go().ToSqlInternal();
+			return sql.Go().ToSqlInternal(dialect);
 		}
 
 		/// <summary>
@@ -42,7 +65,24 @@ namespace Popsql
 		/// </returns>
 		public static string ToSql(this SqlUnion sql)
 		{
-			return sql.ToSqlInternal();
+			return sql.ToSql(null);
+		}
+
+		/// <summary>
+		/// Converts the specified <see cref="SqlUnion"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlUnion"/> to convert to SQL text.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> used to format the SQL text.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlUnion sql, SqlDialect dialect)
+		{
+			return sql.ToSqlInternal(dialect);
 		}
 
 		/// <summary>
@@ -56,7 +96,24 @@ namespace Popsql
 		/// </returns>
 		public static string ToSql(this SqlSelect sql)
 		{
-			return sql.ToSqlInternal();
+			return sql.ToSql(null);
+		}
+
+		/// <summary>
+		/// Converts the specified <see cref="SqlSelect"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlSelect"/> to convert to SQL text.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> used to format the SQL text.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlSelect sql, SqlDialect dialect)
+		{
+			return sql.ToSqlInternal(dialect);
 		}
 
 		/// <summary>
@@ -70,7 +127,24 @@ namespace Popsql
 		/// </returns>
 		public static string ToSql(this SqlDelete sql)
 		{
-			return sql.ToSqlInternal();
+			return sql.ToSql(null);
+		}
+
+		/// <summary>
+		/// Converts the specified <see cref="SqlDelete"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlDelete"/> to convert to SQL text.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> used to format the SQL text.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlDelete sql, SqlDialect dialect)
+		{
+			return sql.ToSqlInternal(dialect);
 		}
 
 		/// <summary>
@@ -84,7 +158,24 @@ namespace Popsql
 		/// </returns>
 		public static string ToSql(this SqlUpdate sql)
 		{
-			return sql.ToSqlInternal();
+			return sql.ToSql(null);
+		}
+
+		/// <summary>
+		/// Converts the specified <see cref="SqlUpdate"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlUpdate"/> to convert to SQL text.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> used to format the SQL text.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlUpdate sql, SqlDialect dialect)
+		{
+			return sql.ToSqlInternal(dialect);
 		}
 
 		/// <summary>
@@ -98,15 +189,33 @@ namespace Popsql
 		/// </returns>
 		public static string ToSql(this SqlInsert sql)
 		{
-			return sql.ToSqlInternal();
+			return sql.ToSql(null);
 		}
 
-		internal static string ToSqlInternal(this SqlStatement sql, Action<SqlParameter> onParameterVisited = null)
+		/// <summary>
+		/// Converts the specified <see cref="SqlInsert"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlInsert"/> to convert to SQL text.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> used to format the SQL text.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlInsert sql, SqlDialect dialect)
+		{
+			return sql.ToSqlInternal(dialect);
+		}
+
+		internal static string ToSqlInternal(this SqlStatement sql, SqlDialect dialect = null, Action<SqlParameter> onParameterVisited = null)
 		{
 			if (sql == null) throw new ArgumentNullException(nameof(sql));
+			dialect = dialect ?? SqlDialect.Current;
 
 			StringBuilder builder = new StringBuilder();
-			using (SqlWriter writer = new SqlWriter(builder))
+			using (SqlWriter writer = new SqlWriter(builder, dialect))
 			{
 				var visitor = new SqlWriterVisitor(writer)
 				{

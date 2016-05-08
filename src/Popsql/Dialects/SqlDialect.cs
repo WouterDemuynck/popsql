@@ -1,14 +1,34 @@
-﻿namespace Popsql.Text
+namespace Popsql.Dialects
 {
 	/// <summary>
 	/// Provides the base class for classes providing support for specific SQL dialects.
 	/// </summary>
 	public class SqlDialect
 	{
+		private static SqlDialect _current;
+
+		static SqlDialect()
+		{
+			Default = new SqlDialect();
+			Current = Default;
+		}
+
 		/// <summary>
-		/// Represents the default SQL dialect.
+		/// Gets a reference to the default SQL dialect.
 		/// </summary>
-		public static readonly SqlDialect Default = new SqlDialect();
+		public static SqlDialect Default
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets or sets the currently used <see cref="SqlDialect"/>.
+		/// </summary>
+		public static SqlDialect Current
+		{
+			get { return _current; }
+			set { _current = value ?? Default; }
+		}
 
 		/// <summary>
 		/// Formats the specified identifier name for the current SQL dialect. The default implementation 
@@ -27,7 +47,7 @@
 
 		/// <summary>
 		/// Formats the specified parameter name for the current SQL dialect. The default implementation 
-		/// returns the parameter name prefixed with an 'at' sign ('@').
+		/// returns the parameter name prefixed with an 'at' character ('@').
 		/// </summary>
 		/// <param name="parameterName">
 		/// The parameter name to format.

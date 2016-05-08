@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Popsql.Dialects;
 using Xunit;
 
 namespace Popsql.Tests.Text

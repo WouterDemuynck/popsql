@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using Popsql.Dialects;
 
 namespace Popsql.Text
 {
@@ -33,7 +34,7 @@ namespace Popsql.Text
 		/// Thrown when the <paramref name="builder"/> argument is <see langword="null"/>.
 		/// </exception>
 		public SqlWriter(StringBuilder builder)
-			: this(builder, SqlDialect.Default)
+			: this(builder, SqlDialect.Current)
 		{
 		}
 
@@ -53,7 +54,7 @@ namespace Popsql.Text
 		/// Thrown when the <paramref name="builder"/> argument is <see langword="null"/>.
 		/// </exception>
 		public SqlWriter(StringBuilder builder, SqlWriterSettings settings)
-			: this(builder, SqlDialect.Default, settings)
+			: this(builder, SqlDialect.Current, settings)
 		{
 		}
 
@@ -117,7 +118,7 @@ namespace Popsql.Text
 		/// Thrown when the <paramref name="writer"/> argument is <see langword="null"/>.
 		/// </exception>
 		public SqlWriter(TextWriter writer)
-			: this(writer, SqlDialect.Default)
+			: this(writer, SqlDialect.Current)
 		{
 		}
 
@@ -137,7 +138,7 @@ namespace Popsql.Text
 		/// Thrown when the <paramref name="writer"/> argument is <see langword="null"/>.
 		/// </exception>
 		public SqlWriter(TextWriter writer, SqlWriterSettings settings)
-			: this(writer, SqlDialect.Default, settings)
+			: this(writer, SqlDialect.Current, settings)
 		{
 		}
 
