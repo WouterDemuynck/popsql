@@ -26,7 +26,7 @@ namespace Popsql.Tests.Dialects
 		[Fact]
 		public void FormatTableName_ReturnsFormattedTableName()
 		{
-			var expected = "[Users]";
+			const string expected = "[Users]";
 			var dialect = new SqlDialect();
 
 			var actual = dialect.FormatIdentifier("Users");
@@ -37,11 +37,21 @@ namespace Popsql.Tests.Dialects
 		[Fact]
 		public void FormatParameterName_ReturnsFormattedParameterName()
 		{
-			var expected = "@Parameter";
+			const string expected = "@Parameter";
 			var dialect = new SqlDialect();
 
 			var actual = dialect.FormatParameterName("Parameter");
 
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		public void FormatString_EscapesApostrophe()
+		{
+			const string expected = "'This isn''t a test.'";
+			var dialect = new SqlDialect();
+
+			var actual = dialect.FormatString("This isn't a test.");
 			Assert.Equal(expected, actual);
 		}
 	}

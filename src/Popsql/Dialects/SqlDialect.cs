@@ -42,7 +42,7 @@ namespace Popsql.Dialects
 		/// </returns>
 		public virtual string FormatIdentifier(string identifier)
 		{
-			return "[" + identifier + "]";
+			return $"[{identifier}]";
 		}
 
 		/// <summary>
@@ -57,7 +57,7 @@ namespace Popsql.Dialects
 		/// </returns>
 		public virtual string FormatParameterName(string parameterName)
 		{
-			return "@" + parameterName;
+			return $"@{parameterName}";
 		}
 
 		/// <summary>
@@ -72,7 +72,7 @@ namespace Popsql.Dialects
 		/// </returns>
 		public virtual string FormatString(string value)
 		{
-			return "'" + value + "'";
+			return $"'{value.Replace("'", "''")}'";
 		}
 	}
 }
