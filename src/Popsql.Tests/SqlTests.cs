@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Popsql.Dialects;
+using Xunit;
 
 namespace Popsql.Tests
 {
@@ -41,7 +42,7 @@ namespace Popsql.Tests
 		{
 			SqlTable profiles = new SqlTable("Profile", "p");
 			var actual = Sql
-				.Select(profiles + "Age", new SqlFunction("COUNT", new[] { profiles + "Id" }))
+				.Select(profiles + "Age", SqlFunctions.Count(profiles + "Id"))
 				.From(profiles)
 				.GroupBy(profiles + "Age")
 				.Having(SqlExpression.GreaterThanOrEqual(profiles + "Age", 18))
