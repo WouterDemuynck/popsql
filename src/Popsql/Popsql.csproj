@@ -67,7 +67,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlClause.cs" />
     <Compile Include="OwnedBy.cs" />
-    <Compile Include="SqlFunctions.cs" />
+    <Compile Include="SqlAggregate.cs" />
     <Compile Include="SqlGroupBy.cs" />
     <Compile Include="SqlHaving.cs" />
     <Compile Include="SqlSelect.GroupByClause.cs" />

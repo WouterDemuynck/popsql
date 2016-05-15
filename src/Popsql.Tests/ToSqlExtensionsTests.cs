@@ -195,10 +195,10 @@ namespace Popsql.Tests
 		[Fact]
 		public void ToSql_WithSqlSelectWithGroupBy_ReturnsSql()
 		{
-			const string expected = "SELECT [p].[City], AVG([p].[Age]) FROM [Profile] [p] GROUP BY ([p].[City])";
+			const string expected = "SELECT [p].[City], AVG([p].[Age]) AS [AverageAge] FROM [Profile] [p] GROUP BY ([p].[City])";
 			var p = new SqlTable("Profile", "p");
 			var actual = Sql
-				.Select(p + "City", new SqlFunction("AVG", new[] { p + "Age" }))
+				.Select(p + "City", SqlAggregate.Average(p + "Age", "AverageAge"))
 				.From(p)
 				.GroupBy(p + "City")
 				.Go()
@@ -210,13 +210,28 @@ namespace Popsql.Tests
 		[Fact]
 		public void ToSql_WithSqlSelectWithGroupByAndHaving_ReturnsSql()
 		{
-			const string expected = "SELECT [p].[City], AVG([p].[Age]) FROM [Profile] [p] GROUP BY ([p].[City]) HAVING [p].[City] IN ('New York', 'London', 'Paris')";
+			const string expected = "SELECT [p].[City], MIN([p].[Age]) AS [MinAge], MAX([p].[Age]) AS [MaxAge] FROM [Profile] [p] GROUP BY ([p].[City]) HAVING [p].[City] IN ('New York', 'London', 'Paris')";
 			var p = new SqlTable("Profile", "p");
 			var actual = Sql
-				.Select(p + "City", new SqlFunction("AVG", new[] { p + "Age" }))
+				.Select(p + "City", SqlAggregate.Min(p + "Age", "MinAge"), SqlAggregate.Max(p + "Age", "MaxAge"))
 				.From(p)
 				.GroupBy(p + "City")
 				.Having(SqlExpression.In(p + "City", "New York", "London", "Paris"))
+				.Go()
+				.ToSql();
+
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		public void ToSql_WithSqlSelectWithGroupByAndSumAggregate_ReturnsSql()
+		{
+			const string expected = "SELECT [oi].[ProductCode], SUM([oi].[Total]) AS [TotalPerProduct] FROM [OrderItem] [oi] GROUP BY ([oi].[ProductCode])";
+			var oi = new SqlTable("OrderItem", "oi");
+			var actual = Sql
+				.Select(oi + "ProductCode", SqlAggregate.Sum(oi + "Total", "TotalPerProduct"))
+				.From(oi)
+				.GroupBy(oi + "ProductCode")
 				.Go()
 				.ToSql();
 

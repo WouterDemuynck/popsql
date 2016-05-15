@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Popsql
 {
@@ -15,15 +16,19 @@ namespace Popsql
 		/// <param name="functionName">
 		/// The name of the SQL function to call.
 		/// </param>
+		/// <param name="alias">
+		/// The alias to use for the function.
+		/// </param>
 		/// <param name="arguments">
 		/// The arguments passed to the SQL function.
 		/// </param>
-		public SqlFunction(string functionName, IEnumerable<SqlValue> arguments = null)
+		public SqlFunction(string functionName, IEnumerable<SqlValue> arguments = null, string alias = null)
 		{
 			if (functionName == null) throw new ArgumentNullException(nameof(functionName));
 
 			FunctionName = functionName;
 			Arguments = arguments;
+			Alias = alias;
 		}
 
 		/// <summary>
@@ -35,6 +40,12 @@ namespace Popsql
 		/// Gets the collection of arguments of the SQL function.
 		/// </summary>
 		public IEnumerable<SqlValue> Arguments { get; private set; }
+
+
+		/// <summary>
+		/// Gets the alias used for the SQL function.
+		/// </summary>
+		public string Alias { get; private set; }
 
 		/// <summary>
 		/// Gets the expression type of this expression.

@@ -341,6 +341,11 @@ namespace Popsql
 				_writer.ClearPendingSpace();
 				expression.Arguments.Accept(this);
 				_writer.WriteCloseParenthesis();
+				if (expression.Alias != null)
+				{
+					_writer.WriteKeyword(SqlKeywords.As);
+					_writer.WriteIdentifier(expression.Alias);
+				}
 			}
 
 			public override void Visit(SqlValueList expression)
