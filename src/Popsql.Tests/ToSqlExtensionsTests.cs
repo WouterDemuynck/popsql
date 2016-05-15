@@ -65,9 +65,8 @@ namespace Popsql.Tests
 			const string expected = "SELECT [Id], [Name] FROM (SELECT [Id], [Name] FROM [User]) [a] WHERE [Id] = 42";
 			var actual = Sql
 				.Select("Id", "Name")
-				.From(new SqlSubquery(Sql.Select("Id", "Name").From("User").Go(), "a"))
+				.From(new SqlSubquery(Sql.Select("Id", "Name").From("User"), "a"))
 				.Where(SqlExpression.Equal("Id", 42))
-				.Go()
 				.ToSql();
 
 			Assert.Equal(expected, actual);

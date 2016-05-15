@@ -340,7 +340,7 @@ namespace Popsql.Tests
 		[Fact]
 		public void In_WithColumnAndSubquery_ReturnsCorrectExpression()
 		{
-			var subquery = new SqlSubquery(Sql.Select("Age").From("Profile").Go(), "a");
+			var subquery = new SqlSubquery(Sql.Select("Age").From("Profile"), "a");
 			var expression = SqlExpression.In("Id", subquery);
 
 			Assert.IsType<SqlColumn>(expression.Left);

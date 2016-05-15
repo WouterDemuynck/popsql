@@ -1,4 +1,5 @@
 ﻿using System;
+using Popsql.Grammar;
 using Xunit;
 
 namespace Popsql.Tests
@@ -8,7 +9,8 @@ namespace Popsql.Tests
 		[Fact]
 		public void Ctor_WithNullQuery_ThrowsArgumentNull()
 		{
-			Assert.Throws<ArgumentNullException>(() => new SqlSubquery(null, null));
+			Assert.Throws<ArgumentNullException>(() => new SqlSubquery((SqlSelect) null, null));
+			Assert.Throws<ArgumentNullException>(() => new SqlSubquery((ISqlGo<SqlSelect>) null, null));
 			Assert.Throws<ArgumentNullException>(() => new SqlSubquery(null));
 		}
 
