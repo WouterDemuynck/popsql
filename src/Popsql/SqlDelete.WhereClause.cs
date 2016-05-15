@@ -12,7 +12,7 @@ namespace Popsql
 				Parent.Where = new SqlWhere(predicate);
 			}
 
-			SqlDelete ISqlGo<SqlDelete>.Go()
+			public SqlDelete Go()
 			{
 				return Parent;
 			}

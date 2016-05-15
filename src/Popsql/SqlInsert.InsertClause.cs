@@ -13,14 +13,14 @@ namespace Popsql
 			{
 			}
 
-			ISqlIntoClause ISqlInsertClause.Into(SqlTable table)
+			public ISqlIntoClause Into(SqlTable table)
 			{
 				if (table == null) throw new ArgumentNullException(nameof(table));
 				Parent.Into = new SqlInto(table);
 				return new IntoClause(Parent);
 			}
 
-			ISqlIntoClause ISqlInsertClause.Into(SqlTable table, params SqlColumn[] columns)
+			public ISqlIntoClause Into(SqlTable table, params SqlColumn[] columns)
 			{
 				if (table == null) throw new ArgumentNullException(nameof(table));
 				Parent.Into = new SqlInto(table);

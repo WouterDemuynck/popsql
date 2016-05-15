@@ -12,7 +12,7 @@ namespace Popsql
 			{
 			}
 
-			ISqlDeleteFromClause ISqlDeleteClause.From(SqlTable table)
+			public ISqlDeleteFromClause From(SqlTable table)
 			{
 				if (table == null) throw new ArgumentNullException(nameof(table));
 				Parent.From = new SqlFrom(table);

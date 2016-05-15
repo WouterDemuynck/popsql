@@ -14,7 +14,7 @@ namespace Popsql
 			{
 			}
 
-			SqlUpdate ISqlGo<SqlUpdate>.Go()
+			public SqlUpdate Go()
 			{
 				return Parent;
 			}

@@ -13,7 +13,7 @@ namespace Popsql
 			{
 			}
 
-			ISqlValuesClause ISqlIntoClause.Values(params SqlValue[] values)
+			public ISqlValuesClause Values(params SqlValue[] values)
 			{
 				if (values == null || !values.Any()) throw new ArgumentNullException(nameof(values));
 

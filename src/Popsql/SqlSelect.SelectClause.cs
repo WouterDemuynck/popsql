@@ -13,12 +13,12 @@ namespace Popsql
 			{
 			}
 
-			ISqlSelectFromClause ISqlSelectClause.From(SqlTable table)
+			public ISqlSelectFromClause From(SqlTable table)
 			{
 				return new FromClause(Parent, table);
 			}
 
-			ISqlSelectFromClause ISqlSelectClause.From(SqlSubquery query)
+			public ISqlSelectFromClause From(SqlSubquery query)
 			{
 				return new FromClause(Parent, query);
 			}

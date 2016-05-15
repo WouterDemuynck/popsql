@@ -11,7 +11,7 @@ namespace Popsql
 			{
 			}
 
-			SqlInsert ISqlGo<SqlInsert>.Go()
+			public SqlInsert Go()
 			{
 				return Parent;
 			}

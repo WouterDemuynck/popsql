@@ -14,7 +14,7 @@ namespace Popsql
 				Parent.GroupBy = new SqlGroupBy(column);
 			}
 
-			ISqlOrderByClause<SqlSelect> ISqlOrderByClause<SqlSelect>.OrderBy(SqlColumn column, SqlSortOrder sortOrder)
+			public ISqlOrderByClause<SqlSelect> OrderBy(SqlColumn column, SqlSortOrder sortOrder)
 			{
 				if (column == null) throw new ArgumentNullException(nameof(column));
 
@@ -22,7 +22,7 @@ namespace Popsql
 				return this;
 			}
 
-			ISqlOrderByClause<SqlSelect> ISqlOrderByClause<SqlSelect>.OrderBy(SqlSort sortExpression)
+			public ISqlOrderByClause<SqlSelect> OrderBy(SqlSort sortExpression)
 			{
 				if (sortExpression == null) throw new ArgumentNullException(nameof(sortExpression));
 
@@ -36,7 +36,7 @@ namespace Popsql
 				return this;
 			}
 
-			SqlSelect ISqlGo<SqlSelect>.Go()
+			public SqlSelect Go()
 			{
 				return Parent;
 			}

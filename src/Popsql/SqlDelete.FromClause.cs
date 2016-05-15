@@ -11,13 +11,13 @@ namespace Popsql
 			{
 			}
 
-			ISqlWhereClause<SqlDelete> ISqlDeleteFromClause.Where(SqlExpression predicate)
+			public ISqlWhereClause<SqlDelete> Where(SqlExpression predicate)
 			{
 				Parent.Where = new SqlWhere(predicate);
 				return new WhereClause(Parent, predicate);
 			}
 
-			SqlDelete ISqlGo<SqlDelete>.Go()
+			public SqlDelete Go()
 			{
 				return Parent;
 			}

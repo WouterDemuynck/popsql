@@ -23,37 +23,37 @@ namespace Popsql
 				Parent.From = new SqlFrom(query);
 			}
 
-			ISqlOrderByClause<SqlSelect> ISqlOrderByClause<SqlSelect>.OrderBy(SqlColumn column, SqlSortOrder sortOrder)
+			public ISqlOrderByClause<SqlSelect> OrderBy(SqlColumn column, SqlSortOrder sortOrder)
 			{
 				return new OrderByClause(Parent, column, sortOrder);
 			}
 
-			ISqlOrderByClause<SqlSelect> ISqlOrderByClause<SqlSelect>.OrderBy(SqlSort sortExpression)
+			public ISqlOrderByClause<SqlSelect> OrderBy(SqlSort sortExpression)
 			{
 				return new OrderByClause(Parent, sortExpression);
 			}
 
-			ISqlSelectWhereClause ISqlSelectFromClause.Where(SqlExpression predicate)
+			public ISqlSelectWhereClause Where(SqlExpression predicate)
 			{
 				return new WhereClause(Parent, predicate);
 			}
 
-			ISqlSelectFromClause ISqlSelectFromClause.Join(SqlTable table, SqlExpression predicate)
+			public ISqlSelectFromClause Join(SqlTable table, SqlExpression predicate)
 			{
 				return JoinInternal(SqlJoinType.Default, table, predicate);
 			}
 
-			ISqlSelectFromClause ISqlSelectFromClause.InnerJoin(SqlTable table, SqlExpression predicate)
+			public ISqlSelectFromClause InnerJoin(SqlTable table, SqlExpression predicate)
 			{
 				return JoinInternal(SqlJoinType.Inner, table, predicate);
 			}
 
-			ISqlSelectFromClause ISqlSelectFromClause.LeftJoin(SqlTable table, SqlExpression predicate)
+			public ISqlSelectFromClause LeftJoin(SqlTable table, SqlExpression predicate)
 			{
 				return JoinInternal(SqlJoinType.Left, table, predicate);
 			}
 
-			ISqlSelectFromClause ISqlSelectFromClause.RightJoin(SqlTable table, SqlExpression predicate)
+			public ISqlSelectFromClause RightJoin(SqlTable table, SqlExpression predicate)
 			{
 				return JoinInternal(SqlJoinType.Right, table, predicate);
 			}
@@ -74,7 +74,7 @@ namespace Popsql
 				return this;
 			}
 
-			SqlSelect ISqlGo<SqlSelect>.Go()
+			public SqlSelect Go()
 			{
 				return Parent;
 			}

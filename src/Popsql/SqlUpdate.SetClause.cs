@@ -12,10 +12,10 @@ namespace Popsql
 			public SetClause(SqlUpdate parent, SqlColumn column, SqlValue value) 
 				: base(parent)
 			{
-				((ISqlUpdateClause)this).Set(column, value);
+				Set(column, value);
 			}
 
-			ISqlSetClause ISqlUpdateClause.Set(SqlColumn column, SqlValue value)
+			public ISqlSetClause Set(SqlColumn column, SqlValue value)
 			{
 				if (column == null) throw new ArgumentNullException(nameof(column));
 				if (value == null) value = SqlConstant.Null;
@@ -24,13 +24,13 @@ namespace Popsql
 				return this;
 			}
 
-			ISqlWhereClause<SqlUpdate> ISqlSetClause.Where(SqlExpression predicate)
+			public ISqlWhereClause<SqlUpdate> Where(SqlExpression predicate)
 			{
 				Parent.Where = new SqlWhere(predicate);
 				return new WhereClause(Parent);
 			}
 
-			SqlUpdate ISqlGo<SqlUpdate>.Go()
+			public SqlUpdate Go()
 			{
 				return Parent;
 			}

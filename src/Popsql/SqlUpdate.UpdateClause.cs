@@ -14,7 +14,7 @@ namespace Popsql
 			{
 			}
 
-			ISqlSetClause ISqlUpdateClause.Set(SqlColumn column, SqlValue value)
+			public ISqlSetClause Set(SqlColumn column, SqlValue value)
 			{
 				return new SetClause(Parent, column, value);
 			}
