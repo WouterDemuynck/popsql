@@ -24,7 +24,7 @@ namespace Popsql.Dialects
 		/// </returns>
 		public override string FormatIdentifier(string identifier)
 		{
-			return "`" + identifier + "`";
+			return $"`{identifier}`";
 		}
 
 		/// <summary>
@@ -39,7 +39,7 @@ namespace Popsql.Dialects
 		/// </returns>
 		public override string FormatParameterName(string parameterName)
 		{
-			return "?" + parameterName;
+			return $"?{parameterName}";
 		}
 	}
 }
