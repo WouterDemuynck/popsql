@@ -1,6 +1,4 @@
 ﻿using System;
-using Moq;
-using Popsql.Visitors;
 using Xunit;
 
 namespace Popsql.Tests
@@ -10,7 +8,7 @@ namespace Popsql.Tests
 		[Fact]
 		public void Ctor_WithNullTable_ThrowsArgumentNull()
 		{
-			Assert.Throws<ArgumentNullException>(() => new SqlJoin(SqlJoinType.Right, null, null));
+			Assert.Throws<ArgumentNullException>(() => new SqlJoin(SqlJoinType.Right, null));
 		}
 
 		[Fact]
@@ -33,7 +31,7 @@ namespace Popsql.Tests
 		{
 			var table = new SqlTable("dbo.Users", "u");
 			var predicate = SqlExpression.Equal("u.Id", 5);
-			var expression = new SqlJoin(SqlJoinType.Left, table, predicate);
+			var expression = new SqlJoin(SqlJoinType.Left, table);
 
 			Assert.Equal(SqlExpressionType.Join, expression.ExpressionType);
 		}

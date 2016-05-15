@@ -23,6 +23,11 @@ namespace Popsql
 				Parent.From = new SqlFrom(query);
 			}
 
+			protected FromClause(FromClause parent) 
+				: base(parent.Parent)
+			{
+			}
+
 			public ISqlOrderByClause<SqlSelect> OrderBy(SqlColumn column, SqlSortOrder sortOrder)
 			{
 				return new OrderByClause(Parent, column, sortOrder);
@@ -38,24 +43,24 @@ namespace Popsql
 				return new WhereClause(Parent, predicate);
 			}
 
-			public ISqlSelectFromClause Join(SqlTable table, SqlExpression predicate)
+			public ISqlJoinClause Join(SqlTable table)
 			{
-				return JoinInternal(SqlJoinType.Default, table, predicate);
+				return JoinInternal(SqlJoinType.Default, table);
 			}
 
-			public ISqlSelectFromClause InnerJoin(SqlTable table, SqlExpression predicate)
+			public ISqlJoinClause InnerJoin(SqlTable table)
 			{
-				return JoinInternal(SqlJoinType.Inner, table, predicate);
+				return JoinInternal(SqlJoinType.Inner, table);
 			}
 
-			public ISqlSelectFromClause LeftJoin(SqlTable table, SqlExpression predicate)
+			public ISqlJoinClause LeftJoin(SqlTable table)
 			{
-				return JoinInternal(SqlJoinType.Left, table, predicate);
+				return JoinInternal(SqlJoinType.Left, table);
 			}
 
-			public ISqlSelectFromClause RightJoin(SqlTable table, SqlExpression predicate)
+			public ISqlJoinClause RightJoin(SqlTable table)
 			{
-				return JoinInternal(SqlJoinType.Right, table, predicate);
+				return JoinInternal(SqlJoinType.Right, table);
 			}
 
 			public ISqlGroupByClause GroupBy(SqlColumn column)
@@ -63,15 +68,12 @@ namespace Popsql
 				return new GroupByClause(Parent, column);
 			}
 
-			private ISqlSelectFromClause JoinInternal(SqlJoinType type, SqlTable table, SqlExpression predicate = null)
+			private ISqlJoinClause JoinInternal(SqlJoinType type, SqlTable table, SqlExpression predicate = null)
 			{
 				if (table == null) throw new ArgumentNullException(nameof(table));
-				if (Parent._joins == null)
-				{
-					Parent._joins = new List<SqlJoin>();
-				}
-				Parent._joins.Add(new SqlJoin(type, table, predicate));
-				return this;
+				var join = new SqlJoin(type, table);
+				Parent.From.AddJoin(join);
+				return new JoinClause(this, join);
 			}
 
 			public SqlSelect Go()

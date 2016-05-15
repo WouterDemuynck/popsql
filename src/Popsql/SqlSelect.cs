@@ -8,7 +8,6 @@ namespace Popsql
 	/// </summary>
 	public partial class SqlSelect : SqlStatement
 	{
-		private List<SqlJoin> _joins;
 		private SqlOrderBy _orderBy;
 
 		/// <summary>
@@ -46,12 +45,6 @@ namespace Popsql
 		}
 
 		/// <summary>
-		/// Gets the joins used by this <see cref="SqlSelect"/>.
-		/// </summary>
-		public IReadOnlyCollection<SqlJoin> Joins 
-			=> _joins ?? (_joins = new List<SqlJoin>());
-
-		/// <summary>
 		/// Gets the predicate determining which rows are selected by this SQL SELECT statement.
 		/// </summary>
 		public SqlWhere Where
@@ -72,13 +65,12 @@ namespace Popsql
 		/// <summary>
 		/// Gets the collection of sorting clauses determining the result ordering of this SQL SELECT statement.
 		/// </summary>
-		public SqlOrderBy OrderBy
-			=> _orderBy = (_orderBy ?? new SqlOrderBy());
+		public SqlOrderBy OrderBy => _orderBy ?? (_orderBy = new SqlOrderBy());
 
 		/// <summary>
 		/// Gets the expression type of this expression.
 		/// </summary>
-		public override SqlExpressionType ExpressionType 
+		public override SqlExpressionType ExpressionType
 			=> SqlExpressionType.Select;
 
 		/// <summary>

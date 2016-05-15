@@ -28,7 +28,7 @@ namespace Popsql.Grammar
 		/// <returns>
 		/// The next grammatical possibilities in the SQL statement.
 		/// </returns>
-		ISqlSelectFromClause Join(SqlTable table, SqlExpression predicate = null);
+		ISqlJoinClause Join(SqlTable table);
 
 		/// <summary>
 		/// Adds a SQL INNER JOIN clause to this SQL SELECT statement.
@@ -42,7 +42,7 @@ namespace Popsql.Grammar
 		/// <returns>
 		/// The next grammatical possibilities in the SQL statement.
 		/// </returns>
-		ISqlSelectFromClause InnerJoin(SqlTable table, SqlExpression predicate = null);
+		ISqlJoinClause InnerJoin(SqlTable table);
 
 		/// <summary>
 		/// Adds a SQL LEFT JOIN clause to this SQL SELECT statement.
@@ -56,7 +56,7 @@ namespace Popsql.Grammar
 		/// <returns>
 		/// The next grammatical possibilities in the SQL statement.
 		/// </returns>
-		ISqlSelectFromClause LeftJoin(SqlTable table, SqlExpression predicate = null);
+		ISqlJoinClause LeftJoin(SqlTable table);
 
 		/// <summary>
 		/// Adds a SQL RIGHT JOIN clause to this SQL SELECT statement.
@@ -70,7 +70,7 @@ namespace Popsql.Grammar
 		/// <returns>
 		/// The next grammatical possibilities in the SQL statement.
 		/// </returns>
-		ISqlSelectFromClause RightJoin(SqlTable table, SqlExpression predicate = null);
+		ISqlJoinClause RightJoin(SqlTable table);
 
 		/// <summary>
 		/// Sets the column used for grouping the results of this statement.

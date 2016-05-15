@@ -56,6 +56,7 @@
     <Compile Include="Grammar\ISqlHavingClause.cs" />
     <Compile Include="Grammar\ISqlInsertClause.cs" />
     <Compile Include="Grammar\ISqlIntoClause.cs" />
+    <Compile Include="Grammar\ISqlJoinClause.cs" />
     <Compile Include="Grammar\ISqlOrderByClause.cs" />
     <Compile Include="Grammar\ISqlSelectClause.cs" />
     <Compile Include="Grammar\ISqlSelectFromClause.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="SqlGroupBy.cs" />
     <Compile Include="SqlHaving.cs" />
     <Compile Include="SqlSelect.GroupByClause.cs" />
+    <Compile Include="SqlSelect.JoinClause.cs" />
     <Compile Include="ToCommandExtensions.cs" />
     <Compile Include="SqlUnion.cs" />
     <Compile Include="SqlValueList.cs" />

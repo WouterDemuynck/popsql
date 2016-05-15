@@ -84,7 +84,8 @@ namespace Popsql.Tests
 			var actual = Sql
 				.Select(order + "Id", order + "CreatedOn", orderItem + "ProductId", orderItem + "ProductName", orderItem + "Quantity", orderItem + "UnitPrice", itemTotal)
 				.From(order)
-				.InnerJoin(orderItem, SqlExpression.Equal(order + "Id", orderItem + "OrderId"))
+				.InnerJoin(orderItem)
+				.On(SqlExpression.Equal(order + "Id", orderItem + "OrderId"))
 				.Go()
 				.ToSql();
 
@@ -101,7 +102,8 @@ namespace Popsql.Tests
 			var actual = Sql
 				.Select(order + "Id", employee + "Name")
 				.From(order)
-				.RightJoin(employee, SqlExpression.Equal(order + "EmployeeId", employee + "Id"))
+				.RightJoin(employee)
+				.On(SqlExpression.Equal(order + "EmployeeId", employee + "Id"))
 				.Go()
 				.ToSql();
 

@@ -8,12 +8,12 @@ namespace Popsql
     /// </summary>
     public class SqlJoin : SqlExpression
     {
-	    internal SqlJoin(SqlJoinType type, SqlTable table, SqlExpression predicate)
+	    internal SqlJoin(SqlJoinType type, SqlTable table, SqlExpression predicate = null)
         {
             if (table == null) throw new ArgumentNullException(nameof(table));
             Type = type;
             Table = table;
-            On = new SqlOn(predicate);
+            On = predicate == null ? null : new SqlOn(predicate);
         }
 
 	    /// <summary>
@@ -38,7 +38,8 @@ namespace Popsql
 	    public SqlOn On
 	    {
 		    get;
-	    }
+			internal set;
+		}
 
 	    /// <summary>
         /// Returns the expression type of this expression.

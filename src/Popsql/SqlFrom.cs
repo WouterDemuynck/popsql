@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Popsql.Visitors;
 
 namespace Popsql
@@ -8,6 +9,8 @@ namespace Popsql
 	/// </summary>
 	public class SqlFrom : SqlClause
 	{
+		private List<SqlJoin> _joins;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlFrom"/> class.
 		/// </summary>
@@ -26,6 +29,12 @@ namespace Popsql
 		}
 
 		/// <summary>
+		/// Gets the joins used by this <see cref="SqlFrom"/>.
+		/// </summary>
+		public IReadOnlyCollection<SqlJoin> Joins
+			=> _joins ?? (_joins = new List<SqlJoin>());
+
+		/// <summary>
 		/// Gets the expression type of this expression.
 		/// </summary>
 		public override SqlExpressionType ExpressionType 
@@ -42,6 +51,16 @@ namespace Popsql
 		{
 			base.Accept(visitor);
 			Table.Accept(visitor);
+			Joins.ForEach(join => join.Accept(visitor));
+		}
+
+		internal void AddJoin(SqlJoin join)
+		{
+			if (_joins == null)
+			{
+				_joins = new List<SqlJoin>();
+			}
+			_joins.Add(join);
 		}
 	}
 }

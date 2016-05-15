@@ -28,7 +28,7 @@ namespace Popsql.Tests
 			var actual = Sql
 				.Select(users + "Id", users + "Name", users + "Email", profiles + "Avatar", profiles + "Birthday")
 				.From(users)
-				.LeftJoin(profiles, SqlExpression.Equal(users + "Id", profiles + "UserId"))
+				.LeftJoin(profiles).On(SqlExpression.Equal(users + "Id", profiles + "UserId"))
 				.Where(SqlExpression.Equal(profiles + "Age", 18))
 				.OrderBy(users + "Name")
 				.ToSql();

@@ -115,7 +115,7 @@ namespace Popsql.Tests
 				.Select("Id", "Name")
 				.From(users);
 
-			Assert.Throws<ArgumentNullException>(() => select.Join(null, SqlExpression.Equal(users + "Id", profiles + "UserId")));
+			Assert.Throws<ArgumentNullException>(() => select.Join(null).On(SqlExpression.Equal(users + "Id", profiles + "UserId")));
 		}
 
 		[Fact]
@@ -126,11 +126,12 @@ namespace Popsql.Tests
 			var predicate = SqlExpression.Equal(users + "Id", profiles + "UserId");
 			SqlSelect select = Sql.Select("Id", "Name")
 				.From(users)
-				.Join(profiles, predicate)
+				.Join(profiles)
+				.On(predicate)
 				.Go();
 
-			Assert.Equal(1, select.Joins.Count());
-			var join = select.Joins.First();
+			Assert.Equal(1, select.From.Joins.Count());
+			var join = select.From.Joins.First();
 
 			Assert.Same(profiles, join.Table);
 			Assert.NotNull(join.On);
@@ -147,7 +148,7 @@ namespace Popsql.Tests
 			var select = Sql.Select("Id", "Name")
 				.From(users);
 
-			Assert.Throws<ArgumentNullException>(() => select.InnerJoin(null, SqlExpression.Equal(users + "Id", profiles + "UserId")));
+			Assert.Throws<ArgumentNullException>(() => select.InnerJoin(null).On(SqlExpression.Equal(users + "Id", profiles + "UserId")));
 		}
 
 		[Fact]
@@ -158,11 +159,12 @@ namespace Popsql.Tests
 			var predicate = SqlExpression.Equal(users + "Id", profiles + "UserId");
 			var select = Sql.Select("Id", "Name")
 				.From(users)
-				.InnerJoin(profiles, predicate)
+				.InnerJoin(profiles)
+				.On(predicate)
 				.Go();
 
-			Assert.Equal(1, select.Joins.Count());
-			var join = select.Joins.First();
+			Assert.Equal(1, select.From.Joins.Count());
+			var join = select.From.Joins.First();
 
 			Assert.Same(profiles, join.Table);
 			Assert.Same(predicate, join.On.Predicate);
@@ -177,7 +179,7 @@ namespace Popsql.Tests
 			var select = Sql.Select("Id", "Name")
 				.From(users);
 
-			Assert.Throws<ArgumentNullException>(() => select.LeftJoin(null, SqlExpression.Equal(users + "Id", profiles + "UserId")));
+			Assert.Throws<ArgumentNullException>(() => select.LeftJoin(null).On(SqlExpression.Equal(users + "Id", profiles + "UserId")));
 		}
 
 		[Fact]
@@ -188,11 +190,12 @@ namespace Popsql.Tests
 			var predicate = SqlExpression.Equal(users + "Id", profiles + "UserId");
 			var select = Sql.Select("Id", "Name")
 				.From(users)
-				.LeftJoin(profiles, predicate)
+				.LeftJoin(profiles)
+				.On(predicate)
 				.Go();
 
-			Assert.Equal(1, select.Joins.Count());
-			var join = select.Joins.First();
+			Assert.Equal(1, select.From.Joins.Count());
+			var join = select.From.Joins.First();
 
 			Assert.Same(profiles, join.Table);
 			Assert.NotNull(join.On);
@@ -209,7 +212,7 @@ namespace Popsql.Tests
 			var select = Sql.Select("Id", "Name")
 				.From(users);
 
-			Assert.Throws<ArgumentNullException>(() => select.RightJoin(null, SqlExpression.Equal(users + "Id", profiles + "UserId")));
+			Assert.Throws<ArgumentNullException>(() => select.RightJoin(null).On(SqlExpression.Equal(users + "Id", profiles + "UserId")));
 		}
 
 		[Fact]
@@ -220,11 +223,12 @@ namespace Popsql.Tests
 			var predicate = SqlExpression.Equal(users + "Id", profiles + "UserId");
 			SqlSelect select = Sql.Select("Id", "Name")
 				.From(users)
-				.RightJoin(profiles, predicate)
+				.RightJoin(profiles)
+				.On(predicate)
 				.Go();
 
-			Assert.Equal(1, select.Joins.Count());
-			var join = select.Joins.First();
+			Assert.Equal(1, select.From.Joins.Count());
+			var join = select.From.Joins.First();
 
 			Assert.Same(profiles, join.Table);
 			Assert.NotNull(join.On);
@@ -243,19 +247,19 @@ namespace Popsql.Tests
 			var addressesPredicate = SqlExpression.Equal(users + "Id", addresses + "UserId");
 			var select = Sql.Select("Id", "Name")
 				.From(users)
-				.LeftJoin(profiles, profilesPredicate)
-				.LeftJoin(addresses, addressesPredicate)
+				.LeftJoin(profiles).On(profilesPredicate)
+				.LeftJoin(addresses).On(addressesPredicate)
 				.Go();
 
-			Assert.Equal(2, select.Joins.Count());
-			var join = select.Joins.First();
+			Assert.Equal(2, select.From.Joins.Count());
+			var join = select.From.Joins.First();
 			Assert.Same(profiles, join.Table);
 			Assert.NotNull(join.On);
 			Assert.NotNull(join.On.Predicate);
 			Assert.Same(profilesPredicate, join.On.Predicate);
 			Assert.Equal(SqlJoinType.Left, join.Type);
 
-			join = select.Joins.Last();
+			join = select.From.Joins.Last();
 			Assert.Same(addresses, join.Table);
 			Assert.NotNull(join.On);
 			Assert.NotNull(join.On.Predicate);
@@ -266,8 +270,8 @@ namespace Popsql.Tests
 		[Fact]
 		public void Joins_IsNotNullWhenFirstCalled()
 		{
-			var select = new SqlSelect(new SqlColumn[] { "Id" });
-			Assert.NotNull(select.Joins);
+			var select = Sql.Select("Id").From("User").Go();
+			Assert.NotNull(select.From.Joins);
 		}
 
 		[Fact]
