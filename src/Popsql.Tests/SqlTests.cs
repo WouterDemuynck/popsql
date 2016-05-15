@@ -12,8 +12,8 @@ namespace Popsql.Tests
 			SqlTable customers = new SqlTable("Customer", "c");
 			var actual = Sql
 				.Union(
-					Sql.Select(suppliers + "City").From(suppliers).Go(),
-					Sql.Select(customers + "City").From(customers).Go())
+					Sql.Select(suppliers + "City").From(suppliers),
+					Sql.Select(customers + "City").From(customers))
 				.ToSql();
 
 			const string expected = "(SELECT [s].[City] FROM [Supplier] [s]) UNION (SELECT [c].[City] FROM [Customer] [c])";
