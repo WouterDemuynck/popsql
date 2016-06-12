@@ -14,5 +14,9 @@ NuGet.exe
 *.nupkg
 src/packages
 
+# Back-up files
+*.bak
+*.orig
+
 # Windows left-overs
 Thumbs.db
