@@ -1,45 +1,123 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Popsql.Tests.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Moq;
+using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoMoq;
+using Popsql.Visitors;
+using Xunit;
 
 namespace Popsql.Tests
 {
-    [TestClass]
-    public class SqlDeleteTests
-    {
-        [TestMethod]
-        public void From_WithNullSqlTable_ThrowsArgumentNull()
-        {
-            AssertEx.Throws<ArgumentNullException>(() => new SqlDelete().From(null));
-        }
+	public class SqlDeleteTests
+	{
+		[Fact]
+		public void Ctor_DoesNotThrow()
+		{
+			new SqlDelete();
+		}
 
-        [TestMethod]
-        public void From_WithSqlTable_SetsTargetProperty()
-        {
-            var delete = new SqlDelete().From("Users");
-            Assert.IsNotNull(delete.Table);
-            Assert.AreEqual("Users", delete.Table.TableName);
-        }
+		[Fact]
+		public void From_WithNullTable_ThrowsArgumentNull()
+		{
+			var delete = Sql.Delete();
+			Assert.Throws<ArgumentNullException>(() => delete.From(null));
+		}
 
-        [TestMethod]
-        public void Where_WithSqlExpression_SetsPredicateProperty()
-        {
-            SqlDelete delete = new SqlDelete();
-            delete.Where(SqlExpression.Equal("Id", 5));
 
-            Assert.IsNotNull(delete.Predicate);
-            Assert.IsInstanceOfType(delete.Predicate, typeof(SqlBinaryExpression));
-            Assert.IsInstanceOfType(((SqlBinaryExpression)delete.Predicate).Left, typeof(SqlColumn));
-            Assert.AreEqual("Id", ((SqlColumn)((SqlBinaryExpression)delete.Predicate).Left).ColumnName);
+		[Fact]
+		public void From_WithTable_SetsFromProperty()
+		{
+			var delete = Sql
+				.Delete()
+				.From("Users")
+				.Go();
 
-            Assert.AreEqual(SqlBinaryOperator.Equal, ((SqlBinaryExpression)delete.Predicate).Operator);
+			Assert.NotNull(delete.From);
+			Assert.Equal("Users", ((SqlTable)delete.From.Table).TableName.Segments.First());
+		}
 
-            Assert.IsInstanceOfType(((SqlBinaryExpression)delete.Predicate).Right, typeof(SqlConstant));
-            Assert.AreEqual(5, ((SqlConstant)((SqlBinaryExpression)delete.Predicate).Right).Value);
-        }
-    }
+		[Fact]
+		public void Where_WithExpression_SetsWhereProperty()
+		{
+			var delete = Sql
+				.Delete()
+				.From("User")
+				.Where(SqlExpression.Equal("Id", 5))
+				.Go();
+
+			Assert.NotNull(delete.Where);
+			Assert.NotNull(delete.Where.Predicate);
+			Assert.IsType<SqlBinaryExpression>(delete.Where.Predicate);
+			Assert.IsType<SqlColumn>(((SqlBinaryExpression)delete.Where.Predicate).Left);
+			Assert.Equal("Id", ((SqlColumn)((SqlBinaryExpression)delete.Where.Predicate).Left).ColumnName.Segments.First());
+
+			Assert.Equal(SqlBinaryOperator.Equal, ((SqlBinaryExpression)delete.Where.Predicate).Operator);
+
+			Assert.IsType<SqlConstant>(((SqlBinaryExpression)delete.Where.Predicate).Right);
+			Assert.Equal(5, ((SqlConstant)((SqlBinaryExpression)delete.Where.Predicate).Right).Value);
+		}
+		
+		[Fact]
+		public void ExpressionType_ReturnsDelete()
+		{
+			var query = new SqlDelete();
+
+			Assert.Equal(SqlExpressionType.Delete, query.ExpressionType);
+		}
+
+		[Fact]
+		public void Accept_WithoutFrom_VisitsEverything()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+
+			var query = new SqlDelete();
+
+			query.Accept(mock.Object);
+
+			mock.Verify(_ => _.Visit(It.IsAny<SqlDelete>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlFrom>()), Times.Never);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlWhere>()), Times.Never);
+		}
+
+		[Fact]
+		public void Accept_WithoutWhere_VisitsEverything()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+
+			var query = Sql
+				.Delete()
+				.From("User")
+				.Go();
+
+			query.Accept(mock.Object);
+
+			mock.Verify(_ => _.Visit(It.IsAny<SqlDelete>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlFrom>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlTable>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlWhere>()), Times.Never);
+		}
+
+		[Fact]
+		public void Accept_WithWhere_VisitsEverything()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+
+			var query = Sql
+				.Delete()
+				.From("User")
+				.Where(SqlExpression.Equal("Id", 5))
+				.Go();
+
+			query.Accept(mock.Object);
+
+			mock.Verify(_ => _.Visit(It.IsAny<SqlDelete>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlFrom>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlTable>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlWhere>()), Times.Once);
+		}
+	}
 }

@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Popsql.Visitors;
 
 namespace Popsql
 {
-    /// <summary>
-    /// Represents a sorting expression in SQL.
-    /// </summary>
-    public class SqlSort : SqlExpression
+	/// <summary>
+	/// Represents a sorting expression in SQL.
+	/// </summary>
+	public class SqlSort : SqlExpression
     {
         internal SqlSort(SqlColumn column, SqlSortOrder sortOrder)
         {
-            if (column == null) throw new ArgumentNullException("column");
+            if (column == null) throw new ArgumentNullException(nameof(column));
             Column = column;
             SortOrder = sortOrder;
         }
@@ -39,9 +36,22 @@ namespace Popsql
         /// <summary>
         /// Returns the expression type of this expression.
         /// </summary>
-        public override SqlExpressionType ExpressionType
-        {
-            get { return SqlExpressionType.Sort; }
-        }
+        public override SqlExpressionType ExpressionType 
+			=> SqlExpressionType.Sort;
+
+		/// <summary>
+		/// Accepts the specified <paramref name="visitor"/> and dispatches calls to the specific visitor
+		/// methods for this object.
+		/// </summary>
+		/// <param name="visitor">
+		/// The <see cref="ISqlVisitor" /> to visit this object with.
+		/// </param>
+		public override void Accept(ISqlVisitor visitor)
+		{
+			base.Accept(visitor);
+
+			Column.Accept(visitor);
+			SortOrder.Accept(visitor);
+		}
     }
 }

@@ -1,292 +1,355 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Popsql.Tests.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
+using Popsql.Visitors;
+using Xunit;
 
 namespace Popsql.Tests
 {
-	[TestClass]
 	public class SqlExpressionTests
 	{
-		[TestMethod]
+		[Fact]
+		public void Equal_WithNullLeftOperand_ThrowsArgumentNull()
+		{
+			var right = new SqlConstant(5);
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.Equal(null, right));
+		}
+
+		[Fact]
+		public void Equal_WithNullRightOperand_ReturnsBinaryExpression()
+		{
+			var left = new SqlColumn("dbo.Users.Id");
+			var expression = SqlExpression.Equal(left, null);
+
+			Assert.NotNull(expression.Left);
+			Assert.Same(left, expression.Left);
+			Assert.Equal(SqlBinaryOperator.Equal, expression.Operator);
+			Assert.NotNull(expression.Right);
+			Assert.Same(SqlConstant.Null, expression.Right);
+		}
+
+		[Fact]
+		public void Equal_WithLeftAndRightOperand_ReturnsBinaryExpression()
+		{
+			var left = new SqlColumn("dbo.Users.Id");
+			var right = new SqlConstant(5);
+			var expression = SqlExpression.Equal(left, right);
+
+			Assert.NotNull(expression.Left);
+			Assert.Same(left, expression.Left);
+			Assert.Equal(SqlBinaryOperator.Equal, expression.Operator);
+			Assert.NotNull(expression.Right);
+			Assert.Same(right, expression.Right);
+		}
+
+		[Fact]
+		public void Accept_WithNullVisitor_ThrowsArgumentNull()
+		{
+			var expression = new Mock<SqlExpression> { CallBase = true }.Object;
+			Assert.Throws<ArgumentNullException>(() => expression.Accept(null));
+		}
+
+		[Fact]
 		public void And_WithNullLeftOperand_ThrowsArgumentNull()
 		{
-			AssertEx.Throws<ArgumentNullException>(() => SqlExpression.And(null, null));
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.And(null, null));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void And_WithNullRightOperand_ThrowsArgumentNull()
 		{
-			AssertEx.Throws<ArgumentNullException>(() => SqlExpression.And(SqlExpression.Equal("Id", 5), null));
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.And(SqlExpression.Equal("Id", 5), null));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void And_WithLeftAndRightOperands_ReturnsCorrectExpression()
 		{
 			var expression = SqlExpression.And(SqlExpression.GreaterThan("Id", 5), SqlExpression.Equal("Name", "Wouter"));
 
-			Assert.IsNotNull(expression);
-			Assert.AreEqual(SqlBinaryOperator.And, expression.Operator);
+			Assert.NotNull(expression);
+			Assert.Equal(SqlBinaryOperator.And, expression.Operator);
 
-			Assert.IsInstanceOfType(expression.Left, typeof(SqlBinaryExpression));
-			Assert.AreEqual(SqlBinaryOperator.GreaterThan, ((SqlBinaryExpression)expression.Left).Operator);
+			Assert.IsType<SqlBinaryExpression>(expression.Left);
+			Assert.Equal(SqlBinaryOperator.GreaterThan, ((SqlBinaryExpression)expression.Left).Operator);
 
-			Assert.IsInstanceOfType(expression.Right, typeof(SqlBinaryExpression));
-			Assert.AreEqual(SqlBinaryOperator.Equal, ((SqlBinaryExpression)expression.Right).Operator);
+			Assert.IsType<SqlBinaryExpression>(expression.Right);
+			Assert.Equal(SqlBinaryOperator.Equal, ((SqlBinaryExpression)expression.Right).Operator);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void Or_WithNullLeftOperand_ThrowsArgumentNull()
 		{
-			AssertEx.Throws<ArgumentNullException>(() => SqlExpression.Or(null, null));
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.Or(null, null));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void Or_WithNullRightOperand_ThrowsArgumentNull()
 		{
-			AssertEx.Throws<ArgumentNullException>(() => SqlExpression.Or(SqlExpression.Equal("Id", 5), null));
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.Or(SqlExpression.Equal("Id", 5), null));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void Or_WithLeftOrRightOperands_ReturnsCorrectExpression()
 		{
 			var expression = SqlExpression.Or(SqlExpression.GreaterThan("Id", 5), SqlExpression.Equal("Name", "Wouter"));
 
-			Assert.IsNotNull(expression);
-			Assert.AreEqual(SqlBinaryOperator.Or, expression.Operator);
+			Assert.NotNull(expression);
+			Assert.Equal(SqlBinaryOperator.Or, expression.Operator);
 
-			Assert.IsInstanceOfType(expression.Left, typeof(SqlBinaryExpression));
-			Assert.AreEqual(SqlBinaryOperator.GreaterThan, ((SqlBinaryExpression)expression.Left).Operator);
+			Assert.IsType<SqlBinaryExpression>(expression.Left);
+			Assert.Equal(SqlBinaryOperator.GreaterThan, ((SqlBinaryExpression)expression.Left).Operator);
 
-			Assert.IsInstanceOfType(expression.Right, typeof(SqlBinaryExpression));
-			Assert.AreEqual(SqlBinaryOperator.Equal, ((SqlBinaryExpression)expression.Right).Operator);
+			Assert.IsType<SqlBinaryExpression>(expression.Right);
+			Assert.Equal(SqlBinaryOperator.Equal, ((SqlBinaryExpression)expression.Right).Operator);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void Equal_WithNullColumn_ThrowsArgumentNull()
 		{
-			AssertEx.Throws<ArgumentNullException>(() => SqlExpression.Equal(null, null));
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.Equal(null, null));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void Equal_WithNullValue_DoesNotThrow()
 		{
-			var expression = SqlExpression.Equal("Id", null);
+			SqlExpression.Equal("Id", null);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void Equal_WithColumnAndValue_ReturnsCorrectExpression()
 		{
 			var expression = SqlExpression.Equal("Id", "Id" + (SqlConstant)5);
 
-			Assert.IsInstanceOfType(expression.Left, typeof(SqlColumn));
-			Assert.AreEqual("Id", ((SqlColumn)expression.Left).ColumnName);
+			Assert.IsType<SqlColumn>(expression.Left);
+			Assert.Equal("Id", ((SqlColumn)expression.Left).ColumnName);
 
-			Assert.AreEqual(SqlBinaryOperator.Equal, expression.Operator);
+			Assert.Equal(SqlBinaryOperator.Equal, expression.Operator);
 
-			Assert.IsInstanceOfType(expression.Right, typeof(SqlParameter));
-			Assert.AreEqual("Id", ((SqlParameter)expression.Right).ParameterName);
-			Assert.AreEqual(5, ((SqlParameter)expression.Right).Value);
+			Assert.IsType<SqlParameter>(expression.Right);
+			Assert.Equal("Id", ((SqlParameter)expression.Right).ParameterName);
+			Assert.Equal(5, ((SqlParameter)expression.Right).Value);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void NotEqual_WithNullColumn_ThrowsArgumentNull()
 		{
-			AssertEx.Throws<ArgumentNullException>(() => SqlExpression.NotEqual(null, null));
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.NotEqual(null, null));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void NotEqual_WithNullValue_DoesNotThrow()
 		{
-			var expression = SqlExpression.NotEqual("Id", null);
+			SqlExpression.NotEqual("Id", null);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void NotEqual_WithColumnAndValue_ReturnsCorrectExpression()
 		{
 			var expression = SqlExpression.NotEqual("Id", "Id" + (SqlConstant)5);
 
-			Assert.IsInstanceOfType(expression.Left, typeof(SqlColumn));
-			Assert.AreEqual("Id", ((SqlColumn)expression.Left).ColumnName);
+			Assert.IsType<SqlColumn>(expression.Left);
+			Assert.Equal("Id", ((SqlColumn)expression.Left).ColumnName);
 
-			Assert.AreEqual(SqlBinaryOperator.NotEqual, expression.Operator);
+			Assert.Equal(SqlBinaryOperator.NotEqual, expression.Operator);
 
-			Assert.IsInstanceOfType(expression.Right, typeof(SqlParameter));
-			Assert.AreEqual("Id", ((SqlParameter)expression.Right).ParameterName);
-			Assert.AreEqual(5, ((SqlParameter)expression.Right).Value);
+			Assert.IsType<SqlParameter>(expression.Right);
+			Assert.Equal("Id", ((SqlParameter)expression.Right).ParameterName);
+			Assert.Equal(5, ((SqlParameter)expression.Right).Value);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void GreaterThan_WithNullColumn_ThrowsArgumentNull()
 		{
-			AssertEx.Throws<ArgumentNullException>(() => SqlExpression.GreaterThan(null, null));
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.GreaterThan(null, null));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void GreaterThan_WithNullValue_DoesNotThrow()
 		{
-			var expression = SqlExpression.GreaterThan("Id", null);
+			SqlExpression.GreaterThan("Id", null);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void GreaterThan_WithColumnAndValue_ReturnsCorrectExpression()
 		{
 			var expression = SqlExpression.GreaterThan("Id", "Id" + (SqlConstant)5);
 
-			Assert.IsInstanceOfType(expression.Left, typeof(SqlColumn));
-			Assert.AreEqual("Id", ((SqlColumn)expression.Left).ColumnName);
+			Assert.IsType<SqlColumn>(expression.Left);
+			Assert.Equal("Id", ((SqlColumn)expression.Left).ColumnName);
 
-			Assert.AreEqual(SqlBinaryOperator.GreaterThan, expression.Operator);
+			Assert.Equal(SqlBinaryOperator.GreaterThan, expression.Operator);
 
-			Assert.IsInstanceOfType(expression.Right, typeof(SqlParameter));
-			Assert.AreEqual("Id", ((SqlParameter)expression.Right).ParameterName);
-			Assert.AreEqual(5, ((SqlParameter)expression.Right).Value);
+			Assert.IsType<SqlParameter>(expression.Right);
+			Assert.Equal("Id", ((SqlParameter)expression.Right).ParameterName);
+			Assert.Equal(5, ((SqlParameter)expression.Right).Value);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void GreaterThanOrEqual_WithNullColumn_ThrowsArgumentNull()
 		{
-			AssertEx.Throws<ArgumentNullException>(() => SqlExpression.GreaterThanOrEqual(null, null));
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.GreaterThanOrEqual(null, null));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void GreaterThanOrEqual_WithNullValue_DoesNotThrow()
 		{
 			var expression = SqlExpression.GreaterThanOrEqual("Id", null);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void GreaterThanOrEqual_WithColumnAndValue_ReturnsCorrectExpression()
 		{
 			var expression = SqlExpression.GreaterThanOrEqual("Id", "Id" + (SqlConstant)5);
 
-			Assert.IsInstanceOfType(expression.Left, typeof(SqlColumn));
-			Assert.AreEqual("Id", ((SqlColumn)expression.Left).ColumnName);
+			Assert.IsType<SqlColumn>(expression.Left);
+			Assert.Equal("Id", ((SqlColumn)expression.Left).ColumnName);
 
-			Assert.AreEqual(SqlBinaryOperator.GreaterThanOrEqual, expression.Operator);
+			Assert.Equal(SqlBinaryOperator.GreaterThanOrEqual, expression.Operator);
 
-			Assert.IsInstanceOfType(expression.Right, typeof(SqlParameter));
-			Assert.AreEqual("Id", ((SqlParameter)expression.Right).ParameterName);
-			Assert.AreEqual(5, ((SqlParameter)expression.Right).Value);
+			Assert.IsType<SqlParameter>(expression.Right);
+			Assert.Equal("Id", ((SqlParameter)expression.Right).ParameterName);
+			Assert.Equal(5, ((SqlParameter)expression.Right).Value);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void LessThan_WithNullColumn_ThrowsArgumentNull()
 		{
-			AssertEx.Throws<ArgumentNullException>(() => SqlExpression.LessThan(null, null));
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.LessThan(null, null));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void LessThan_WithNullValue_DoesNotThrow()
 		{
-			var expression = SqlExpression.LessThan("Id", null);
+			SqlExpression.LessThan("Id", null);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void LessThan_WithColumnAndValue_ReturnsCorrectExpression()
 		{
 			var expression = SqlExpression.LessThan("Id", "Id" + (SqlConstant)5);
 
-			Assert.IsInstanceOfType(expression.Left, typeof(SqlColumn));
-			Assert.AreEqual("Id", ((SqlColumn)expression.Left).ColumnName);
+			Assert.IsType<SqlColumn>(expression.Left);
+			Assert.Equal("Id", ((SqlColumn)expression.Left).ColumnName);
 
-			Assert.AreEqual(SqlBinaryOperator.LessThan, expression.Operator);
+			Assert.Equal(SqlBinaryOperator.LessThan, expression.Operator);
 
-			Assert.IsInstanceOfType(expression.Right, typeof(SqlParameter));
-			Assert.AreEqual("Id", ((SqlParameter)expression.Right).ParameterName);
-			Assert.AreEqual(5, ((SqlParameter)expression.Right).Value);
+			Assert.IsType<SqlParameter>(expression.Right);
+			Assert.Equal("Id", ((SqlParameter)expression.Right).ParameterName);
+			Assert.Equal(5, ((SqlParameter)expression.Right).Value);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void LessThanOrEqual_WithNullColumn_ThrowsArgumentNull()
 		{
-			AssertEx.Throws<ArgumentNullException>(() => SqlExpression.LessThanOrEqual(null, null));
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.LessThanOrEqual(null, null));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void LessThanOrEqual_WithNullValue_DoesNotThrow()
 		{
-			var expression = SqlExpression.LessThanOrEqual("Id", null);
+			SqlExpression.LessThanOrEqual("Id", null);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void LessThanOrEqual_WithColumnAndValue_ReturnsCorrectExpression()
 		{
 			var expression = SqlExpression.LessThanOrEqual("Id", "Id" + (SqlConstant)5);
 
-			Assert.IsInstanceOfType(expression.Left, typeof(SqlColumn));
-			Assert.AreEqual("Id", ((SqlColumn)expression.Left).ColumnName);
+			Assert.IsType<SqlColumn>(expression.Left);
+			Assert.Equal("Id", ((SqlColumn)expression.Left).ColumnName);
 
-			Assert.AreEqual(SqlBinaryOperator.LessThanOrEqual, expression.Operator);
+			Assert.Equal(SqlBinaryOperator.LessThanOrEqual, expression.Operator);
 
-			Assert.IsInstanceOfType(expression.Right, typeof(SqlParameter));
-			Assert.AreEqual("Id", ((SqlParameter)expression.Right).ParameterName);
-			Assert.AreEqual(5, ((SqlParameter)expression.Right).Value);
+			Assert.IsType<SqlParameter>(expression.Right);
+			Assert.Equal("Id", ((SqlParameter)expression.Right).ParameterName);
+			Assert.Equal(5, ((SqlParameter)expression.Right).Value);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void Like_WithNullColumn_ThrowsArgumentNull()
 		{
-			AssertEx.Throws<ArgumentNullException>(() => SqlExpression.Like(null, null));
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.Like(null, null));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void Like_WithNullValue_DoesNotThrow()
 		{
-			var expression = SqlExpression.Like("Id", null);
+			SqlExpression.Like("Id", null);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void Like_WithColumnAndValue_ReturnsCorrectExpression()
 		{
 			var expression = SqlExpression.Like("Id", "Id" + (SqlConstant)5);
 
-			Assert.IsInstanceOfType(expression.Left, typeof(SqlColumn));
-			Assert.AreEqual("Id", ((SqlColumn)expression.Left).ColumnName);
+			Assert.IsType<SqlColumn>(expression.Left);
+			Assert.Equal("Id", ((SqlColumn)expression.Left).ColumnName);
 
-			Assert.AreEqual(SqlBinaryOperator.Like, expression.Operator);
+			Assert.Equal(SqlBinaryOperator.Like, expression.Operator);
 
-			Assert.IsInstanceOfType(expression.Right, typeof(SqlParameter));
-			Assert.AreEqual("Id", ((SqlParameter)expression.Right).ParameterName);
-			Assert.AreEqual(5, ((SqlParameter)expression.Right).Value);
+			Assert.IsType<SqlParameter>(expression.Right);
+			Assert.Equal("Id", ((SqlParameter)expression.Right).ParameterName);
+			Assert.Equal(5, ((SqlParameter)expression.Right).Value);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void In_WithNullColumn_ThrowsArgumentNull()
 		{
-			AssertEx.Throws<ArgumentNullException>(() => SqlExpression.In(null, null));
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.In(null, (SqlValue[])null));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void In_WithNullValue_DoesNotThrow()
 		{
-			var expression = SqlExpression.In("Id", null);
+			var expression = SqlExpression.In("Id", (SqlValue[])null);
 		}
 
-		[TestMethod]
+		[Fact]
+		public void In_WithNullSubquery_ThrowsArgumentNull()
+		{
+			Assert.Throws<ArgumentNullException>(() => SqlExpression.In("Id", (SqlSubquery)null));
+		}
+
+		[Fact]
 		public void In_WithColumnAndValues_ReturnsCorrectExpression()
 		{
 			var expression = SqlExpression.In("Id", 1, 2, 3, 4, 5, 6);
 
-			Assert.IsInstanceOfType(expression.Left, typeof(SqlColumn));
-			Assert.AreEqual("Id", ((SqlColumn)expression.Left).ColumnName);
+			Assert.IsType<SqlColumn>(expression.Left);
+			Assert.Equal("Id", ((SqlColumn)expression.Left).ColumnName);
 
-			Assert.AreEqual(SqlBinaryOperator.In, expression.Operator);
+			Assert.Equal(SqlBinaryOperator.In, expression.Operator);
 
-			Assert.IsInstanceOfType(expression.Right, typeof(SqlConstant));
-			Assert.IsInstanceOfType(((SqlConstant)expression.Right).Value, typeof(IEnumerable<SqlValue>));
+			Assert.IsType<SqlValueList>(expression.Right);
+			Assert.IsAssignableFrom<IEnumerable<SqlValue>>(((SqlValueList)expression.Right).Values);
 
-			var values = ((IEnumerable<SqlValue>) ((SqlConstant) expression.Right).Value).ToArray();
-			Assert.AreEqual(6, values.Length);
-			Assert.AreEqual(1, values[0]);
-			Assert.AreEqual(2, values[1]);
-			Assert.AreEqual(3, values[2]);
-			Assert.AreEqual(4, values[3]);
-			Assert.AreEqual(5, values[4]);
-			Assert.AreEqual(6, values[5]);
+			var values = ((SqlValueList)expression.Right).Values.ToArray();
+			Assert.Equal(6, values.Length);
+			Assert.Equal(1, values[0]);
+			Assert.Equal(2, values[1]);
+			Assert.Equal(3, values[2]);
+			Assert.Equal(4, values[3]);
+			Assert.Equal(5, values[4]);
+			Assert.Equal(6, values[5]);
+		}
+
+		[Fact]
+		public void In_WithColumnAndSubquery_ReturnsCorrectExpression()
+		{
+			var subquery = new SqlSubquery(Sql.Select("Age").From("Profile"), "a");
+			var expression = SqlExpression.In("Id", subquery);
+
+			Assert.IsType<SqlColumn>(expression.Left);
+			Assert.Equal("Id", ((SqlColumn)expression.Left).ColumnName);
+
+			Assert.Equal(SqlBinaryOperator.In, expression.Operator);
+
+			Assert.IsType<SqlSubquery>(expression.Right);
+			Assert.Same(subquery, expression.Right);
 		}
 	}
 }

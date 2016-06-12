@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Popsql
 {
-    /// <summary>
-    /// Represents a binary expression in SQL.
-    /// </summary>
-    public class SqlBinaryExpression : SqlExpression
+	/// <summary>
+	/// Represents a binary expression in SQL.
+	/// </summary>
+	public class SqlBinaryExpression : SqlExpression
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlBinaryExpression"/> class using the specified 
@@ -25,8 +22,8 @@ namespace Popsql
         /// </param>
         internal SqlBinaryExpression(SqlExpression left, SqlBinaryOperator @operator, SqlExpression right)
         {
-            if (left == null) throw new ArgumentNullException("left");
-            if (right == null) throw new ArgumentNullException("right");
+            if (left == null) throw new ArgumentNullException(nameof(left));
+            if (right == null) throw new ArgumentNullException(nameof(right));
             Left = left;
             Operator = @operator;
             Right = right;
@@ -35,15 +32,10 @@ namespace Popsql
         /// <summary>
         /// Returns the expression type of this expression.
         /// </summary>
-        public override sealed SqlExpressionType ExpressionType
-        {
-            get
-            {
-                return SqlExpressionType.Binary;
-            }
-        }
+        public override sealed SqlExpressionType ExpressionType 
+			=> SqlExpressionType.Binary;
 
-        /// <summary>
+		/// <summary>
         /// Gets the left operand of the binary expression.
         /// </summary>
         public SqlExpression Left

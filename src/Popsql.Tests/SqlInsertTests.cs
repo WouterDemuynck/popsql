@@ -1,62 +1,175 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Popsql.Tests.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Moq;
+using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoMoq;
+using Popsql.Visitors;
+using Xunit;
 
 namespace Popsql.Tests
 {
-    [TestClass]
-    public class SqlInsertTests
-    {
-        [TestMethod]
-        public void Into_WithNullSqlTable_ThrowsArgumentNull()
-        {
-            AssertEx.Throws<ArgumentNullException>(() => new SqlInsert().Into(null));
-        }
+	public class SqlInsertTests
+	{
+		[Fact]
+		public void Ctor_DoesNotThrow()
+		{
+			new SqlInsert();
+		}
 
-        [TestMethod]
-        public void Into_WithSqlTable_SetsTargetProperty()
-        {
-            var insert = new SqlInsert().Into("Users");
+		[Fact]
+		public void Into_WithNullTable_ThrowsArgumentNull()
+		{
+			var insert = Sql.Insert();
+			Assert.Throws<ArgumentNullException>(() => insert.Into(null));
+		}
 
-            Assert.IsNotNull(insert.Table);
-            Assert.AreEqual("Users", insert.Table.TableName);
-        }
+		[Fact]
+		public void Into_WithTable_SetsIntoProperty()
+		{
+			var insert = Sql
+				.Insert()
+				.Into("Users")
+				.Values(1, "John Doe")
+				.Go();
 
-        [TestMethod]
-        public void Values_WithNullValues_ThrowsArgumentNull()
-        {
-            AssertEx.Throws<ArgumentNullException>(() => new SqlInsert().Values(null));
-        }
+			Assert.NotNull(insert.Into);
+			Assert.Equal("Users", ((SqlTable)insert.Into.Table).TableName.Segments.First());
+		}
 
-        [TestMethod]
-        public void Values_WithEmptyValues_ThrowsArgumentNull()
-        {
-            AssertEx.Throws<ArgumentNullException>(() => new SqlInsert().Values(new SqlValue[0]));
-        }
+		[Fact]
+		public void Into_WithNullTableAndColumns_ThrowsArgumentNull()
+		{
+			var insert = Sql
+				.Insert();
 
-        [TestMethod]
-        public void Values_WithValues_AddsValuesToProperty()
-        {
-            var insert = new SqlInsert().Values(5, "String", 5.5f);
-            Assert.IsNotNull(insert.Rows);
-            Assert.AreEqual(1, insert.Rows.Count());
-            Assert.IsNotNull(insert.Rows.First());
-            Assert.AreEqual(3, insert.Rows.First().Count());
-            Assert.AreEqual(5, insert.Rows.First().Cast<SqlConstant>().Select(v => v.Value).First());
-            Assert.AreEqual("String", insert.Rows.First().Cast<SqlConstant>().Select(v => v.Value).Skip(1).First());
-            Assert.AreEqual(5.5f, insert.Rows.First().Cast<SqlConstant>().Select(v => v.Value).Last());
+			Assert.Throws<ArgumentNullException>(() => insert.Into(null, "Id", "Name"));
+		}
 
-            insert.Values(10, "AnotherString", 3.14f);
-            Assert.AreEqual(2, insert.Rows.Count());
-            Assert.IsNotNull(insert.Rows.Last());
-            Assert.AreEqual(3, insert.Rows.Last().Count());
-            Assert.AreEqual(10, insert.Rows.Last().Cast<SqlConstant>().Select(v => v.Value).First());
-            Assert.AreEqual("AnotherString", insert.Rows.Last().Cast<SqlConstant>().Select(v => v.Value).Skip(1).First());
-            Assert.AreEqual(3.14f, insert.Rows.Last().Cast<SqlConstant>().Select(v => v.Value).Last());
-        }
-    }
+		[Fact]
+		public void Into_WithTableAndColumns_SetsColumnsProperty()
+		{
+			var insert = Sql
+				.Insert()
+				.Into("Users", "Id", "Name")
+				.Values(1, "John Doe")
+				.Go();
+
+			Assert.NotNull(insert.Columns);
+			Assert.Equal(2, insert.Columns.Count());
+			Assert.Equal("Id", insert.Columns.First().ColumnName.Segments.First());
+			Assert.Equal("Name", insert.Columns.Last().ColumnName.Segments.First());
+		}
+
+		[Fact]
+		public void Values_WithNullValues_ThrowsArgumentNull()
+		{
+			var insert = Sql
+				.Insert()
+				.Into("User");
+
+			Assert.Throws<ArgumentNullException>(() => insert.Values((SqlValue[])null));
+		}
+
+		[Fact]
+		public void Values_SetsValuesProperty()
+		{
+			var insert = Sql
+				.Insert()
+				.Into("User")
+				.Values(1, "John Doe")
+				.Go();
+
+			Assert.NotNull(insert.Values);
+			Assert.Equal(1, insert.Values.Count());
+			Assert.Equal(2, insert.Values.First().Count());
+			Assert.Equal(1, insert.Values.First().First());
+			Assert.Equal("John Doe", insert.Values.First().Last());
+		}
+
+		[Fact]
+		public void Values_SetsValuesPropertyRepeatedly()
+		{
+			var insert = Sql
+				.Insert()
+				.Into("User")
+				.Values(1, "John Doe")
+				.Values(2, "Jane Doe")
+				.Values(3, "Junior Doe")
+				.Go();
+
+			Assert.NotNull(insert.Values);
+			Assert.Equal(3, insert.Values.Count());
+			Assert.Equal(2, insert.Values.First().Count());
+			Assert.Equal(2, insert.Values.Skip(1).First().Count());
+			Assert.Equal(2, insert.Values.Last().Count());
+
+			Assert.Equal(1, insert.Values.First().First());
+			Assert.Equal("John Doe", insert.Values.First().Last());
+
+			Assert.Equal(2, insert.Values.Skip(1).First().First());
+			Assert.Equal("Jane Doe", insert.Values.Skip(1).First().Last());
+
+			Assert.Equal(3, insert.Values.Last().First());
+			Assert.Equal("Junior Doe", insert.Values.Last().Last());
+		}
+
+		[Fact]
+		public void Columns_IsNullWhenFirstCalled()
+		{
+			var insert = new SqlInsert();
+			Assert.Null(insert.Columns);
+		}
+
+		[Fact]
+		public void Values_IsNotNullWhenFirstCalled()
+		{
+			var insert = new SqlInsert();
+			Assert.NotNull(insert.Values);
+		}
+
+		[Fact]
+		public void ExpressionType_ReturnsSelect()
+		{
+			var query = new SqlInsert();
+
+			Assert.Equal(SqlExpressionType.Insert, query.ExpressionType);
+		}
+
+		[Fact]
+		public void Accept_WithoutInto_VisitsEverything()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+
+			var query = new SqlInsert();
+
+			query.Accept(mock.Object);
+
+			mock.Verify(_ => _.Visit(It.IsAny<SqlInsert>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlInto>()), Times.Never);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlColumn>()), Times.Never);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlValues>()), Times.Once);
+		}
+
+		[Fact]
+		public void Accept_WithColumns_VisitsEverything()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+
+			var query = Sql
+				.Insert()
+				.Into("User")
+				.Values(1)
+				.Go();
+
+			query.Accept(mock.Object);
+
+			mock.Verify(_ => _.Visit(It.IsAny<SqlInsert>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlInto>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlColumn>()), Times.Never);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlValues>()), Times.Once);
+		}
+	}
 }

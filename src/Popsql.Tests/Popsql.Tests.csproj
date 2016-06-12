@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -8,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Popsql.Tests</RootNamespace>
     <AssemblyName>Popsql.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,6 +17,9 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,7 +43,36 @@
     <AssemblyOriginatorKeyFile>..\Popsql.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Moq, Version=4.2.1510.2205, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ploeh.AutoFixture, Version=3.45.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoFixture.3.45.1\lib\net40\Ploeh.AutoFixture.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ploeh.AutoFixture.AutoMoq, Version=3.45.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoFixture.AutoMoq.3.45.1\lib\net40\Ploeh.AutoFixture.AutoMoq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="xunit.assert, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.assert.2.1.0\lib\dotnet\xunit.assert.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="xunit.core, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.extensibility.core.2.1.0\lib\dotnet\xunit.core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="xunit.execution.desktop, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.extensibility.execution.2.1.0\lib\net45\xunit.execution.desktop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -47,30 +80,51 @@
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-      </ItemGroup>
-    </Otherwise>
+    <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Dialects\MySqlDialectTests.cs" />
+    <Compile Include="Dialects\SqlDialectTests.cs" />
+    <Compile Include="EnumerableExtensionsTests.cs" />
+    <Compile Include="Mocking\MockRepositoryExtensions.cs" />
+    <Compile Include="OwnedByTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlColumnTests.cs" />
+    <Compile Include="SqlAssignTests.cs" />
+    <Compile Include="SqlBinaryExpressionTests.cs" />
+    <Compile Include="SqlConstantTests.cs" />
     <Compile Include="SqlDeleteTests.cs" />
-    <Compile Include="SqlStatementExtensionsTests.cs" />
     <Compile Include="SqlExpressionTests.cs" />
+    <Compile Include="SqlFromTests.cs" />
+    <Compile Include="SqlFunctionTests.cs" />
+    <Compile Include="SqlGroupByTests.cs" />
+    <Compile Include="SqlIdentifierParserTests.cs" />
+    <Compile Include="SqlIdentifierTests.cs" />
     <Compile Include="SqlInsertTests.cs" />
+    <Compile Include="SqlIntoTests.cs" />
+    <Compile Include="SqlJoinTests.cs" />
+    <Compile Include="SqlOnTests.cs" />
+    <Compile Include="SqlOrderByTests.cs" />
+    <Compile Include="SqlParameterTests.cs" />
     <Compile Include="SqlSelectTests.cs" />
+    <Compile Include="SqlColumnTests.cs" />
+    <Compile Include="SqlSetTests.cs" />
+    <Compile Include="SqlSortTests.cs" />
+    <Compile Include="ToCommandExtensionsTests.cs" />
+    <Compile Include="ToSqlExtensionsTests.cs" />
+    <Compile Include="SqlSubqueryTests.cs" />
     <Compile Include="SqlTableTests.cs" />
     <Compile Include="SqlTests.cs" />
+    <Compile Include="SqlUnionTests.cs" />
     <Compile Include="SqlUpdateTests.cs" />
-    <Compile Include="Text\SqlWriterDeleteTests.cs" />
-    <Compile Include="Text\SqlWriterInsertTests.cs" />
-    <Compile Include="Text\SqlWriterSelectTests.cs" />
+    <Compile Include="SqlValueListTests.cs" />
+    <Compile Include="SqlValuesTests.cs" />
+    <Compile Include="SqlValueTests.cs" />
+    <Compile Include="SqlWhereTests.cs" />
+    <Compile Include="Text\SqlKeywordTests.cs" />
+    <Compile Include="Text\SqlWriterSettingsTests.cs" />
     <Compile Include="Text\SqlWriterTests.cs" />
-    <Compile Include="Text\SqlWriterUnionTests.cs" />
-    <Compile Include="Text\SqlWriterUpdateTests.cs" />
-    <Compile Include="Utilities\AssertEx.cs" />
+    <Compile Include="Visitors\SqlVisitorExtensionsTests.cs" />
+    <Compile Include="Visitors\SqlVisitorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Popsql\Popsql.csproj">
@@ -78,6 +132,12 @@
       <Name>Popsql</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Popsql.Tests.runsettings" />
+  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
@@ -98,6 +158,12 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

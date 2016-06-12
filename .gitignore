@@ -7,11 +7,16 @@ TestResults
 
 # Visual Studio User Data
 *.suo
+*.user
 
 # NuGet Stuff
 NuGet.exe
-packages
 *.nupkg
+src/packages
+
+# Back-up files
+*.bak
+*.orig
 
 # Windows left-overs
 Thumbs.db

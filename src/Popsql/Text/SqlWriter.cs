@@ -3,652 +3,387 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Popsql.Dialects;
 
 namespace Popsql.Text
 {
-    /// <summary>
-    /// Represents a writer that provides a means of generating streams of SQL statement text.
-    /// </summary>
-    public class SqlWriter : IDisposable
-    {
-        private TextWriter _writer;
-        private readonly bool _canDisposeWriter;
-        private bool _isDisposed;
+	/// <summary>
+	/// Represents a writer that provides a means of generating streams of SQL statement text.
+	/// </summary>
+	public class SqlWriter : IDisposable
+	{
+		private TextWriter _writer;
+		private readonly bool _canDisposeWriter;
+		private bool _isDisposed;
+		private bool _hasPendingSpace;
 
-        private readonly SqlWriterStateManager _stateManager;
-        private bool _hasPendingSpace;
-        
-        /// <summary>
-        /// Represents the SQL NULL value.
-        /// </summary>
-        public const string SqlNull = "NULL";
+		/// <summary>
+		/// Represents the SQL NULL value.
+		/// </summary>
+		public const string SqlNull = "NULL";
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
-        /// specified <see cref="StringBuilder"/>.
-        /// </summary>
-        /// <param name="builder">
-        /// The <see cref="StringBuilder"/> to write to.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown when the <paramref name="builder"/> argument is <see langword="null"/>.
-        /// </exception>
-        public SqlWriter(StringBuilder builder)
-        {
-            if (builder == null) throw new ArgumentNullException("builder");
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
+		/// specified <see cref="StringBuilder"/>.
+		/// </summary>
+		/// <param name="builder">
+		/// The <see cref="StringBuilder"/> to write to.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown when the <paramref name="builder"/> argument is <see langword="null"/>.
+		/// </exception>
+		public SqlWriter(StringBuilder builder)
+			: this(builder, SqlDialect.Current)
+		{
+		}
 
-            _writer = new StringWriter(builder, CultureInfo.InvariantCulture);
-            _canDisposeWriter = true;
-            _stateManager = new SqlWriterStateManager();
-        }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
+		/// specified <see cref="StringBuilder"/> using the specified <paramref name="settings"/>.
+		/// </summary>
+		/// <param name="builder">
+		/// The <see cref="StringBuilder"/> to write to.
+		/// </param>
+		/// <param name="settings">
+		/// The <see cref="SqlWriterSettings"/> object used to configure the new <see cref="SqlWriter"/>
+		/// instance. If this <see langword="null"/>, a <see cref="SqlWriterSettings"/> object with default
+		/// settings is used.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown when the <paramref name="builder"/> argument is <see langword="null"/>.
+		/// </exception>
+		public SqlWriter(StringBuilder builder, SqlWriterSettings settings)
+			: this(builder, SqlDialect.Current, settings)
+		{
+		}
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
-        /// specified <see cref="TextWriter"/>.
-        /// </summary>
-        /// <param name="writer">
-        /// The <see cref="TextWriter"/> to write to.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown when the <paramref name="writer"/> argument is <see langword="null"/>.
-        /// </exception>
-        public SqlWriter(TextWriter writer)
-        {
-            if (writer == null) throw new ArgumentNullException("writer");
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
+		/// specified <see cref="StringBuilder"/> using the specified <see cref="SqlDialect"/>.
+		/// </summary>
+		/// <param name="builder">
+		/// The <see cref="StringBuilder"/> to write to.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> to use while writing.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown when the <paramref name="builder"/> or <paramref name="dialect"/> argument is <see langword="null"/>.
+		/// </exception>
+		public SqlWriter(StringBuilder builder, SqlDialect dialect)
+			: this(builder, dialect, null)
+		{
+		}
 
-            _writer = writer;
-            _canDisposeWriter = false;
-            _stateManager = new SqlWriterStateManager();
-        }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
+		/// specified <see cref="StringBuilder"/> using the specified <see cref="SqlDialect" /> and
+		/// <paramref name="settings"/>.
+		/// </summary>
+		/// <param name="builder">
+		/// The <see cref="StringBuilder"/> to write to.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> to use while writing.
+		/// </param>
+		/// <param name="settings">
+		/// The <see cref="SqlWriterSettings"/> object used to configure the new <see cref="SqlWriter"/>
+		/// instance. If this <see langword="null"/>, a <see cref="SqlWriterSettings"/> object with default
+		/// settings is used.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown when the <paramref name="builder"/> or <paramref name="dialect"/> argument is <see langword="null"/>.
+		/// </exception>
+		public SqlWriter(StringBuilder builder, SqlDialect dialect, SqlWriterSettings settings)
+		{
+			if (builder == null) throw new ArgumentNullException(nameof(builder));
+			if (dialect == null) throw new ArgumentNullException(nameof(dialect));
+			if (settings == null) settings = new SqlWriterSettings();
 
-        /// <summary>
-        /// Finalizes the current instance of the <see cref="SqlWriter"/> class.
-        /// </summary>
-        ~SqlWriter()
-        {
-            Dispose(false);
-        }
+			_writer = new StringWriter(builder, CultureInfo.InvariantCulture);
+			_canDisposeWriter = true;
+			Dialect = dialect;
+			Settings = settings;
+		}
 
-        /// <summary>
-        /// Gets the current state of the <see cref="SqlWriter"/>.
-        /// </summary>
-        public SqlWriterState WriteState
-        {
-            get
-            {
-                return _stateManager.CurrentState;
-            }
-        }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
+		/// specified <see cref="TextWriter"/>.
+		/// </summary>
+		/// <param name="writer">
+		/// The <see cref="TextWriter"/> to write to.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown when the <paramref name="writer"/> argument is <see langword="null"/>.
+		/// </exception>
+		public SqlWriter(TextWriter writer)
+			: this(writer, SqlDialect.Current)
+		{
+		}
 
-        /// <summary>
-        /// Writes a SQL UNION operator to the output stream.
-        /// </summary>
-        public void WriteUnion()
-        {
-            EnsureNotDisposed();
-            Write("UNION");
-            _stateManager.RequestState(SqlWriterState.Union);
-        }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
+		/// specified <see cref="TextWriter"/> using the specified <paramref name="settings"/>.
+		/// </summary>
+		/// <param name="writer">
+		/// The <see cref="TextWriter"/> to write to.
+		/// </param>
+		/// <param name="settings">
+		/// The <see cref="SqlWriterSettings"/> object used to configure the new <see cref="SqlWriter"/>
+		/// instance. If this <see langword="null"/>, a <see cref="SqlWriterSettings"/> object with default
+		/// settings is used.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown when the <paramref name="writer"/> argument is <see langword="null"/>.
+		/// </exception>
+		public SqlWriter(TextWriter writer, SqlWriterSettings settings)
+			: this(writer, SqlDialect.Current, settings)
+		{
+		}
 
-        /// <summary>
-        /// Writes the start of a SQL SELECT statement to the output stream.
-        /// </summary>
-        public void WriteStartSelect()
-        {
-            EnsureNotDisposed();
-            Write("SELECT");
-            _stateManager.RequestState(SqlWriterState.StartSelect);
-        }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
+		/// specified <see cref="TextWriter"/> using the specified <see cref="SqlDialect" />.
+		/// </summary>
+		/// <param name="writer">
+		/// The <see cref="TextWriter"/> to write to.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> to use while writing.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown when the <paramref name="writer"/> or <paramref name="dialect"/> argument is <see langword="null"/>.
+		/// </exception>
+		public SqlWriter(TextWriter writer, SqlDialect dialect)
+			: this(writer, dialect, null)
+		{
+		}
 
-        /// <summary>
-        /// Writes the end of a SQL SELECT statement to the output stream.
-        /// </summary>
-        public void WriteEndSelect()
-        {
-            EnsureNotDisposed();
-            _stateManager.RequestState(SqlWriterState.EndSelect);
-        }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SqlWriter"/> class that writes to the
+		/// specified <see cref="TextWriter"/> using the specified <see cref="SqlDialect" /> and
+		/// <paramref name="settings"/>.
+		/// </summary>
+		/// <param name="writer">
+		/// The <see cref="TextWriter"/> to write to.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> to use while writing.
+		/// </param>
+		/// <param name="settings">
+		/// The <see cref="SqlWriterSettings"/> object used to configure the new <see cref="SqlWriter"/>
+		/// instance. If this <see langword="null"/>, a <see cref="SqlWriterSettings"/> object with default
+		/// settings is used.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown when the <paramref name="writer"/> or <paramref name="dialect"/> argument is <see langword="null"/>.
+		/// </exception>
+		public SqlWriter(TextWriter writer, SqlDialect dialect, SqlWriterSettings settings)
+		{
+			if (writer == null) throw new ArgumentNullException(nameof(writer));
+			if (dialect == null) throw new ArgumentNullException(nameof(dialect));
+			if (settings == null) settings = new SqlWriterSettings();
 
-        /// <summary>
-        /// Writes the specified column to the ouput stream.
-        /// </summary>
-        /// <param name="columnName">
-        /// The name of the column to write.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown when the <paramref name="columnName"/> argument is <see langword="null"/>,
-        /// an empty string, or a string containing only white-space characters.
-        /// </exception>
-        public void WriteColumn(string columnName)
-        {
-            WriteColumn(null, columnName, null);
-        }
+			_writer = writer;
+			_canDisposeWriter = false;
+			Dialect = dialect;
+			Settings = settings;
+		}
 
-        /// <summary>
-        /// Writes the specified column to the output stream.
-        /// </summary>
-        /// <param name="columnName">
-        /// The name of the column to write.
-        /// </param>
-        /// <param name="alias">
-        /// The alias of the column to write.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown when the <paramref name="columnName"/> argument is <see langword="null"/>,
-        /// an empty string, or a string containing only white-space characters.
-        /// </exception>
-        public void WriteColumn(string columnName, string alias)
-        {
-            WriteColumn(null, columnName, alias);
-        }
+		/// <summary>
+		/// Finalizes the current instance of the <see cref="SqlWriter"/> class.
+		/// </summary>
+		~SqlWriter()
+		{
+			Dispose(false);
+		}
 
-        /// <summary>
-        /// Writes the specified column to the output stream.
-        /// </summary>
-        /// <param name="tableName">
-        /// The name of the table of the column to write.
-        /// </param>
-        /// <param name="columnName">
-        /// The name of the column to write.
-        /// </param>
-        /// <param name="alias">
-        /// The alias of the column to write.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown when the <paramref name="columnName"/> argument is <see langword="null"/>,
-        /// an empty string, or a string containing only white-space characters.
-        /// </exception>
-        public void WriteColumn(string tableName, string columnName, string alias)
-        {
-            EnsureNotDisposed();
-            if (string.IsNullOrWhiteSpace(columnName)) throw new ArgumentNullException("columnName");
+		/// <summary>
+		/// Gets the currently used SQL dialect.
+		/// </summary>
+		protected SqlDialect Dialect
+		{
+			get;
+		}
 
-            switch (WriteState)
-            {
-                case SqlWriterState.Select:
-                case SqlWriterState.Into:
-                case SqlWriterState.OrderBy:
-                case SqlWriterState.Set:
-                    WriteRaw(",");
-                    break;
+		/// <summary>
+		/// Gets the <see cref="SqlWriterSettings"/> used to create this <see cref="SqlWriter"/> instance.
+		/// </summary>
+		protected SqlWriterSettings Settings
+		{
+			get;
+		}
 
-                case SqlWriterState.StartInto: 
-                    WriteOpenParenthesis();
-                    break;
+		/// <summary>
+		/// Writes the specified <see cref="SqlKeyword"/> to the output stream.
+		/// </summary>
+		/// <param name="keyword">
+		/// The <see cref="SqlKeyword"/> to write to the output stream.
+		/// </param>
+		public void WriteKeyword(SqlKeyword keyword)
+		{
+			EnsureNotDisposed();
+			Write(Settings.WriteKeywordsInLowerCase 
+				? keyword.Keyword.ToLowerInvariant() 
+				: keyword.Keyword.ToUpperInvariant());
+		}
 
-				case SqlWriterState.StartWhere:
-				case SqlWriterState.StartOn:
-				case SqlWriterState.StartExpression:
-					WriteOpenParenthesis();
-					break;
+		/// <summary>
+		/// Writes the specified <paramref name="identifier"/> to the output stream.
+		/// </summary>
+		/// <param name="identifier">
+		/// The <see cref="SqlIdentifier"/> to write to the output stream.
+		/// </param>
+		public void WriteIdentifier(SqlIdentifier identifier)
+		{
+			EnsureNotDisposed();
+			if (identifier == null) throw new ArgumentNullException(nameof(identifier));
+
+			for (int index = 0; index < identifier.Segments.Length; index++)
+			{
+				var segment = identifier.Segments[index];
+				if (index > 0)
+				{
+					WriteRaw(".");
+					WriteRaw(Dialect.FormatIdentifier(segment));
+				}
+				else
+				{
+					Write(Dialect.FormatIdentifier(segment));
+				}
 			}
+		}
 
-            if (!string.IsNullOrWhiteSpace(tableName))
-            {
-                Write(FormatTableName(tableName));
-                WriteRaw(".");
+		/// <summary>
+		/// Writes the specified operator to the output stream.
+		/// </summary>
+		/// <param name="operator">
+		/// The operator to write to the output stream.
+		/// </param>
+		public void WriteOperator(SqlBinaryOperator @operator)
+		{
+			EnsureNotDisposed();
 
-                // Prevent a space after the dot operator.
-                _hasPendingSpace = false;
-            }
+			switch (@operator)
+			{
+				case SqlBinaryOperator.And:
+					WriteKeyword(SqlKeywords.And);
+					break;
 
-            Write(FormatColumnName(columnName));
+				case SqlBinaryOperator.Equal:
+					Write("=");
+					break;
 
-            if (!string.IsNullOrWhiteSpace(alias))
-            {
-                Write("AS");
-                Write(FormatColumnName(alias));
-            }
+				case SqlBinaryOperator.GreaterThan:
+					Write(">");
+					break;
 
-            switch (WriteState)
-            {
-                case SqlWriterState.StartSelect:
-                    _stateManager.RequestState(SqlWriterState.Select);
-                    break;
+				case SqlBinaryOperator.GreaterThanOrEqual:
+					Write(">=");
+					break;
 
-                case SqlWriterState.StartInto:
-                    _stateManager.RequestState(SqlWriterState.Into);
-                    break;
+				case SqlBinaryOperator.LessThan:
+					Write("<");
+					break;
 
-                case SqlWriterState.StartSet:
-                    _stateManager.RequestState(SqlWriterState.Set);
-                    break;
+				case SqlBinaryOperator.LessThanOrEqual:
+					Write("<=");
+					break;
 
-                case SqlWriterState.StartWhere:
-                case SqlWriterState.StartOn:
-                    _stateManager.RequestState(SqlWriterState.StartExpression);
-                    break;
+				case SqlBinaryOperator.Like:
+					WriteKeyword(SqlKeywords.Like);
+					break;
 
-                case SqlWriterState.Expression:
-                    WriteCloseParenthesis();
-                    _stateManager.RequestState(new Dictionary<SqlWriterState, SqlWriterState>
-                    {
-                        { SqlWriterState.StartOn,    SqlWriterState.On },
-                        { SqlWriterState.StartWhere, SqlWriterState.Where },
-                    });
-                    break;
+				case SqlBinaryOperator.NotEqual:
+					Write("<>");
+					break;
 
-                case SqlWriterState.StartOrderBy:
-                    _stateManager.RequestState(SqlWriterState.OrderBy);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Writes an opening parenthesis to the output stream.
-        /// </summary>
-        public void WriteOpenParenthesis()
-        {
-            Write("(");
-            _hasPendingSpace = false;
-        }
-
-        /// <summary>
-        /// Writes an closing parenthesis to the output stream.
-        /// </summary>
-        public void WriteCloseParenthesis()
-        {
-            WriteRaw(")");
-        }
-
-        /// <summary>
-        /// Writes the start of a SQL FROM clause to the output stream.
-        /// </summary>
-        public void WriteStartFrom()
-        {
-            EnsureNotDisposed();
-            Write("FROM");
-            _stateManager.RequestState(SqlWriterState.StartFrom);
-        }
-
-        /// <summary>
-        /// Writes the start of a SQL JOIN clause to the output stream.
-        /// </summary>
-        public void WriteStartJoin(SqlJoinType type = SqlJoinType.Default)
-        {
-            EnsureNotDisposed();
-            switch (type)
-            {
-                case SqlJoinType.Inner:
-                    Write("INNER");
-                    break;
-
-                case SqlJoinType.Left:
-                    Write("LEFT");
-                    break;
-
-                case SqlJoinType.Right:
-                    Write("RIGHT");
-                    break;
-            }
-            Write("JOIN");
-            _stateManager.RequestState(SqlWriterState.StartJoin);
-        }
-
-        /// <summary>
-        /// Writes the start of a SQL JOIN condition to the output stream.
-        /// </summary>
-        public void WriteStartOn()
-        {
-            EnsureNotDisposed();
-            Write("ON");
-            _stateManager.RequestState(SqlWriterState.StartOn);
-        }
-
-        /// <summary>
-        /// Writes the start of a SQL WHERE clause to the output stream.
-        /// </summary>
-        public void WriteStartWhere()
-        {
-            EnsureNotDisposed();
-            Write("WHERE");
-            _stateManager.RequestState(SqlWriterState.StartWhere);
-        }
-
-        /// <summary>
-        /// Writes the specified table to the output stream.
-        /// </summary>
-        /// <param name="tableName">
-        /// The name of the table to write.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown when the <paramref name="tableName"/> argument is <see langword="null"/>,
-        /// an empty string, or a string containing only white-space characters.
-        /// </exception>
-        public void WriteTable(string tableName)
-        {
-            WriteTable(tableName, null);
-        }
-
-        /// <summary>
-        /// Writes the specified table to the output stream.
-        /// </summary>
-        /// <param name="tableName">
-        /// The name of the table to write.
-        /// </param>
-        /// <param name="alias">
-        /// The alias of the table to write.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown when the <paramref name="tableName"/> argument is <see langword="null"/>,
-        /// an empty string, or a string containing only white-space characters.
-        /// </exception>
-        public void WriteTable(string tableName, string alias)
-        {
-            EnsureNotDisposed();
-            if (string.IsNullOrWhiteSpace(tableName)) throw new ArgumentNullException("tableName");
-
-            if (WriteState == SqlWriterState.From)
-            {
-                WriteRaw(",");
-            }
-
-            Write(FormatTableName(tableName));
-
-            if (!string.IsNullOrWhiteSpace(alias))
-            {
-                Write(FormatTableName(alias));
-            }
-
-            switch (WriteState)
-            {
-                case SqlWriterState.StartFrom:
-                    _stateManager.RequestState(SqlWriterState.From);
-                    break;
-
-                case SqlWriterState.StartUpdate:
-                    _stateManager.RequestState(SqlWriterState.Update);
-                    break;
-
-                case SqlWriterState.StartJoin:
-                    _stateManager.RequestState(SqlWriterState.Join);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Writes the start of a SQL ORDER BY clause to the output stream.
-        /// </summary>
-        public void WriteStartOrderBy()
-        {
-            EnsureNotDisposed();
-            Write("ORDER BY");
-            _stateManager.RequestState(SqlWriterState.StartOrderBy);
-        }
-
-        /// <summary>
-        /// Writes the specified sort order to the output stream.
-        /// </summary>
-        /// <param name="sortOrder">
-        /// The sort order to write to the output stream.
-        /// </param>
-        public void WriteSortOrder(SqlSortOrder sortOrder)
-        {
-            EnsureNotDisposed();
-            switch (sortOrder)
-            {
-                case SqlSortOrder.Ascending:
-                    Write("ASC");
-                    break;
-
-                case SqlSortOrder.Descending:
-                    Write("DESC");
-                    break;
-
-                default:
-                    throw new InvalidEnumArgumentException("operator", (int)sortOrder, typeof(SqlBinaryOperator));
-            }
-        }
-
-        /// <summary>
-        /// Writes the specified operator to the output stream.
-        /// </summary>
-        /// <param name="operator">
-        /// The operator to write to the output stream.
-        /// </param>
-        public void WriteOperator(SqlBinaryOperator @operator)
-        {
-            EnsureNotDisposed();
-            SqlWriterState state = SqlWriterState.Expression;
-            switch (@operator)
-            {
-                case SqlBinaryOperator.And:
-                    state = SqlWriterState.StartExpression;
-                    Write("AND");
-                    break;
-
-                case SqlBinaryOperator.Equal:
-                    Write("=");
-                    break;
-
-                case SqlBinaryOperator.GreaterThan:
-                    Write(">");
-                    break;
-
-                case SqlBinaryOperator.GreaterThanOrEqual:
-                    Write(">=");
-                    break;
-
-                case SqlBinaryOperator.LessThan:
-                    Write("<");
-                    break;
-
-                case SqlBinaryOperator.LessThanOrEqual:
-                    Write("<=");
-                    break;
-
-                case SqlBinaryOperator.Like:
-                    Write("LIKE");
-                    break;
-
-                case SqlBinaryOperator.NotEqual:
-                    Write("<>");
-                    break;
-
-                case SqlBinaryOperator.Or:
-                    state = SqlWriterState.StartExpression;
-                    Write("OR");
-                    break;
+				case SqlBinaryOperator.Or:
+					WriteKeyword(SqlKeywords.Or);
+					break;
 
 				case SqlBinaryOperator.In:
-					Write("IN");
+					WriteKeyword(SqlKeywords.In);
 					break;
 
-                default:
-                    throw new InvalidEnumArgumentException("operator", (int)@operator, typeof(SqlBinaryOperator));
-            }
-
-            _stateManager.RequestState(state);
-        }
-
-        /// <summary>
-        /// Writes the start of a SQL UPDATE statement to the output stream.
-        /// </summary>
-        public void WriteStartUpdate()
-        {
-            EnsureNotDisposed();
-            Write("UPDATE");
-            _stateManager.RequestState(SqlWriterState.StartUpdate);
-        }
-
-        /// <summary>
-        /// Writes the start of a SQL SET clause to the output stream.
-        /// </summary>
-        public void WriteStartSet()
-        {
-            EnsureNotDisposed();
-            Write("SET");
-            _stateManager.RequestState(SqlWriterState.StartSet);
-        }
-
-        /// <summary>
-        /// Writes the start of a SQL INSERT statement to the output stream.
-        /// </summary>
-        public void WriteStartInsert()
-        {
-            EnsureNotDisposed();
-            Write("INSERT");
-            _stateManager.RequestState(SqlWriterState.StartInsert);
-        }
-
-        /// <summary>
-        /// Writes the start of a SQL INTO statement to the output stream.
-        /// </summary>
-        public void WriteStartInto()
-        {
-            EnsureNotDisposed();
-            Write("INTO");
-            _stateManager.RequestState(SqlWriterState.StartInto);
-        }
-
-        /// <summary>
-        /// Writes the start of a SQL VALUES clause to the output stream.
-        /// </summary>
-        public void WriteStartValues()
-        {
-            EnsureNotDisposed();
-            switch (WriteState)
-            {
-                case SqlWriterState.Into:
-                    WriteCloseParenthesis();
-                    Write("VALUES");
-                    break;
-
-                case SqlWriterState.EndValues:
-                    WriteRaw(",");
-                    break;
-            }
-            _stateManager.RequestState(SqlWriterState.StartValues);
-        }
-
-        /// <summary>
-        /// Writes the end of a SQL VALUES clause to the output stream.
-        /// </summary>
-        public void WriteEndValues()
-        {
-            EnsureNotDisposed();
-            WriteCloseParenthesis();
-            _stateManager.RequestState(SqlWriterState.EndValues);
-        }
-
-		/// <summary>
-		/// Writes the start of a SQL expression list to the output stream.
-		/// </summary>
-		public void WriteStartList()
-		{
-			EnsureNotDisposed();
-			_stateManager.RequestState(SqlWriterState.StartList);
+				default:
+					throw new InvalidEnumArgumentException(nameof(@operator), (int)@operator, typeof(SqlBinaryOperator));
+			}
 		}
 
 		/// <summary>
-		/// Writes the end of a SQL expression list to the output stream.
+		/// Writes the specified sort order to the output stream.
 		/// </summary>
-		public void WriteEndList()
+		/// <param name="sortOrder">
+		/// The sort order to write to the output stream.
+		/// </param>
+		public void WriteSortOrder(SqlSortOrder sortOrder)
 		{
 			EnsureNotDisposed();
-			WriteCloseParenthesis();
-			_stateManager.RequestState(SqlWriterState.Expression);
+			switch (sortOrder)
+			{
+				case SqlSortOrder.Ascending:
+					if (Settings.WriteAscendingSortOrder)
+					{
+						WriteKeyword(SqlKeywords.Ascending);
+					}
+					break;
 
-			// Close the expression's parenthesis too.
-			WriteCloseParenthesis();
+				case SqlSortOrder.Descending:
+					WriteKeyword(SqlKeywords.Descending);
+					break;
+
+				default:
+					throw new InvalidEnumArgumentException(nameof(sortOrder), (int)sortOrder, typeof(SqlBinaryOperator));
+			}
 		}
 
 		/// <summary>
-		/// Writes the start of a SQL DELETE statement to the output stream.
+		/// Writes the specified SQL value to the output stream.
 		/// </summary>
-		public void WriteStartDelete()
-        {
-            EnsureNotDisposed();
-            Write("DELETE");
-            _stateManager.RequestState(SqlWriterState.StartDelete);
-        }
+		/// <param name="value">
+		/// The value to write to the output stream.
+		/// </param>
+		public void WriteValue(object value)
+		{
+			EnsureNotDisposed();
 
-        /// <summary>
-        /// Writes the specified SQL value to the output stream.
-        /// </summary>
-        /// <param name="value">
-        /// The value to write to the output stream.
-        /// </param>
-        public void WriteValue(object value)
-        {
-            EnsureNotDisposed();
+			if (value == null)
+			{
+				Write(SqlNull);
+				return;
+			}
 
-            switch (WriteState)
-            {
-                case SqlWriterState.StartValues:
-                case SqlWriterState.StartList:
-                    Write("(");
-                    _hasPendingSpace = false;
-                    break;
+			switch (Type.GetTypeCode(value.GetType()))
+			{
+				case TypeCode.String:
+				case TypeCode.Char:
+					Write(Dialect.FormatString(Convert.ToString(value, CultureInfo.InvariantCulture)));
+					break;
 
-                case SqlWriterState.Values:
-                case SqlWriterState.List:
-                    WriteRaw(",");
-                    break;
+				case TypeCode.Byte:
+				case TypeCode.Int16:
+				case TypeCode.Int32:
+				case TypeCode.Int64:
+				case TypeCode.SByte:
+				case TypeCode.UInt16:
+				case TypeCode.UInt32:
+				case TypeCode.UInt64:
+					Write(Convert.ToString(value, CultureInfo.InvariantCulture));
+					break;
 
-                case SqlWriterState.Set:
-                    Write("=");
-                    break;
-            }
+				case TypeCode.Single:
+				case TypeCode.Double:
+				case TypeCode.Decimal:
+					Write(Convert.ToString(value, CultureInfo.InvariantCulture));
+					break;
 
-            if (value == null)
-            {
-                Write(SqlNull);
-                return;
-            }
-
-            switch (Type.GetTypeCode(value.GetType()))
-            {
-                case TypeCode.String:
-                case TypeCode.Char:
-                    Write(FormatString(Convert.ToString(value, CultureInfo.InvariantCulture)));
-                    break;
-
-                case TypeCode.Byte:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                case TypeCode.SByte:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                    Write(Convert.ToString(value, CultureInfo.InvariantCulture));
-                    break;
-
-                case TypeCode.Single:
-                case TypeCode.Double:
-                case TypeCode.Decimal:
-                    Write(Convert.ToString(value, CultureInfo.InvariantCulture));
-                    break;
-
-                default:
-                    Write(FormatString(Convert.ToString(value, CultureInfo.InvariantCulture)));
-                    break;
-            }
-
-            switch (WriteState)
-            {
-                case SqlWriterState.StartValues:
-                    _stateManager.RequestState(SqlWriterState.Values);
-                    break;
-
-                case SqlWriterState.StartList:
-                    _stateManager.RequestState(SqlWriterState.List);
-                    break;
-
-                case SqlWriterState.Expression:
-                    WriteCloseParenthesis();
-                    _stateManager.RequestState(new Dictionary<SqlWriterState, SqlWriterState>
-                    {
-                        { SqlWriterState.StartOn,    SqlWriterState.On },
-                        { SqlWriterState.StartWhere, SqlWriterState.Where },
-                    });
-                    break;
-            }
-        }
+				default:
+					Write(Dialect.FormatString(Convert.ToString(value, CultureInfo.InvariantCulture)));
+					break;
+			}
+		}
 
 		/// <summary>
 		/// Writes the specified SQL parameter to the output stream.
@@ -657,174 +392,107 @@ namespace Popsql.Text
 		/// The value to write to the output stream.
 		/// </param>
 		public void WriteParameter(string parameterName)
-        {
-            EnsureNotDisposed();
+		{
+			EnsureNotDisposed();
 
-            switch (WriteState)
-            {
-                case SqlWriterState.StartValues:
-                    Write("(");
-                    _hasPendingSpace = false;
-                    break;
+			if (string.IsNullOrEmpty(parameterName)) throw new ArgumentNullException(nameof(parameterName));
+			Write(Dialect.FormatParameterName(parameterName));
+		}
 
-                case SqlWriterState.Values:
-                    WriteRaw(",");
-                    break;
+		/// <summary>
+		/// Writes an opening parenthesis to the output stream.
+		/// </summary>
+		public void WriteOpenParenthesis()
+		{
+			EnsureNotDisposed();
+			Write("(");
+			ClearPendingSpace();
+		}
 
-                case SqlWriterState.Set:
-                    Write("=");
-                    break;
-            }
+		/// <summary>
+		/// Writes an closing parenthesis to the output stream.
+		/// </summary>
+		public void WriteCloseParenthesis()
+		{
+			EnsureNotDisposed();
+			WriteRaw(")");
+		}
 
-            Write(FormatParameterName(parameterName));
+		/// <summary>
+		/// Writes the specified string to the output stream, including any pending formatting.
+		/// </summary>
+		/// <param name="value">
+		/// The <see cref="String"/> to write to the output stream.
+		/// </param>
+		public void Write(string value)
+		{
+			EnsureNotDisposed();
+			if (_hasPendingSpace)
+			{
+				WriteRaw(" ");
+				ClearPendingSpace();
+			}
 
-            switch (WriteState)
-            {
-                case SqlWriterState.StartValues:
-                    _stateManager.RequestState(SqlWriterState.Values);
-                    break;
+			WriteRaw(value);
+			_hasPendingSpace = true;
+		}
 
-                case SqlWriterState.Expression:
-                    WriteCloseParenthesis();
-                    _stateManager.RequestState(new Dictionary<SqlWriterState, SqlWriterState>
-                    {
-                        { SqlWriterState.StartOn,    SqlWriterState.On },
-                        { SqlWriterState.StartWhere, SqlWriterState.Where },
-                    });
-                    break;
-            }
-        }
+		/// <summary>
+		/// Writes the specified string to the output stream, ignoring any pending formatting.
+		/// </summary>
+		/// <param name="value">
+		/// The <see cref="String"/> to write to the output stream.
+		/// </param>
+		public void WriteRaw(string value)
+		{
+			EnsureNotDisposed();
+			_writer.Write(value);
+		}
 
-        /// <summary>
-        /// Writes the specified string to the output stream, including any pending formatting.
-        /// </summary>
-        /// <param name="value">
-        /// The <see cref="String"/> to write to the output stream.
-        /// </param>
-        protected void Write(string value)
-        {
-            if (_hasPendingSpace)
-            {
-                WriteRaw(" ");
-                _hasPendingSpace = false;
-            }
+		/// <summary>
+		/// Removes any pending white-space.
+		/// </summary>
+		protected internal void ClearPendingSpace()
+		{
+			_hasPendingSpace = false;
+		}
 
-            WriteRaw(value);
-            _hasPendingSpace = true;
-        }
+		/// <summary>
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 
-        /// <summary>
-        /// Writes the specified string to the output stream, ignoring any pending formatting.
-        /// </summary>
-        /// <param name="value">
-        /// The <see cref="String"/> to write to the output stream.
-        /// </param>
-        protected void WriteRaw(string value)
-        {
-            _writer.Write(value);
-        }
+		/// <summary>
+		/// Releases all unmanaged resources used by the current instance of the <see cref="SqlWriter"/> class and, 
+		/// optionally, releases all managed resources as well.
+		/// </summary>
+		/// <param name="isDisposing">
+		/// <see langword="true"/> to release managed resources as well as unmanaged resources; otherwise, <see langword="false"/>.
+		/// </param>
+		protected virtual void Dispose(bool isDisposing)
+		{
+			if (_isDisposed) return;
 
-        /// <summary>
-        /// Formats the specified string for the current SQL dialect. The default implementation 
-        /// returns the table name enclosed in single quotes.
-        /// </summary>
-        /// <param name="value">
-        /// The SQL string to format.
-        /// </param>
-        /// <returns>
-        /// The formatted SQL string.
-        /// </returns>
-        protected virtual string FormatString(string value)
-        {
-            return "'" + value + "'";
-        }
+			if (_canDisposeWriter && _writer != null)
+			{
+				_writer.Dispose();
+				_writer = null;
+			}
 
-        /// <summary>
-        /// Formats the specified table name for the current SQL dialect. The default implementation 
-        /// returns the table name enclosed in square brackets.
-        /// </summary>
-        /// <param name="tableName">
-        /// The table name to format.
-        /// </param>
-        /// <returns>
-        /// The formatted table name.
-        /// </returns>
-        protected virtual string FormatTableName(string tableName)
-        {
-            return "[" + tableName + "]";
-        }
+			_isDisposed = true;
+		}
 
-        /// <summary>
-        /// Formats the specified parameter name for the current SQL dialect. The default implementation 
-        /// returns the parameter name prefixed with an 'at' sign ('@').
-        /// </summary>
-        /// <param name="parameterName">
-        /// The parameter name to format.
-        /// </param>
-        /// <returns>
-        /// The formatted parameter name.
-        /// </returns>
-        protected virtual string FormatParameterName(string parameterName)
-        {
-            return "@" + parameterName;
-        }
-
-        /// <summary>
-        /// Formats the specified column name for the current SQL dialect. The default implementation
-        /// returns the column name enclosed in square brackets.
-        /// </summary>
-        /// <param name="columnName">
-        /// The column name to format.
-        /// </param>
-        /// <returns>
-        /// The formatted column name.
-        /// </returns>
-        protected virtual string FormatColumnName(string columnName)
-        {
-            return "[" + columnName + "]";
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Releases all unmanaged resources used by the current instance of the <see cref="SqlWriter"/> class and, 
-        /// optionally, releases all managed resources as well.
-        /// </summary>
-        /// <param name="isDisposing">
-        /// <see langword="true"/> to release managed resources as well as unmanaged resources; otherwise, <see langword="false"/>.
-        /// </param>
-        protected virtual void Dispose(bool isDisposing)
-        {
-            if (_isDisposed) return;
-
-            if (isDisposing)
-            {
-                _stateManager.Close();
-            }
-
-            if (_canDisposeWriter && _writer != null)
-            {
-                _writer.Dispose();
-                _writer = null;
-            }
-
-            _isDisposed = true;
-        }
-
-        /// <summary>
-        /// Throws an <see cref="ObjectDisposedException"/> when the current instance of the
-        /// <see cref="SqlWriter"/> class has already been disposed.
-        /// </summary>
-        protected void EnsureNotDisposed()
-        {
-            if (_isDisposed) throw new ObjectDisposedException(GetType().Name);
-        }
-    }
+		/// <summary>
+		/// Throws an <see cref="ObjectDisposedException"/> when the current instance of the
+		/// <see cref="SqlWriter"/> class has already been disposed.
+		/// </summary>
+		protected void EnsureNotDisposed()
+		{
+			if (_isDisposed) throw new ObjectDisposedException(GetType().Name);
+		}
+	}
 }

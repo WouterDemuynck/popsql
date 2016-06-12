@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Popsql</RootNamespace>
     <AssemblyName>Popsql</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,38 +41,100 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialects\MySqlDialect.cs" />
+    <Compile Include="Dialects\SqlDialect.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="Grammar\ISqlDeleteClause.cs" />
+    <Compile Include="Grammar\ISqlDeleteFromClause.cs" />
+    <Compile Include="Grammar\ISqlFromClause.cs" />
+    <Compile Include="Grammar\ISqlGo.cs" />
+    <Compile Include="Grammar\ISqlGroupByClause.cs" />
+    <Compile Include="Grammar\ISqlHavingClause.cs" />
+    <Compile Include="Grammar\ISqlInsertClause.cs" />
+    <Compile Include="Grammar\ISqlIntoClause.cs" />
+    <Compile Include="Grammar\ISqlJoinClause.cs" />
+    <Compile Include="Grammar\ISqlOrderByClause.cs" />
+    <Compile Include="Grammar\ISqlSelectClause.cs" />
+    <Compile Include="Grammar\ISqlSelectFromClause.cs" />
+    <Compile Include="Grammar\ISqlSelectWhereClause.cs" />
+    <Compile Include="Grammar\ISqlSetClause.cs" />
+    <Compile Include="Grammar\ISqlUpdateClause.cs" />
+    <Compile Include="Grammar\ISqlValuesClause.cs" />
+    <Compile Include="Grammar\ISqlWhereClause.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlClause.cs" />
+    <Compile Include="OwnedBy.cs" />
+    <Compile Include="SqlAggregate.cs" />
+    <Compile Include="SqlGroupBy.cs" />
+    <Compile Include="SqlHaving.cs" />
+    <Compile Include="SqlSelect.GroupByClause.cs" />
+    <Compile Include="SqlSelect.JoinClause.cs" />
+    <Compile Include="ToCommandExtensions.cs" />
+    <Compile Include="SqlUnion.cs" />
+    <Compile Include="SqlValueList.cs" />
+    <Compile Include="SqlInto.cs" />
+    <Compile Include="SqlOn.cs" />
+    <Compile Include="SqlSelect.Visitable.cs" />
+    <Compile Include="SqlSet.cs" />
+    <Compile Include="ToSqlExtensions.cs" />
+    <Compile Include="SqlUpdate.WhereClause.cs" />
+    <Compile Include="SqlUpdate.SetClause.cs" />
+    <Compile Include="SqlUpdate.UpdateClause.cs" />
+    <Compile Include="SqlDelete.FromClause.cs" />
+    <Compile Include="SqlDelete.WhereClause.cs" />
+    <Compile Include="SqlFrom.cs" />
+    <Compile Include="Sql.cs" />
     <Compile Include="SqlAssign.cs" />
     <Compile Include="SqlBinaryExpression.cs" />
     <Compile Include="SqlBinaryOperator.cs" />
-    <Compile Include="SqlExpressionType.cs" />
-    <Compile Include="SqlExpressionVisitor.cs" />
-    <Compile Include="SqlJoin.cs" />
-    <Compile Include="SqlJoinType.cs" />
-    <Compile Include="SqlParameter.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sql.cs" />
     <Compile Include="SqlColumn.cs" />
     <Compile Include="SqlConstant.cs" />
     <Compile Include="SqlDelete.cs" />
+    <Compile Include="SqlExpression.cs" />
+    <Compile Include="SqlExpressionType.cs" />
+    <Compile Include="SqlFunction.cs" />
+    <Compile Include="SqlIdentifier.cs" />
+    <Compile Include="SqlIdentifierParser.cs" />
     <Compile Include="SqlInsert.cs" />
+    <Compile Include="SqlInsert.InsertClause.cs" />
+    <Compile Include="SqlInsert.ValuesClause.cs" />
+    <Compile Include="SqlJoin.cs" />
+    <Compile Include="SqlJoinType.cs" />
+    <Compile Include="SqlOrderBy.cs" />
+    <Compile Include="SqlParameter.cs" />
+    <Compile Include="SqlSelect.OrderByClause.cs" />
+    <Compile Include="SqlSelect.SelectClause.cs" />
+    <Compile Include="SqlSelect.WhereClause.cs" />
     <Compile Include="SqlSelect.cs" />
+    <Compile Include="SqlSelect.FromClause.cs" />
     <Compile Include="SqlSort.cs" />
     <Compile Include="SqlSortOrder.cs" />
     <Compile Include="SqlStatement.cs" />
-    <Compile Include="SqlStatementExtensions.cs" />
+    <Compile Include="SqlSubquery.cs" />
     <Compile Include="SqlTable.cs" />
-    <Compile Include="SqlExpression.cs" />
-    <Compile Include="SqlUnion.cs" />
+    <Compile Include="SqlTableExpression.cs" />
     <Compile Include="SqlUpdate.cs" />
     <Compile Include="SqlValue.cs" />
+    <Compile Include="SqlValues.cs" />
+    <Compile Include="SqlWhere.cs" />
+    <Compile Include="Text\SqlKeyword.cs" />
+    <Compile Include="Text\SqlKeywords.cs" />
     <Compile Include="Text\SqlWriter.cs" />
-    <Compile Include="Text\SqlWriterState.cs" />
-    <Compile Include="Text\SqlWriterStateManager.cs" />
+    <Compile Include="Text\SqlWriterSettings.cs" />
+    <Compile Include="Visitors\ISqlVisitable.cs" />
+    <Compile Include="Visitors\ISqlVisitor.cs" />
+    <Compile Include="Visitors\SqlVisitor.cs" />
+    <Compile Include="Visitors\SqlVisitorExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="SqlDelete.DeleteClause.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="SqlInsert.IntoClause.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

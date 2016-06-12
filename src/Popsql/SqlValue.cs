@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Popsql
 {
-    /// <summary>
-    /// Represents a SQL expression tree node that can be used as a value.
-    /// </summary>
-    public abstract class SqlValue : SqlExpression
+	/// <summary>
+	/// Represents a SQL expression tree node that can be used as a value.
+	/// </summary>
+	public abstract class SqlValue : SqlExpression
     {
         /// <summary>
         /// Implicitly converts an <see cref="Int16"/> to a <see cref="SqlConstant"/> instance.

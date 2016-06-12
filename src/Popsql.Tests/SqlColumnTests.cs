@@ -1,63 +1,64 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Popsql.Tests.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Xunit;
 
 namespace Popsql.Tests
 {
-    [TestClass]
-    public class SqlColumnTests
-    {
-        [TestMethod]
-        public void Ctor_WithNullColumnName_ThrowsArgumentNull()
-        {
-            AssertEx.Throws<ArgumentNullException>(() => new SqlColumn(null));
-        }
+	public class SqlColumnTests
+	{
+		[Fact]
+		public void Ctor_WithNullColumnName_ThrowsArgumentNull()
+		{
+			Assert.Throws<ArgumentNullException>(() => new SqlColumn(null));
+		}
 
-        [TestMethod]
-        public void Ctor_WithEmptyColumnName_ThrowsArgumentNull()
-        {
-            AssertEx.Throws<ArgumentNullException>(() => new SqlColumn(string.Empty));
-        }
+		[Fact]
+		public void Ctor_WithEmptyColumnName_ThrowsArgument()
+		{
+			Assert.Throws<ArgumentException>(() => new SqlColumn(string.Empty));
+		}
 
-        [TestMethod]
-        public void Ctor_WithWhiteSpaceColumnName_ThrowsArgumentNull()
-        {
-            AssertEx.Throws<ArgumentNullException>(() => new SqlColumn("\t"));
-        }
+		[Fact]
+		public void Ctor_WithColumnName_SetsColumnNameProperty()
+		{
+			var column = new SqlColumn("[dbo].[Users].[Id]");
 
-        [TestMethod]
-        public void Ctor_WithColumnName_SetsColumnNameProperty()
-        {
-            SqlColumn column = new SqlColumn("Id");
-            Assert.AreEqual("Id", column.ColumnName);
-        }
+			Assert.NotNull(column.ColumnName);
+			Assert.Equal("dbo", column.ColumnName.Segments[0]);
+			Assert.Equal("Users", column.ColumnName.Segments[1]);
+			Assert.Equal("Id", column.ColumnName.Segments[2]);
+		}
 
-        [TestMethod]
-        public void Ctor_WithColumnNameAndAlias_SetsProperties()
-        {
-            SqlColumn column = new SqlColumn("Id", "i");
-            Assert.AreEqual("Id", column.ColumnName);
-            Assert.AreEqual("i", column.Alias);
-        }
+		[Fact]
+		public void Ctor_WithColumnNameAnAlias_SetsAliasProperty()
+		{
+			var column = new SqlColumn("[dbo].[Users].[Id]", "u");
 
-        [TestMethod]
-        public void Ctor_WithTableNameColumnNameAndAlias_SetsProperties()
-        {
-            SqlColumn column = new SqlColumn("Users", "Id", "i");
-            Assert.AreEqual("Id", column.ColumnName);
-            Assert.AreEqual("i", column.Alias);
-            Assert.AreEqual("Users", column.TableName);
-        }
+			Assert.NotNull(column.ColumnName);
+			Assert.Equal("dbo", column.ColumnName.Segments[0]);
+			Assert.Equal("Users", column.ColumnName.Segments[1]);
+			Assert.Equal("Id", column.ColumnName.Segments[2]);
 
-        [TestMethod]
-        public void ImplicitCast_FromString_SetsColumnNameProperty()
-        {
-            SqlColumn column = "Id";
-            Assert.AreEqual("Id", column.ColumnName);
-        }
-    }
+			Assert.NotNull(column.Alias);
+			Assert.Equal("u", column.Alias);
+		}
+
+		[Fact]
+		public void ExpressionType_ReturnsColumn()
+		{
+			var table = new SqlColumn("[dbo].[Users].[Id]");
+			Assert.Equal(SqlExpressionType.Column, table.ExpressionType);
+		}
+
+
+		[Fact]
+		public void ImplicitConversion_WithSortOrder_ReturnsSort()
+		{
+			var column = new SqlColumn("[dbo].[Users].[Id]");
+			var sort = column + SqlSortOrder.Descending;
+
+			Assert.NotNull(sort);
+			Assert.Same(column, sort.Column);
+			Assert.Equal(SqlSortOrder.Descending, sort.SortOrder);
+		}
+	}
 }

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Popsql
+﻿namespace Popsql
 {
-    /// <summary>
-    /// Represents an abstract SQL statement.
-    /// </summary>
-    public abstract class SqlStatement : SqlExpression
-    {
-    }
+	/// <summary>
+	/// Provides the base class for SQL statements.
+	/// </summary>
+	public abstract class SqlStatement : SqlExpression
+	{
+	}
 }
