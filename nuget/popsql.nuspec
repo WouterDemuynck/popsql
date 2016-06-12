@@ -14,6 +14,7 @@
     <references>
       <reference file="Popsql.dll" />
     </references>
+	<tags>sql orm micro-orm database</tags>
   </metadata>
   <files>
     <file src="..\bin\Release\Popsql.dll" target="lib\net45\Popsql.dll" />
