@@ -22,9 +22,6 @@ namespace Popsql.Grammar
 		/// <param name="table">
 		/// The table with which to join.
 		/// </param>
-		/// <param name="predicate">
-		/// The predicate used for determining which rows are joined by this JOIN clause.
-		/// </param>
 		/// <returns>
 		/// The next grammatical possibilities in the SQL statement.
 		/// </returns>
@@ -35,9 +32,6 @@ namespace Popsql.Grammar
 		/// </summary>
 		/// <param name="table">
 		/// The table with which to join.
-		/// </param>
-		/// <param name="predicate">
-		/// The predicate used for determining which rows are joined by this JOIN clause.
 		/// </param>
 		/// <returns>
 		/// The next grammatical possibilities in the SQL statement.
@@ -50,9 +44,6 @@ namespace Popsql.Grammar
 		/// <param name="table">
 		/// The table with which to join.
 		/// </param>
-		/// <param name="predicate">
-		/// The predicate used for determining which rows are joined by this JOIN clause.
-		/// </param>
 		/// <returns>
 		/// The next grammatical possibilities in the SQL statement.
 		/// </returns>
@@ -63,9 +54,6 @@ namespace Popsql.Grammar
 		/// </summary>
 		/// <param name="table">
 		/// The table with which to join.
-		/// </param>
-		/// <param name="predicate">
-		/// The predicate used for determining which rows are joined by this JOIN clause.
 		/// </param>
 		/// <returns>
 		/// The next grammatical possibilities in the SQL statement.
