@@ -7,7 +7,7 @@ namespace Popsql.Tests.Dialects
 	public class MySqlDialectTests
 	{
 		[Fact]
-		public void FormatTableName_ReturnsFormattedTableName()
+		public void FormatIdentifier_ReturnsFormattedTableName()
 		{
 			var expected = "`Users`";
 			var dialect = new MySqlDialect();

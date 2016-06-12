@@ -24,7 +24,7 @@ namespace Popsql.Tests.Dialects
 		}
 
 		[Fact]
-		public void FormatTableName_ReturnsFormattedTableName()
+		public void FormatIdentifier_ReturnsFormattedTableName()
 		{
 			const string expected = "[Users]";
 			var dialect = new SqlDialect();
