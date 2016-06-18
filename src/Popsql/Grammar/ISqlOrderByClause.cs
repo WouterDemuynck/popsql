@@ -6,7 +6,7 @@ namespace Popsql.Grammar
 	/// <typeparam name="T">
 	/// The type of <see cref="SqlStatement"/> that is the parent of this clause.
 	/// </typeparam>
-	public interface ISqlOrderByClause<out T> : ISqlGo<T> 
+	public interface ISqlOrderByClause<out T> : ISqlGo<T>
 		where T : SqlStatement
 	{
 		/// <summary>
@@ -21,7 +21,7 @@ namespace Popsql.Grammar
 		/// <returns>
 		/// The next grammatical possibilities in the SQL statement.
 		/// </returns>
-		ISqlOrderByClause<T> OrderBy(SqlColumn column, SqlSortOrder sortOrder = SqlSortOrder.Ascending);
+		ISqlThenByClause<T> OrderBy(SqlColumn column, SqlSortOrder sortOrder = SqlSortOrder.Ascending);
 
 		/// <summary>
 		/// Sets the sort order used for sorting the results of this statement.
@@ -32,6 +32,6 @@ namespace Popsql.Grammar
 		/// <returns>
 		/// The next grammatical possibilities in the SQL statement.
 		/// </returns>
-		ISqlOrderByClause<T> OrderBy(SqlSort sortExpression);
+		ISqlThenByClause<T> OrderBy(SqlSort sortExpression);
 	}
 }

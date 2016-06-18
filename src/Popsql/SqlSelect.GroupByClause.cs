@@ -6,7 +6,7 @@ namespace Popsql
 {
 	public partial class SqlSelect
 	{
-		private class GroupByClause : OwnedBy<SqlSelect>, ISqlGroupByClause, ISqlHavingClause
+		private class GroupByClause : OwnedBy<SqlSelect>, ISqlGroupByClause, ISqlHavingClause, ISqlThenByClause<SqlSelect>
 		{
 			public GroupByClause(SqlSelect parent, SqlColumn column)
 				: base(parent)
@@ -14,7 +14,7 @@ namespace Popsql
 				Parent.GroupBy = new SqlGroupBy(column);
 			}
 
-			public ISqlOrderByClause<SqlSelect> OrderBy(SqlColumn column, SqlSortOrder sortOrder)
+			public ISqlThenByClause<SqlSelect> OrderBy(SqlColumn column, SqlSortOrder sortOrder)
 			{
 				if (column == null) throw new ArgumentNullException(nameof(column));
 
@@ -22,7 +22,7 @@ namespace Popsql
 				return this;
 			}
 
-			public ISqlOrderByClause<SqlSelect> OrderBy(SqlSort sortExpression)
+			public ISqlThenByClause<SqlSelect> OrderBy(SqlSort sortExpression)
 			{
 				if (sortExpression == null) throw new ArgumentNullException(nameof(sortExpression));
 
@@ -39,6 +39,11 @@ namespace Popsql
 			public SqlSelect Go()
 			{
 				return Parent;
+			}
+
+			public ISqlOffsetClause<SqlSelect> Offset(int offset)
+			{
+				return new FetchFirstClause(Parent, offset);
 			}
 		}
 	}

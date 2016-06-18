@@ -69,6 +69,15 @@ namespace Popsql
 		public SqlOrderBy OrderBy => _orderBy ?? (_orderBy = new SqlOrderBy());
 
 		/// <summary>
+		/// Gets the fetching offset and count of this SQL SELECT statement.
+		/// </summary>
+		public SqlFetchFirst FetchFirst
+		{
+			get;
+			private set;
+		}
+
+		/// <summary>
 		/// Gets the expression type of this expression.
 		/// </summary>
 		public override SqlExpressionType ExpressionType

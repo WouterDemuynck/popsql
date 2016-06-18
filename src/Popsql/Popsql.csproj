@@ -50,6 +50,7 @@
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Grammar\ISqlDeleteClause.cs" />
     <Compile Include="Grammar\ISqlDeleteFromClause.cs" />
+    <Compile Include="Grammar\ISqlFetchClause.cs" />
     <Compile Include="Grammar\ISqlFromClause.cs" />
     <Compile Include="Grammar\ISqlGo.cs" />
     <Compile Include="Grammar\ISqlGroupByClause.cs" />
@@ -57,11 +58,13 @@
     <Compile Include="Grammar\ISqlInsertClause.cs" />
     <Compile Include="Grammar\ISqlIntoClause.cs" />
     <Compile Include="Grammar\ISqlJoinClause.cs" />
+    <Compile Include="Grammar\ISqlOffsetClause.cs" />
     <Compile Include="Grammar\ISqlOrderByClause.cs" />
     <Compile Include="Grammar\ISqlSelectClause.cs" />
     <Compile Include="Grammar\ISqlSelectFromClause.cs" />
     <Compile Include="Grammar\ISqlSelectWhereClause.cs" />
     <Compile Include="Grammar\ISqlSetClause.cs" />
+    <Compile Include="Grammar\ISqlThenByClause.cs" />
     <Compile Include="Grammar\ISqlUpdateClause.cs" />
     <Compile Include="Grammar\ISqlValuesClause.cs" />
     <Compile Include="Grammar\ISqlWhereClause.cs" />
@@ -69,10 +72,12 @@
     <Compile Include="SqlClause.cs" />
     <Compile Include="OwnedBy.cs" />
     <Compile Include="SqlAggregate.cs" />
+    <Compile Include="SqlFetchFirst.cs" />
     <Compile Include="SqlGroupBy.cs" />
     <Compile Include="SqlHaving.cs" />
     <Compile Include="SqlSelect.GroupByClause.cs" />
     <Compile Include="SqlSelect.JoinClause.cs" />
+    <Compile Include="SqlSelect.FetchFirstClause.cs" />
     <Compile Include="ToCommandExtensions.cs" />
     <Compile Include="SqlUnion.cs" />
     <Compile Include="SqlValueList.cs" />
