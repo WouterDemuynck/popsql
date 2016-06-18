@@ -108,6 +108,10 @@
 		/// <summary>
 		/// Represents a SQL GROUP BY HAVING clause.
 		/// </summary>
-		Having
+		Having,
+		/// <summary>
+		/// Represents a SQL FETCH FIRST clause.
+		/// </summary>
+		FetchFirst
 	}
 }

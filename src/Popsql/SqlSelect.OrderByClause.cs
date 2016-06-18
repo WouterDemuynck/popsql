@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using Popsql.Grammar;
 
 namespace Popsql
 {
 	public partial class SqlSelect
 	{
-		private class OrderByClause : OwnedBy<SqlSelect>, ISqlOrderByClause<SqlSelect>
+		private class OrderByClause : OwnedBy<SqlSelect>, ISqlThenByClause<SqlSelect>
 		{
 			public OrderByClause(SqlSelect parent, SqlColumn column, SqlSortOrder sortOrder)
 				: base(parent)
@@ -20,7 +19,7 @@ namespace Popsql
 				OrderBy(sortExpression);
 			}
 
-			public ISqlOrderByClause<SqlSelect> OrderBy(SqlColumn column, SqlSortOrder sortOrder)
+			public ISqlThenByClause<SqlSelect> OrderBy(SqlColumn column, SqlSortOrder sortOrder)
 			{
 				if (column == null) throw new ArgumentNullException(nameof(column));
 
@@ -28,7 +27,7 @@ namespace Popsql
 				return this;
 			}
 
-			public ISqlOrderByClause<SqlSelect> OrderBy(SqlSort sortExpression)
+			public ISqlThenByClause<SqlSelect> OrderBy(SqlSort sortExpression)
 			{
 				if (sortExpression == null) throw new ArgumentNullException(nameof(sortExpression));
 
@@ -39,6 +38,11 @@ namespace Popsql
 			public SqlSelect Go()
 			{
 				return Parent;
+			}
+
+			public ISqlOffsetClause<SqlSelect> Offset(int offset)
+			{
+				return new FetchFirstClause(Parent, offset);
 			}
 		}
 	}

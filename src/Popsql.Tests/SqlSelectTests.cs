@@ -366,6 +366,88 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void FetchFirst_WithNegativeOffset_ThrowsArgument()
+		{
+			Assert.Throws<ArgumentException>(
+				() => Sql
+					.Select("Id", "Name")
+					.From("User")
+					.OrderBy("Name")
+					.Offset(-1));
+		}
+
+		[Fact]
+		public void FetchFirst_WithCountLessThanOne_ThrowsArgument()
+		{
+			Assert.Throws<ArgumentException>(
+				() => Sql
+					.Select("Id", "Name")
+					.From("User")
+					.OrderBy("Name")
+					.Offset(0)
+					.Fetch(0));
+		}
+
+		[Fact]
+		public void FetchFirst_WithOffset_SetsOffset()
+		{
+			var select = Sql
+				.Select("Id", "Name")
+				.From("User")
+				.OrderBy("Name")
+				.Offset(42)
+				.Go();
+
+			Assert.NotNull(select.FetchFirst);
+			Assert.Equal(42, select.FetchFirst.Offset);
+		}
+
+		[Fact]
+		public void FetchFirst_WithOffsetAndCount_SetsOffsetAndCount()
+		{
+			var select = Sql
+				.Select("Id", "Name")
+				.From("User")
+				.OrderBy("Name")
+				.Offset(42)
+				.Fetch(25)
+				.Go();
+
+			Assert.NotNull(select.FetchFirst);
+			Assert.Equal(42, select.FetchFirst.Offset);
+			Assert.Equal(25, select.FetchFirst.Count);
+		}
+
+		[Fact]
+		public void GroupBy_FetchFirst_WithNegativeOffset_ThrowsArgument()
+		{
+			Assert.Throws<ArgumentException>(
+				() => Sql
+					.Select("Id", "Name")
+					.From("User")
+					.GroupBy("Realm")
+					.OrderBy("Name")
+					.Offset(-1));
+		}
+
+		[Fact]
+		public void GroupBy_FetchFirst_WithOffsetAndCount_SetsOffsetAndCount()
+		{
+			var select = Sql
+				.Select("Id", "Name")
+				.From("User")
+				.GroupBy("Realm")
+				.OrderBy("Name")
+				.Offset(42)
+				.Fetch(25)
+				.Go();
+
+			Assert.NotNull(select.FetchFirst);
+			Assert.Equal(42, select.FetchFirst.Offset);
+			Assert.Equal(25, select.FetchFirst.Count);
+		}
+
+		[Fact]
 		public void GroupBy_WithNullColumn_ThrowsArgumentNull()
 		{
 			Assert.Throws<ArgumentNullException>(

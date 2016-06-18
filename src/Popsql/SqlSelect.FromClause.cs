@@ -28,12 +28,12 @@ namespace Popsql
 			{
 			}
 
-			public ISqlOrderByClause<SqlSelect> OrderBy(SqlColumn column, SqlSortOrder sortOrder)
+			public ISqlThenByClause<SqlSelect> OrderBy(SqlColumn column, SqlSortOrder sortOrder)
 			{
 				return new OrderByClause(Parent, column, sortOrder);
 			}
 
-			public ISqlOrderByClause<SqlSelect> OrderBy(SqlSort sortExpression)
+			public ISqlThenByClause<SqlSelect> OrderBy(SqlSort sortExpression)
 			{
 				return new OrderByClause(Parent, sortExpression);
 			}
