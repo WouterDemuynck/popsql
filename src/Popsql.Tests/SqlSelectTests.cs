@@ -366,60 +366,65 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
-		public void FetchFirst_WithNegativeOffset_ThrowsArgument()
+		public void Limit_WithNegativeOffset_ThrowsArgument()
 		{
 			Assert.Throws<ArgumentException>(
 				() => Sql
 					.Select("Id", "Name")
 					.From("User")
 					.OrderBy("Name")
-					.Offset(-1));
+					.Limit(-1, 10));
 		}
 
 		[Fact]
-		public void FetchFirst_WithCountLessThanOne_ThrowsArgument()
+		public void Limit_WithCountLessThanOne_ThrowsArgument()
 		{
 			Assert.Throws<ArgumentException>(
 				() => Sql
 					.Select("Id", "Name")
 					.From("User")
 					.OrderBy("Name")
-					.Offset(0)
-					.Fetch(0));
+					.Limit(0, 0));
+
+			Assert.Throws<ArgumentException>(
+				() => Sql
+					.Select("Id", "Name")
+					.From("User")
+					.OrderBy("Name")
+					.Limit(0));
 		}
 
 		[Fact]
-		public void FetchFirst_WithOffset_SetsOffset()
+		public void Limit_WithCount_SetsCount()
 		{
 			var select = Sql
 				.Select("Id", "Name")
 				.From("User")
 				.OrderBy("Name")
-				.Offset(42)
+				.Limit(42)
 				.Go();
 
-			Assert.NotNull(select.FetchFirst);
-			Assert.Equal(42, select.FetchFirst.Offset);
+			Assert.NotNull(select.Limit);
+			Assert.Equal(42, select.Limit.Count);
 		}
 
 		[Fact]
-		public void FetchFirst_WithOffsetAndCount_SetsOffsetAndCount()
+		public void Limit_WithOffsetAndCount_SetsOffsetAndCount()
 		{
 			var select = Sql
 				.Select("Id", "Name")
 				.From("User")
 				.OrderBy("Name")
-				.Offset(42)
-				.Fetch(25)
+				.Limit(42, 25)
 				.Go();
 
-			Assert.NotNull(select.FetchFirst);
-			Assert.Equal(42, select.FetchFirst.Offset);
-			Assert.Equal(25, select.FetchFirst.Count);
+			Assert.NotNull(select.Limit);
+			Assert.Equal(42, select.Limit.Offset);
+			Assert.Equal(25, select.Limit.Count);
 		}
 
 		[Fact]
-		public void GroupBy_FetchFirst_WithNegativeOffset_ThrowsArgument()
+		public void GroupBy_Limit_WithNegativeOffset_ThrowsArgument()
 		{
 			Assert.Throws<ArgumentException>(
 				() => Sql
@@ -427,24 +432,39 @@ namespace Popsql.Tests
 					.From("User")
 					.GroupBy("Realm")
 					.OrderBy("Name")
-					.Offset(-1));
+					.Limit(-1, 1));
 		}
 
 		[Fact]
-		public void GroupBy_FetchFirst_WithOffsetAndCount_SetsOffsetAndCount()
+		public void GroupBy_Limit_WithOffsetAndCount_SetsOffsetAndCount()
 		{
 			var select = Sql
 				.Select("Id", "Name")
 				.From("User")
 				.GroupBy("Realm")
 				.OrderBy("Name")
-				.Offset(42)
-				.Fetch(25)
+				.Limit(42, 25)
 				.Go();
 
-			Assert.NotNull(select.FetchFirst);
-			Assert.Equal(42, select.FetchFirst.Offset);
-			Assert.Equal(25, select.FetchFirst.Count);
+			Assert.NotNull(select.Limit);
+			Assert.Equal(42, select.Limit.Offset);
+			Assert.Equal(25, select.Limit.Count);
+		}
+
+		[Fact]
+		public void GroupBy_Limit_WithCount_SetsCount()
+		{
+			var select = Sql
+				.Select("Id", "Name")
+				.From("User")
+				.GroupBy("Realm")
+				.OrderBy("Name")
+				.Limit(25)
+				.Go();
+
+			Assert.NotNull(select.Limit);
+			Assert.Null(select.Limit.Offset);
+			Assert.Equal(25, select.Limit.Count);
 		}
 
 		[Fact]
@@ -616,7 +636,7 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
-		public void Accept_WithFetchFirst_VisitsEverything()
+		public void Accept_WithLimit_VisitsEverything()
 		{
 			var fixture = new Fixture().Customize(new AutoMoqCustomization());
 			var mock = fixture.Freeze<Mock<SqlVisitor>>();
@@ -625,13 +645,30 @@ namespace Popsql.Tests
 				.Select("Id", "Name")
 				.From("User")
 				.OrderBy("Name")
-				.Offset(42)
-				.Fetch(10)
+				.Limit(42, 10)
 				.Go();
 
 			query.Accept(mock.Object);
 
-			mock.Verify(_ => _.Visit(It.IsAny<SqlFetchFirst>()), Times.Once);
+			mock.Verify(_ => _.Visit(It.IsAny<SqlLimit>()), Times.Once);
+		}
+
+		[Fact]
+		public void Accept_WithLimitWithCountOnly_VisitsEverything()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+
+			var query = Sql
+				.Select("Id", "Name")
+				.From("User")
+				.OrderBy("Name")
+				.Limit(10)
+				.Go();
+
+			query.Accept(mock.Object);
+
+			mock.Verify(_ => _.Visit(It.IsAny<SqlLimit>()), Times.Once);
 		}
 	}
 }

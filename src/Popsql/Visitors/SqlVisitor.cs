@@ -38,8 +38,8 @@ namespace Popsql.Visitors
 					Visit((SqlDelete)expression);
 					break;
 
-				case SqlExpressionType.FetchFirst:
-					Visit((SqlFetchFirst)expression);
+				case SqlExpressionType.Limit:
+					Visit((SqlLimit)expression);
 					break;
 
 				case SqlExpressionType.From:
@@ -202,12 +202,12 @@ namespace Popsql.Visitors
 		}
 
 		/// <summary>
-		/// Visits the specified <see cref="SqlFetchFirst"/>.
+		/// Visits the specified <see cref="SqlLimit"/>.
 		/// </summary>
 		/// <param name="expression">
 		/// The expression to visit.
 		/// </param>
-		public virtual void Visit(SqlFetchFirst expression)
+		public virtual void Visit(SqlLimit expression)
 		{
 		}
 

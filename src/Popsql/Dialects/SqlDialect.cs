@@ -91,7 +91,7 @@ namespace Popsql.Dialects
 		/// <param name="count">
 		/// The number of rows to fetch.
 		/// </param>
-		public virtual void WriteFetchFirst(SqlWriter writer, int? offset, int? count)
+		public virtual void WriteLimit(SqlWriter writer, int? offset, int? count)
 		{
 			if (offset != null)
 			{

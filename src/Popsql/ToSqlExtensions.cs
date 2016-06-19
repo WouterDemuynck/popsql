@@ -269,7 +269,7 @@ namespace Popsql
 				_writer.WriteKeyword(SqlKeywords.Delete);
 			}
 
-			public override void Visit(SqlFetchFirst expression)
+			public override void Visit(SqlLimit expression)
 			{
 				_writer.WriteFetchFirst(expression.Offset, expression.Count);
 			}

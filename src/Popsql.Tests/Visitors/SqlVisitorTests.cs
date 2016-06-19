@@ -74,14 +74,14 @@ namespace Popsql.Tests.Visitors
 		}
 
 		[Fact]
-		public void VisitExpression_WithSqlFetchFirst_DispatchesVisit()
+		public void VisitExpression_WithSqlLimit_DispatchesVisit()
 		{
 			var fixture = new Fixture().Customize(new AutoMoqCustomization());
 			var mock = fixture.Freeze<Mock<SqlVisitor>>();
 			var visitor = mock.Object;
 
-			visitor.Visit((SqlExpression)new SqlFetchFirst(42, 10));
-			mock.Verify(_ => _.Visit(It.IsAny<SqlFetchFirst>()), Times.Once);
+			visitor.Visit((SqlExpression)new SqlLimit(42, 10));
+			mock.Verify(_ => _.Visit(It.IsAny<SqlLimit>()), Times.Once);
 		}
 
 		[Fact]
