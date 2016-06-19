@@ -110,8 +110,8 @@
 		/// </summary>
 		Having,
 		/// <summary>
-		/// Represents a SQL FETCH FIRST clause.
+		/// Represents a SQL LIMIT clause.
 		/// </summary>
-		FetchFirst
+		Limit
 	}
 }

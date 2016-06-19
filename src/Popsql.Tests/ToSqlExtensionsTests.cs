@@ -128,7 +128,7 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
-		public void ToSql_WithSqlSelectWithFetchFirst_ReturnsSql()
+		public void ToSql_WithSqlSelectWithLimit_ReturnsSql()
 		{
 			SqlTable people = new SqlTable("People", "p");
 
@@ -139,8 +139,26 @@ namespace Popsql.Tests
 				.OrderBy(people + "LastName")
 				.OrderBy(people + "FirstName")
 				.OrderBy(people + "CreatedOn", SqlSortOrder.Descending)
-				.Offset(42)
-				.Fetch(25)
+				.Limit(42, 25)
+				.Go()
+				.ToSql();
+
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		public void ToSql_WithSqlSelectWithLimitWithCountOnly_ReturnsSql()
+		{
+			SqlTable people = new SqlTable("People", "p");
+
+			const string expected = "SELECT [p].[Id], [p].[FirstName], [p].[LastName] FROM [People] [p] ORDER BY [p].[LastName], [p].[FirstName], [p].[CreatedOn] DESC FETCH FIRST 25 ROWS ONLY";
+			var actual = Sql
+				.Select(people + "Id", people + "FirstName", people + "LastName")
+				.From(people)
+				.OrderBy(people + "LastName")
+				.OrderBy(people + "FirstName")
+				.OrderBy(people + "CreatedOn", SqlSortOrder.Descending)
+				.Limit(25)
 				.Go()
 				.ToSql();
 

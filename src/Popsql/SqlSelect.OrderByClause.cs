@@ -5,7 +5,7 @@ namespace Popsql
 {
 	public partial class SqlSelect
 	{
-		private class OrderByClause : OwnedBy<SqlSelect>, ISqlThenByClause<SqlSelect>
+		private class OrderByClause : OwnedBy<SqlSelect>, ISqlThenByClause<SqlSelect>, ISqlLimitClause<SqlSelect>
 		{
 			public OrderByClause(SqlSelect parent, SqlColumn column, SqlSortOrder sortOrder)
 				: base(parent)
@@ -35,14 +35,21 @@ namespace Popsql
 				return this;
 			}
 
+			public ISqlLimitClause<SqlSelect> Limit(int offset, int count)
+			{
+				Parent.Limit = new SqlLimit(offset, count);
+				return this;
+			}
+
+			public ISqlLimitClause<SqlSelect> Limit(int count)
+			{
+				Parent.Limit = new SqlLimit(null, count);
+				return this;
+			}
+
 			public SqlSelect Go()
 			{
 				return Parent;
-			}
-
-			public ISqlOffsetClause<SqlSelect> Offset(int offset)
-			{
-				return new FetchFirstClause(Parent, offset);
 			}
 		}
 	}

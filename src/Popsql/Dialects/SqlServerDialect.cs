@@ -29,12 +29,12 @@ namespace Popsql.Dialects
 		/// <param name="count">
 		/// The number of rows to fetch.
 		/// </param>
-		public override void WriteFetchFirst(SqlWriter writer, int? offset, int? count)
+		public override void WriteLimit(SqlWriter writer, int? offset, int? count)
 		{
 			// SQL Server requires an offset...
 			if (offset == null && count != null) offset = 0;
 
-			base.WriteFetchFirst(writer, offset, count);
+			base.WriteLimit(writer, offset, count);
 		}
 	}
 }

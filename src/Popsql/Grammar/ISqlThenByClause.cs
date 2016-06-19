@@ -10,14 +10,28 @@ namespace Popsql.Grammar
 		where T : SqlStatement
 	{
 		/// <summary>
-		/// Adds a SQL OFFSET clause to this SQL OFFSET clause.
+		/// Adds a SQL LIMIT clause to this SQL SELECT clause.
 		/// </summary>
 		/// <param name="offset">
 		/// The offset of the first row to fetch.
 		/// </param>
+		/// <param name="count">
+		/// The number of rows to fetch.
+		/// </param>
 		/// <returns>
 		/// The next grammatical possibilities in the SQL statement.
 		/// </returns>
-		ISqlOffsetClause<T> Offset(int offset);
+		ISqlLimitClause<T> Limit(int offset, int count);
+
+		/// <summary>
+		/// Adds a SQL LIMIT clause to this SQL SELECT clause.
+		/// </summary>
+		/// <param name="count">
+		/// The number of rows to fetch.
+		/// </param>
+		/// <returns>
+		/// The next grammatical possibilities in the SQL statement.
+		/// </returns>
+		ISqlLimitClause<T> Limit(int count);
 	}
 }

@@ -3,12 +3,12 @@
 namespace Popsql
 {
 	/// <summary>
-	/// Represents a SQL FETCH FIRST clause.
+	/// Represents a SQL LIMIT clause.
 	/// </summary>
-	public class SqlFetchFirst : SqlClause
+	public class SqlLimit : SqlClause
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SqlFetchFirst"/> class using the specified row offset.
+		/// Initializes a new instance of the <see cref="SqlLimit"/> class using the specified row offset.
 		/// </summary>
 		/// <param name="offset">
 		/// The row offset at which to start fetching rows.
@@ -16,7 +16,7 @@ namespace Popsql
 		/// <param name="count">
 		/// The number of rows to fetch.
 		/// </param>
-		public SqlFetchFirst(int? offset, int? count)
+		public SqlLimit(int? offset, int? count)
 		{
 			if (offset != null && offset < 0) throw new ArgumentException(
 				$"The {nameof(offset)} argument must have a value greater than or equal to 0.",
@@ -34,11 +34,6 @@ namespace Popsql
 			Count = count;
 		}
 
-		internal SqlFetchFirst(int offset)
-			: this(offset, null)
-		{
-		}
-
 		/// <summary>
 		/// Gets the offset at which rows are being fetched.
 		/// </summary>
@@ -53,13 +48,12 @@ namespace Popsql
 		public int? Count
 		{
 			get;
-			internal set;
 		}
 
 		/// <summary>
 		/// Gets the expression type of this expression.
 		/// </summary>
 		public override SqlExpressionType ExpressionType
-			=> SqlExpressionType.FetchFirst;
+			=> SqlExpressionType.Limit;
 	}
 }

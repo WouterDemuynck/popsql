@@ -31,7 +31,7 @@ namespace Popsql.Tests.Dialects
 		}
 
 		[Fact]
-		public void WriteFetchFirst_WritesLimit()
+		public void WriteLimit_WritesLimit()
 		{
 			var expected = "LIMIT 42, 10";
 			var dialect = new MySqlDialect();
@@ -39,7 +39,7 @@ namespace Popsql.Tests.Dialects
 
 			using (TestSqlWriter writer = new TestSqlWriter(builder, dialect))
 			{
-				dialect.WriteFetchFirst(writer, 42, 10);
+				dialect.WriteLimit(writer, 42, 10);
 			}
 
 			var actual = builder.ToString();
@@ -47,7 +47,7 @@ namespace Popsql.Tests.Dialects
 		}
 
 		[Fact]
-		public void WriteFetchFirst_WithNullOffset_WritesLimitWithCountOnly()
+		public void WriteLimit_WithNullOffset_WritesLimitWithCountOnly()
 		{
 			var expected = "LIMIT 10";
 			var dialect = new MySqlDialect();
@@ -55,7 +55,7 @@ namespace Popsql.Tests.Dialects
 
 			using (TestSqlWriter writer = new TestSqlWriter(builder, dialect))
 			{
-				dialect.WriteFetchFirst(writer, null, 10);
+				dialect.WriteLimit(writer, null, 10);
 			}
 
 			var actual = builder.ToString();

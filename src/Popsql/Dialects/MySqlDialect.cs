@@ -59,7 +59,7 @@ namespace Popsql.Dialects
 		/// <param name="count">
 		/// The number of rows to fetch.
 		/// </param>
-		public override void WriteFetchFirst(SqlWriter writer, int? offset, int? count)
+		public override void WriteLimit(SqlWriter writer, int? offset, int? count)
 		{
 			writer.WriteKeyword(MySqlKeywords.Limit);
 			if (offset != null)

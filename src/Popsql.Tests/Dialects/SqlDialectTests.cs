@@ -58,7 +58,7 @@ namespace Popsql.Tests.Dialects
 		}
 
 		[Fact]
-		public void WriteFetchFirst_WritesOffsetFetch()
+		public void WriteLimit_WritesOffsetFetch()
 		{
 			var expected = "OFFSET 42 ROWS FETCH FIRST 10 ROWS ONLY";
 			var dialect = new SqlServerDialect();
@@ -66,7 +66,7 @@ namespace Popsql.Tests.Dialects
 
 			using (TestSqlWriter writer = new TestSqlWriter(builder, dialect))
 			{
-				dialect.WriteFetchFirst(writer, 42, 10);
+				dialect.WriteLimit(writer, 42, 10);
 			}
 
 			var actual = builder.ToString();
@@ -74,7 +74,7 @@ namespace Popsql.Tests.Dialects
 		}
 
 		[Fact]
-		public void WriteFetchFirst_WithNullOffset_WritesNoOffset()
+		public void WriteLimit_WithNullOffset_WritesNoOffset()
 		{
 			var expected = "FETCH FIRST 10 ROWS ONLY";
 			var dialect = new SqlDialect();
@@ -82,7 +82,7 @@ namespace Popsql.Tests.Dialects
 
 			using (TestSqlWriter writer = new TestSqlWriter(builder, dialect))
 			{
-				dialect.WriteFetchFirst(writer, null, 10);
+				dialect.WriteLimit(writer, null, 10);
 			}
 
 			var actual = builder.ToString();
@@ -90,7 +90,7 @@ namespace Popsql.Tests.Dialects
 		}
 
 		[Fact]
-		public void WriteFetchFirst_WithNullCount_WritesOffsetOnly()
+		public void WriteLimit_WithNullCount_WritesOffsetOnly()
 		{
 			var expected = "OFFSET 42 ROWS";
 			var dialect = new SqlServerDialect();
@@ -98,7 +98,7 @@ namespace Popsql.Tests.Dialects
 
 			using (TestSqlWriter writer = new TestSqlWriter(builder, dialect))
 			{
-				dialect.WriteFetchFirst(writer, 42, null);
+				dialect.WriteLimit(writer, 42, null);
 			}
 
 			var actual = builder.ToString();

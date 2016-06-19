@@ -71,7 +71,7 @@ namespace Popsql
 		/// <summary>
 		/// Gets the fetching offset and count of this SQL SELECT statement.
 		/// </summary>
-		public SqlFetchFirst FetchFirst
+		public SqlLimit Limit
 		{
 			get;
 			private set;
