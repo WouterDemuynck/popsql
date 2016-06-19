@@ -255,6 +255,12 @@ namespace Popsql.Text
 			}
 		}
 
+		internal void WriteFetchFirst(int? offset, int? count)
+		{
+			EnsureNotDisposed();
+			Dialect.WriteFetchFirst(this, offset, count);
+		}
+
 		/// <summary>
 		/// Writes the specified operator to the output stream.
 		/// </summary>

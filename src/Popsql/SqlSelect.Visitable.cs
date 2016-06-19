@@ -26,6 +26,7 @@ namespace Popsql
 			Where?.Accept(visitor);
 			GroupBy?.Accept(visitor);
 			OrderBy.IfAny(orderBy => OrderBy.Accept(visitor));
+			FetchFirst?.Accept(visitor);
 		}
 	}
 }

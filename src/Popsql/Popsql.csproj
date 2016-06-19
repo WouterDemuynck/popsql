@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Dialects\MySqlDialect.cs" />
     <Compile Include="Dialects\SqlDialect.cs" />
+    <Compile Include="Dialects\SqlServerDialect.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Grammar\ISqlDeleteClause.cs" />
     <Compile Include="Grammar\ISqlDeleteFromClause.cs" />

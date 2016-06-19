@@ -614,5 +614,24 @@ namespace Popsql.Tests
 			mock.Verify(_ => _.Visit(It.IsAny<SqlJoin>()), Times.Never);
 			mock.Verify(_ => _.Visit(It.IsAny<SqlOrderBy>()), Times.Never);
 		}
+
+		[Fact]
+		public void Accept_WithFetchFirst_VisitsEverything()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+
+			var query = Sql
+				.Select("Id", "Name")
+				.From("User")
+				.OrderBy("Name")
+				.Offset(42)
+				.Fetch(10)
+				.Go();
+
+			query.Accept(mock.Object);
+
+			mock.Verify(_ => _.Visit(It.IsAny<SqlFetchFirst>()), Times.Once);
+		}
 	}
 }

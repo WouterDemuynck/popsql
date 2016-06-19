@@ -1,3 +1,5 @@
+using Popsql.Text;
+
 namespace Popsql.Dialects
 {
 	/// <summary>
@@ -73,6 +75,39 @@ namespace Popsql.Dialects
 		public virtual string FormatString(string value)
 		{
 			return $"'{value.Replace("'", "''")}'";
+		}
+
+		/// <summary>
+		/// Writes the specified result set limitation for the current SQL dialect. The default
+		/// implementation uses the <c>OFFSET <paramref name="offset"/> ROWS FETCH FIRST <paramref name="count"/> ROWS ONLY</c>
+		/// syntax.
+		/// </summary>
+		/// <param name="writer">
+		/// The <see cref="SqlWriter"/> to write to.
+		/// </param>
+		/// <param name="offset">
+		/// The row offset at which to start.
+		/// </param>
+		/// <param name="count">
+		/// The number of rows to fetch.
+		/// </param>
+		public virtual void WriteFetchFirst(SqlWriter writer, int? offset, int? count)
+		{
+			if (offset != null)
+			{
+				writer.WriteKeyword(SqlKeywords.Offset);
+				writer.WriteValue(offset.Value);
+				writer.WriteKeyword(SqlKeywords.Rows);
+			}
+
+			if (count != null)
+			{
+				writer.WriteKeyword(SqlKeywords.Fetch);
+				writer.WriteKeyword(SqlKeywords.First);
+				writer.WriteValue(count.Value);
+				writer.WriteKeyword(SqlKeywords.Rows);
+				writer.WriteKeyword(SqlKeywords.Only);
+			}
 		}
 	}
 }

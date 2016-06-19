@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Popsql.Dialects;
+using Popsql.Tests.Mocking;
 using Xunit;
 
 namespace Popsql.Tests.Text
@@ -371,49 +372,6 @@ namespace Popsql.Tests.Text
 			var writer = new SqlWriter(new StringBuilder());
 			writer.Dispose();
 			writer.Dispose();
-		}
-		private class TestSqlWriter : SqlWriter
-		{
-			public TestSqlWriter(StringBuilder builder)
-				: base(builder)
-			{
-			}
-
-			public TestSqlWriter(StringBuilder builder, SqlDialect dialect)
-				: base(builder, dialect)
-			{
-			}
-
-			public TestSqlWriter(StringBuilder builder, SqlWriterSettings settings)
-				: base(builder, settings)
-			{
-			}
-
-			public TestSqlWriter(TextWriter writer, SqlWriterSettings settings)
-				: base(writer, settings)
-			{
-			}
-
-			public SqlDialect DialectTest
-				=> Dialect;
-
-			public SqlWriterSettings SettingsTest
-				=> Settings;
-
-			public void WriteTest(string value)
-			{
-				Write(value);
-			}
-
-			public void WriteRawTest(string value)
-			{
-				WriteRaw(value);
-			}
-
-			public void EnsureNotDisposedTest()
-			{
-				EnsureNotDisposed();
-			}
 		}
 	}
 }

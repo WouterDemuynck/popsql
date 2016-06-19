@@ -23,7 +23,16 @@ namespace Popsql.Tests
 			var fetchFirst = new SqlFetchFirst(42);
 			Assert.NotNull(fetchFirst);
 			Assert.Equal(42, fetchFirst.Offset);
-			Assert.Equal(1, fetchFirst.Count);
+			Assert.Null(fetchFirst.Count);
+		}
+
+		[Fact]
+		public void Ctor_WithCountProperty_SetsCountProperty()
+		{
+			var fetchFirst = new SqlFetchFirst(null, 20);
+			Assert.NotNull(fetchFirst);
+			Assert.Null(fetchFirst.Offset);
+			Assert.Equal(20, fetchFirst.Count);
 		}
 
 		[Fact]
@@ -36,12 +45,18 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void Ctor_WithNullOffsetAndCount_ThrowsArgument()
+		{
+			Assert.Throws<ArgumentException>(() => new SqlFetchFirst(null, null));
+		}
+
+		[Fact]
 		public void Count_CanSetProperty()
 		{
 			var fetchFirst = new SqlFetchFirst(0);
 			Assert.NotNull(fetchFirst);
 			Assert.Equal(0, fetchFirst.Offset);
-			Assert.Equal(1, fetchFirst.Count);
+			Assert.Null(fetchFirst.Count);
 
 			fetchFirst.Count = 42;
 			Assert.Equal(42, fetchFirst.Count);

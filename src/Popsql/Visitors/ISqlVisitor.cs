@@ -56,6 +56,14 @@ namespace Popsql.Visitors
 		void Visit(SqlDelete expression);
 
 		/// <summary>
+		/// Visits the specified <see cref="SqlFetchFirst"/>.
+		/// </summary>
+		/// <param name="expression">
+		/// The expression to visit.
+		/// </param>
+		void Visit(SqlFetchFirst expression);
+
+		/// <summary>
 		/// Visits the specified <see cref="SqlFrom"/>.
 		/// </summary>
 		/// <param name="expression">
