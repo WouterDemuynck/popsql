@@ -105,5 +105,25 @@
 		/// Represents the SQL HAVING keyword.
 		/// </summary>
 		public static readonly SqlKeyword Having = "HAVING";
+		/// <summary>
+		/// Represents the SQL OFFSET keyword.
+		/// </summary>
+		public static readonly SqlKeyword Offset = "OFFSET";
+		/// <summary>
+		/// Represents the SQL FETCH keyword.
+		/// </summary>
+		public static readonly SqlKeyword Fetch = "FETCH";
+		/// <summary>
+		/// Represents the SQL FIRST keyword.
+		/// </summary>
+		public static readonly SqlKeyword First = "FIRST";
+		/// <summary>
+		/// Represents the SQL ROWS keyword.
+		/// </summary>
+		public static readonly SqlKeyword Rows = "ROWS";
+		/// <summary>
+		/// Represents the SQL ONLY keyword.
+		/// </summary>
+		public static readonly SqlKeyword Only = "ONLY";
 	}
 }

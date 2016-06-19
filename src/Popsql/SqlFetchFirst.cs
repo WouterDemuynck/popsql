@@ -16,40 +16,44 @@ namespace Popsql
 		/// <param name="count">
 		/// The number of rows to fetch.
 		/// </param>
-		public SqlFetchFirst(int offset, int count)
+		public SqlFetchFirst(int? offset, int? count)
 		{
-			if (offset < 0) throw new ArgumentException(
+			if (offset != null && offset < 0) throw new ArgumentException(
 				$"The {nameof(offset)} argument must have a value greater than or equal to 0.",
 				nameof(offset));
 
-			if (count < 1) throw new ArgumentException(
+			if (count != null && count < 1) throw new ArgumentException(
 				$"The {nameof(count)} argument must have a value greater than or equal to 1.",
 				nameof(count));
+
+			if (offset == null && count == null) throw new ArgumentException(
+				$"Either the {nameof(offset)} or the {nameof(count)} must have a value.",
+				nameof(offset));
 
 			Offset = offset;
 			Count = count;
 		}
 
 		internal SqlFetchFirst(int offset)
-			: this(offset, 1)
+			: this(offset, null)
 		{
 		}
 
 		/// <summary>
 		/// Gets the offset at which rows are being fetched.
 		/// </summary>
-		public int Offset
+		public int? Offset
 		{
 			get;
-			private set;
 		}
 
 		/// <summary>
 		/// Gets the number of rows to fetch.
 		/// </summary>
-		public int Count
+		public int? Count
 		{
-			get; internal set;
+			get;
+			internal set;
 		}
 
 		/// <summary>

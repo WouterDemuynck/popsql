@@ -6,6 +6,7 @@ using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.AutoMoq;
 using Popsql.Visitors;
 using Xunit;
+using Xunit.Sdk;
 
 namespace Popsql.Tests.Visitors
 {
@@ -70,6 +71,17 @@ namespace Popsql.Tests.Visitors
 			visitor.Visit((SqlExpression)new SqlOn(SqlExpression.Equal("Id", 5)));
 			mock.Verify(_ => _.Visit(It.IsAny<SqlExpression>()), Times.Once);
 			mock.Verify(_ => _.Visit(It.IsAny<SqlOn>()), Times.Once);
+		}
+
+		[Fact]
+		public void VisitExpression_WithSqlFetchFirst_DispatchesVisit()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+			var visitor = mock.Object;
+
+			visitor.Visit((SqlExpression)new SqlFetchFirst(42, 10));
+			mock.Verify(_ => _.Visit(It.IsAny<SqlFetchFirst>()), Times.Once);
 		}
 
 		[Fact]

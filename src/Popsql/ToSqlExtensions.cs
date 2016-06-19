@@ -269,6 +269,11 @@ namespace Popsql
 				_writer.WriteKeyword(SqlKeywords.Delete);
 			}
 
+			public override void Visit(SqlFetchFirst expression)
+			{
+				_writer.WriteFetchFirst(expression.Offset, expression.Count);
+			}
+
 			public override void Visit(SqlSubquery expression)
 			{
 				// TODO: This is weird and should actually be handled in SqlSubquery.Accept().

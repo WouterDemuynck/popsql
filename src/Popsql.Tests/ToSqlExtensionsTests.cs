@@ -128,6 +128,26 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void ToSql_WithSqlSelectWithFetchFirst_ReturnsSql()
+		{
+			SqlTable people = new SqlTable("People", "p");
+
+			const string expected = "SELECT [p].[Id], [p].[FirstName], [p].[LastName] FROM [People] [p] ORDER BY [p].[LastName], [p].[FirstName], [p].[CreatedOn] DESC OFFSET 42 ROWS FETCH FIRST 25 ROWS ONLY";
+			var actual = Sql
+				.Select(people + "Id", people + "FirstName", people + "LastName")
+				.From(people)
+				.OrderBy(people + "LastName")
+				.OrderBy(people + "FirstName")
+				.OrderBy(people + "CreatedOn", SqlSortOrder.Descending)
+				.Offset(42)
+				.Fetch(25)
+				.Go()
+				.ToSql();
+
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
 		public void ToSql_WithSqlSelectWithWhereClause_ReturnsSql()
 		{
 			SqlTable people = new SqlTable("People", "p");

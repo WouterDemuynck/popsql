@@ -1,5 +1,7 @@
+using System.Text;
 using Moq;
 using Popsql.Dialects;
+using Popsql.Tests.Mocking;
 using Xunit;
 
 namespace Popsql.Tests.Dialects
@@ -52,6 +54,54 @@ namespace Popsql.Tests.Dialects
 			var dialect = new SqlDialect();
 
 			var actual = dialect.FormatString("This isn't a test.");
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		public void WriteFetchFirst_WritesOffsetFetch()
+		{
+			var expected = "OFFSET 42 ROWS FETCH FIRST 10 ROWS ONLY";
+			var dialect = new SqlServerDialect();
+			var builder = new StringBuilder();
+
+			using (TestSqlWriter writer = new TestSqlWriter(builder, dialect))
+			{
+				dialect.WriteFetchFirst(writer, 42, 10);
+			}
+
+			var actual = builder.ToString();
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		public void WriteFetchFirst_WithNullOffset_WritesNoOffset()
+		{
+			var expected = "FETCH FIRST 10 ROWS ONLY";
+			var dialect = new SqlServerDialect();
+			var builder = new StringBuilder();
+
+			using (TestSqlWriter writer = new TestSqlWriter(builder, dialect))
+			{
+				dialect.WriteFetchFirst(writer, null, 10);
+			}
+
+			var actual = builder.ToString();
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		public void WriteFetchFirst_WithNullCount_WritesOffsetOnly()
+		{
+			var expected = "OFFSET 42 ROWS";
+			var dialect = new SqlServerDialect();
+			var builder = new StringBuilder();
+
+			using (TestSqlWriter writer = new TestSqlWriter(builder, dialect))
+			{
+				dialect.WriteFetchFirst(writer, 42, null);
+			}
+
+			var actual = builder.ToString();
 			Assert.Equal(expected, actual);
 		}
 	}
