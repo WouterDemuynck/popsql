@@ -77,7 +77,7 @@ namespace Popsql.Tests.Dialects
 		public void WriteFetchFirst_WithNullOffset_WritesNoOffset()
 		{
 			var expected = "FETCH FIRST 10 ROWS ONLY";
-			var dialect = new SqlServerDialect();
+			var dialect = new SqlDialect();
 			var builder = new StringBuilder();
 
 			using (TestSqlWriter writer = new TestSqlWriter(builder, dialect))
