@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Popsql.Tests
 {
-	public class ToSqlExtensionsTests
+	public partial class ToSqlExtensionsTests
 	{
 		[Fact]
 		public void ToSql_WithNullSqlGo_ThrowsArgumentNull()
@@ -44,6 +44,45 @@ namespace Popsql.Tests
 				.ToSql();
 
 			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		public void ToSql_WithParameterCallback_WithSqlSelect_InvokesCallback()
+		{
+			bool parameterInvoked = false;
+			Sql
+				.Select("Id", "Name")
+				.From("User")
+				.Where(SqlExpression.Equal("Id", "Id" + (SqlConstant)42))
+				.Go()
+				.ToSql(
+					p =>
+					{
+						parameterInvoked = true;
+						Assert.Equal("Id", p.ParameterName);
+						Assert.Equal(42, p.Value);
+					});
+
+			Assert.True(parameterInvoked, "The callback has not been invoked.");
+		}
+
+		[Fact]
+		public void ToSql_WithParameterCallback_WithGoSqlSelect_InvokesCallback()
+		{
+			bool parameterInvoked = false;
+			Sql
+				.Select("Id", "Name")
+				.From("User")
+				.Where(SqlExpression.Equal("Id", "Id" + (SqlConstant)42))
+				.ToSql(
+					p =>
+					{
+						parameterInvoked = true;
+						Assert.Equal("Id", p.ParameterName);
+						Assert.Equal(42, p.Value);
+					});
+
+			Assert.True(parameterInvoked, "The callback has not been invoked.");
 		}
 
 		[Fact]
@@ -298,6 +337,26 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void ToSql_WithParameterCallback_WithSqlDelete_InvokesCallback()
+		{
+			bool parameterInvoked = false;
+			Sql
+				.Delete()
+				.From("User")
+				.Where(SqlExpression.Equal("Id", new SqlParameter("Id", 42)))
+				.Go()
+				.ToSql(
+					p =>
+					{
+						parameterInvoked = true;
+						Assert.Equal("Id", p.ParameterName);
+						Assert.Equal(42, p.Value);
+					});
+
+			Assert.True(parameterInvoked, "The callback has not been invoked.");
+		}
+
+		[Fact]
 		public void ToSql_WithNullSqlInsert_ThrowsArgumentNull()
 		{
 			Assert.Throws<ArgumentNullException>(() => ((SqlInsert)null).ToSql());
@@ -315,6 +374,36 @@ namespace Popsql.Tests
 				.ToSql();
 
 			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		public void ToSql_WithParameterCallback_WithSqlInsert_InvokesCallback()
+		{
+			int parameterInvoked = 0;
+			Sql
+				.Insert()
+				.Into("User", "Name", "Email")
+				.Values(new SqlParameter("User", "John Doe"), new SqlParameter("Email", "john@d.oe"))
+				.Go()
+				.ToSql(
+					p =>
+					{
+						parameterInvoked++;
+						switch (p.ParameterName)
+						{
+							case "User":
+								Assert.Equal("John Doe", p.Value);
+								break;
+							case "Email":
+								Assert.Equal("john@d.oe", p.Value);
+								break;
+							default:
+								Assert.True(false, "Encountered an unexpected SQL parameter.");
+								break;
+						}
+					});
+
+			Assert.Equal(2, parameterInvoked);
 		}
 
 		[Fact]
@@ -354,6 +443,26 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void ToSql_WithParameterCallback_WithSqlUpdate_InvokesCallback()
+		{
+			bool parameterInvoked = false;
+			Sql
+				.Update("User")
+				.Set("Name", "John Doe")
+				.Where(SqlExpression.Equal("Id", new SqlParameter("Id", 42)))
+				.Go()
+				.ToSql(
+					p =>
+					{
+						parameterInvoked = true;
+						Assert.Equal("Id", p.ParameterName);
+						Assert.Equal(42, p.Value);
+					});
+
+			Assert.True(parameterInvoked, "The callback has not been invoked.");
+		}
+
+		[Fact]
 		public void ToSql_WithSqlUpdateWithMultipleSets_ReturnsSql()
 		{
 			const string expected = "UPDATE [User] SET [Name] = 'John Doe', [Email] = 'john@d.oe' WHERE [Id] = 5";
@@ -363,6 +472,47 @@ namespace Popsql.Tests
 				.Set("Email", "john@d.oe")
 				.Where(SqlExpression.Equal("Id", 5))
 				.Go()
+				.ToSql();
+
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		public void ToSql_WithParameterCallback_WithSqlUnion_InvokesCallback()
+		{
+			int parameterInvoked = 0;
+			Sql
+				.Union(
+					Sql.Select("Name").From("User").Where(SqlExpression.Equal("Id", new SqlParameter("Id", 42))),
+					Sql.Select("Name").From("Profile").Where(SqlExpression.GreaterThan("Age", new SqlParameter("Age", 18))))
+				.ToSql(p =>
+				{
+					parameterInvoked++;
+					switch (p.ParameterName)
+					{
+						case "Id":
+							Assert.Equal(42, p.Value);
+							break;
+						case "Age":
+							Assert.Equal(18, p.Value);
+							break;
+						default:
+							Assert.True(false, "Encountered an unexpected SQL parameter.");
+							break;
+					}
+				});
+
+			Assert.Equal(2, parameterInvoked);
+		}
+
+		[Fact]
+		public void ToSql_WithSqlUnion_ReturnsSql()
+		{
+			const string expected = "(SELECT [Id], [Name] FROM [User] WHERE [Id] = @UserId) UNION (SELECT [Id], [Name] FROM [UserGroup])";
+			var actual = Sql
+				.Union(
+					Sql.Select("Id", "Name").From("User").Where(SqlExpression.Equal("Id", new SqlParameter("UserId", 5))),
+					Sql.Select("Id", "Name").From("UserGroup"))
 				.ToSql();
 
 			Assert.Equal(expected, actual);
