@@ -271,7 +271,7 @@ namespace Popsql
 
 			public override void Visit(SqlLimit expression)
 			{
-				_writer.WriteFetchFirst(expression.Offset, expression.Count);
+				_writer.WriteLimit(expression.Offset, expression.Count);
 			}
 
 			public override void Visit(SqlSubquery expression)
