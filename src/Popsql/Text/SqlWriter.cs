@@ -255,7 +255,7 @@ namespace Popsql.Text
 			}
 		}
 
-		internal void WriteFetchFirst(int? offset, int? count)
+		internal void WriteLimit(int? offset, int? count)
 		{
 			EnsureNotDisposed();
 			Dialect.WriteLimit(this, offset, count);
