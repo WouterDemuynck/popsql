@@ -113,6 +113,7 @@
     <Compile Include="SqlSetTests.cs" />
     <Compile Include="SqlSortTests.cs" />
     <Compile Include="ToCommandExtensionsTests.cs" />
+    <Compile Include="ToSqlExtensionTests.MySqlDialect.cs" />
     <Compile Include="ToSqlExtensionsTests.cs" />
     <Compile Include="SqlSubqueryTests.cs" />
     <Compile Include="SqlTableTests.cs" />

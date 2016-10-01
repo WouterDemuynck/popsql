@@ -29,7 +29,28 @@ namespace Popsql
 		public static string ToSql<T>(this ISqlGo<T> sql)
 			where T : SqlStatement
 		{
-			return sql.ToSql(null);
+			return sql.ToSql(null, null);
+		}
+
+		/// <summary>
+		/// Converts the specified SQL expression tree builder to SQL text.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of SQL statement the SQL expression tree builder creates.
+		/// </typeparam>
+		/// <param name="sql">
+		/// An expression tree builder representing a SQL statement.
+		/// </param>
+		/// <param name="parameterCallback">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree builder.
+		/// </returns>
+		public static string ToSql<T>(this ISqlGo<T> sql, Action<SqlParameter> parameterCallback)
+			where T : SqlStatement
+		{
+			return sql.ToSql(null, parameterCallback);
 		}
 
 		/// <summary>
@@ -50,8 +71,32 @@ namespace Popsql
 		public static string ToSql<T>(this ISqlGo<T> sql, SqlDialect dialect)
 			where T : SqlStatement
 		{
+			return sql.ToSql(dialect, null);
+		}
+
+		/// <summary>
+		/// Converts the specified SQL expression tree builder to SQL text.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of SQL statement the SQL expression tree builder creates.
+		/// </typeparam>
+		/// <param name="sql">
+		/// An expression tree builder representing a SQL statement.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> used to format the SQL text.
+		/// </param>
+		/// <param name="parameterCallback">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree builder.
+		/// </returns>
+		public static string ToSql<T>(this ISqlGo<T> sql, SqlDialect dialect, Action<SqlParameter> parameterCallback)
+			where T : SqlStatement
+		{
 			if (sql == null) throw new ArgumentNullException(nameof(sql));
-			return sql.Go().ToSqlInternal(dialect);
+			return sql.Go().ToSqlInternal(dialect, parameterCallback);
 		}
 
 		/// <summary>
@@ -65,7 +110,24 @@ namespace Popsql
 		/// </returns>
 		public static string ToSql(this SqlUnion sql)
 		{
-			return sql.ToSql(null);
+			return sql.ToSql(null, null);
+		}
+
+		/// <summary>
+		/// Converts the specified <see cref="SqlUnion"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlUnion"/> to convert to SQL text.
+		/// </param>
+		/// <param name="parameterCallback">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlUnion sql, Action<SqlParameter> parameterCallback)
+		{
+			return sql.ToSql(null, parameterCallback);
 		}
 
 		/// <summary>
@@ -86,6 +148,26 @@ namespace Popsql
 		}
 
 		/// <summary>
+		/// Converts the specified <see cref="SqlUnion"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlUnion"/> to convert to SQL text.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> used to format the SQL text.
+		/// </param>
+		/// <param name="parameterCallback">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlUnion sql, SqlDialect dialect, Action<SqlParameter> parameterCallback)
+		{
+			return sql.ToSqlInternal(dialect, parameterCallback);
+		}
+
+		/// <summary>
 		/// Converts the specified <see cref="SqlSelect"/> expression tree to SQL text.
 		/// </summary>
 		/// <param name="sql">
@@ -96,7 +178,24 @@ namespace Popsql
 		/// </returns>
 		public static string ToSql(this SqlSelect sql)
 		{
-			return sql.ToSql(null);
+			return sql.ToSql(null, null);
+		}
+
+		/// <summary>
+		/// Converts the specified <see cref="SqlSelect"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlSelect"/> to convert to SQL text.
+		/// </param>
+		/// <param name="parameterCallback">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlSelect sql, Action<SqlParameter> parameterCallback)
+		{
+			return sql.ToSql(null, parameterCallback);
 		}
 
 		/// <summary>
@@ -117,6 +216,26 @@ namespace Popsql
 		}
 
 		/// <summary>
+		/// Converts the specified <see cref="SqlSelect"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlSelect"/> to convert to SQL text.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> used to format the SQL text.
+		/// </param>
+		/// <param name="parameterCallback">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlSelect sql, SqlDialect dialect, Action<SqlParameter> parameterCallback)
+		{
+			return sql.ToSqlInternal(dialect, parameterCallback);
+		}
+
+		/// <summary>
 		/// Converts the specified <see cref="SqlDelete"/> expression tree to SQL text.
 		/// </summary>
 		/// <param name="sql">
@@ -127,7 +246,24 @@ namespace Popsql
 		/// </returns>
 		public static string ToSql(this SqlDelete sql)
 		{
-			return sql.ToSql(null);
+			return sql.ToSql(null, null);
+		}
+
+		/// <summary>
+		/// Converts the specified <see cref="SqlDelete"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlDelete"/> to convert to SQL text.
+		/// </param>
+		/// <param name="parameterCallback">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlDelete sql, Action<SqlParameter> parameterCallback)
+		{
+			return sql.ToSql(null, parameterCallback);
 		}
 
 		/// <summary>
@@ -148,6 +284,26 @@ namespace Popsql
 		}
 
 		/// <summary>
+		/// Converts the specified <see cref="SqlDelete"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlDelete"/> to convert to SQL text.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> used to format the SQL text.
+		/// </param>
+		/// <param name="parameterCallback">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlDelete sql, SqlDialect dialect, Action<SqlParameter> parameterCallback)
+		{
+			return sql.ToSqlInternal(dialect, parameterCallback);
+		}
+
+		/// <summary>
 		/// Converts the specified <see cref="SqlUpdate"/> expression tree to SQL text.
 		/// </summary>
 		/// <param name="sql">
@@ -158,7 +314,24 @@ namespace Popsql
 		/// </returns>
 		public static string ToSql(this SqlUpdate sql)
 		{
-			return sql.ToSql(null);
+			return sql.ToSql(null, null);
+		}
+
+		/// <summary>
+		/// Converts the specified <see cref="SqlUpdate"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlUpdate"/> to convert to SQL text.
+		/// </param>
+		/// <param name="parameterCallback">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlUpdate sql, Action<SqlParameter> parameterCallback)
+		{
+			return sql.ToSql(null, parameterCallback);
 		}
 
 		/// <summary>
@@ -179,6 +352,26 @@ namespace Popsql
 		}
 
 		/// <summary>
+		/// Converts the specified <see cref="SqlUpdate"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlUpdate"/> to convert to SQL text.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> used to format the SQL text.
+		/// </param>
+		/// <param name="parameterCallback">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlUpdate sql, SqlDialect dialect, Action<SqlParameter> parameterCallback)
+		{
+			return sql.ToSqlInternal(dialect, parameterCallback);
+		}
+
+		/// <summary>
 		/// Converts the specified <see cref="SqlInsert"/> expression tree to SQL text.
 		/// </summary>
 		/// <param name="sql">
@@ -189,7 +382,24 @@ namespace Popsql
 		/// </returns>
 		public static string ToSql(this SqlInsert sql)
 		{
-			return sql.ToSql(null);
+			return sql.ToSql(null, null);
+		}
+
+		/// <summary>
+		/// Converts the specified <see cref="SqlInsert"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlInsert"/> to convert to SQL text.
+		/// </param>
+		/// <param name="parameterCallback">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlInsert sql, Action<SqlParameter> parameterCallback)
+		{
+			return sql.ToSql(null, parameterCallback);
 		}
 
 		/// <summary>
@@ -209,7 +419,27 @@ namespace Popsql
 			return sql.ToSqlInternal(dialect);
 		}
 
-		internal static string ToSqlInternal(this SqlStatement sql, SqlDialect dialect = null, Action<SqlParameter> onParameterVisited = null)
+		/// <summary>
+		/// Converts the specified <see cref="SqlInsert"/> expression tree to SQL text.
+		/// </summary>
+		/// <param name="sql">
+		/// The <see cref="SqlInsert"/> to convert to SQL text.
+		/// </param>
+		/// <param name="dialect">
+		/// The <see cref="SqlDialect"/> used to format the SQL text.
+		/// </param>
+		/// <param name="parameterCallback">
+		/// A delegate that is called when a SQL parameter is encountered while converting the SQL expression.
+		/// </param>
+		/// <returns>
+		/// The SQL text for the specified SQL expression tree.
+		/// </returns>
+		public static string ToSql(this SqlInsert sql, SqlDialect dialect, Action<SqlParameter> parameterCallback)
+		{
+			return sql.ToSqlInternal(dialect, parameterCallback);
+		}
+
+		internal static string ToSqlInternal(this SqlStatement sql, SqlDialect dialect = null, Action<SqlParameter> parameterCallback = null)
 		{
 			if (sql == null) throw new ArgumentNullException(nameof(sql));
 			dialect = dialect ?? SqlDialect.Current;
@@ -219,7 +449,7 @@ namespace Popsql
 			{
 				var visitor = new SqlWriterVisitor(writer)
 				{
-					ParameterVisited = onParameterVisited
+					ParameterVisited = parameterCallback
 				};
 
 				sql.Accept(visitor);
