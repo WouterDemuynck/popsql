@@ -72,11 +72,17 @@
     <Compile Include="SqlClause.cs" />
     <Compile Include="OwnedBy.cs" />
     <Compile Include="SqlAggregate.cs" />
+    <Compile Include="SqlDataType.cs" />
+    <Compile Include="SqlDataTypeName.cs" />
+    <Compile Include="SqlDataTypeNames.cs" />
     <Compile Include="SqlLimit.cs" />
     <Compile Include="SqlGroupBy.cs" />
     <Compile Include="SqlHaving.cs" />
+    <Compile Include="SqlPrecisionDataType.cs" />
+    <Compile Include="SqlScaledDataType.cs" />
     <Compile Include="SqlSelect.GroupByClause.cs" />
     <Compile Include="SqlSelect.JoinClause.cs" />
+    <Compile Include="SqlSizedDataType.cs" />
     <Compile Include="ToCommandExtensions.cs" />
     <Compile Include="SqlUnion.cs" />
     <Compile Include="SqlValueList.cs" />

@@ -94,6 +94,8 @@
     <Compile Include="SqlAssignTests.cs" />
     <Compile Include="SqlBinaryExpressionTests.cs" />
     <Compile Include="SqlConstantTests.cs" />
+    <Compile Include="SqlDataTypeNameTests.cs" />
+    <Compile Include="SqlDataTypeTests.cs" />
     <Compile Include="SqlDeleteTests.cs" />
     <Compile Include="SqlExpressionTests.cs" />
     <Compile Include="SqlFetchFirstTests.cs" />

@@ -401,7 +401,7 @@ namespace Popsql.Text
 		{
 			EnsureNotDisposed();
 
-			if (string.IsNullOrEmpty(parameterName)) throw new ArgumentNullException(nameof(parameterName));
+			if (string.IsNullOrWhiteSpace(parameterName)) throw new ArgumentNullException(nameof(parameterName));
 			Write(Dialect.FormatParameterName(parameterName));
 		}
 

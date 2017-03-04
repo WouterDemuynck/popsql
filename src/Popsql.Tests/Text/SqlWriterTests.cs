@@ -197,17 +197,22 @@ namespace Popsql.Tests.Text
 			Assert.Equal("select", builder.ToString());
 		}
 
-		[Fact]
-		public void WriteParameter_WithNullParameterName_ThrowsArgumentNull()
+		[Theory]
+		[InlineData(null)]
+		[InlineData("")]
+		[InlineData(" ")]
+		[InlineData("\t")]
+		public void WriteParameter_WithNullOrWhiteSpaceParameterName_ThrowsArgumentNull(string parameterName)
 		{
-			Assert.Throws<ArgumentNullException>(() =>
+			var ex = Assert.Throws<ArgumentNullException>(() =>
 			{
 				var builder = new StringBuilder();
 				using (var writer = new TestSqlWriter(builder))
 				{
-					writer.WriteParameter(null);
+					writer.WriteParameter(parameterName);
 				}
 			});
+			Assert.Equal(nameof(parameterName), ex.ParamName);
 		}
 
 

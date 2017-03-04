@@ -112,6 +112,10 @@
 		/// <summary>
 		/// Represents a SQL LIMIT clause.
 		/// </summary>
-		Limit
+		Limit,
+		/// <summary>
+		/// Represents a SQL data type definition.
+		/// </summary>
+		DataType
 	}
 }
