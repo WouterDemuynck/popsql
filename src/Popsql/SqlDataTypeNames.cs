@@ -8,6 +8,11 @@ namespace Popsql
 		/// <summary>
 		/// Represents the SQL TINYINT data type.
 		/// </summary>
+		public static readonly SqlDataTypeName Bit = "BIT";
+
+		/// <summary>
+		/// Represents the SQL TINYINT data type.
+		/// </summary>
 		public static readonly SqlDataTypeName TinyInt = "TINYINT";
 
 		/// <summary>
