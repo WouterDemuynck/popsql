@@ -6,6 +6,11 @@ namespace Popsql
 	public static class SqlDataTypeNames
 	{
 		/// <summary>
+		/// Represents the SQL TINYINT data type.
+		/// </summary>
+		public static readonly SqlDataTypeName TinyInt = "TINYINT";
+
+		/// <summary>
 		/// Represents the SQL SMALLINT data type.
 		/// </summary>
 		public static readonly SqlDataTypeName SmallInt = "SMALLINT";

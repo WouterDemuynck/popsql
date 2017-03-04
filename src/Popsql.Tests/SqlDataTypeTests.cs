@@ -30,6 +30,14 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void TinyInt_ReturnsTinyIntDataType()
+		{
+			var dataType = SqlDataType.TinyInt();
+			Assert.NotNull(dataType);
+			Assert.Equal(SqlDataTypeNames.TinyInt, dataType.Name);
+		}
+
+		[Fact]
 		public void SmallInt_ReturnsSmallIntDataType()
 		{
 			var dataType = SqlDataType.SmallInt();

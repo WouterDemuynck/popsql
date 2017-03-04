@@ -20,6 +20,17 @@ namespace Popsql
 		}
 
 		/// <summary>
+		/// Returns a <see cref="SqlDataType"/> instance representing the <see cref="SqlDataTypeNames.TinyInt"/> data type.
+		/// </summary>
+		/// <returns>
+		/// A <see cref="SqlDataType"/> instance representing the <see cref="SqlDataTypeNames.TinyInt"/> data type.
+		/// </returns>
+		public static SqlDataType TinyInt()
+		{
+			return new SqlDataType(SqlDataTypeNames.TinyInt);
+		}
+
+		/// <summary>
 		/// Returns a <see cref="SqlDataType"/> instance representing the <see cref="SqlDataTypeNames.SmallInt"/> data type.
 		/// </summary>
 		/// <returns>
