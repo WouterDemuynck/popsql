@@ -33,6 +33,20 @@ namespace Popsql.Tests
 		}
 
 		[Fact]
+		public void ToSql_WithSqlCast_ReturnsSql()
+		{
+			const string expected = "SELECT [Id], [Name], CAST([Age] AS FLOAT(10)) FROM [User] WHERE [Id] = 5";
+			var actual = Sql
+				.Select((SqlColumn)"Id", (SqlColumn)"Name", SqlExpression.Cast((SqlColumn)"Age", SqlDataType.Float(10)))
+				.From("User")
+				.Where(SqlExpression.Equal("Id", 5))
+				.Go()
+				.ToSql();
+
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
 		public void ToSql_WithSqlSelectWithParameter_ReturnsSql()
 		{
 			const string expected = "SELECT [Id], [Name] FROM [User] WHERE [Id] = @Id";

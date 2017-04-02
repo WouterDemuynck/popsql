@@ -494,6 +494,11 @@ namespace Popsql
 				_writer.WriteKeyword(SqlKeywords.Select);
 			}
 
+			public override void Visit(SqlDataType expression)
+			{
+				_writer.WriteDataType(expression);
+			}
+
 			public override void Visit(SqlDelete expression)
 			{
 				_writer.WriteKeyword(SqlKeywords.Delete);
@@ -528,6 +533,17 @@ namespace Popsql
 			public override void Visit(SqlUpdate expression)
 			{
 				_writer.WriteKeyword(SqlKeywords.Update);
+			}
+
+			public override void Visit(SqlCast expression)
+			{
+				_writer.WriteKeyword(SqlKeywords.Cast);
+				_writer.WriteRaw("(");
+				_writer.ClearPendingSpace();
+				Visit(expression.Value);
+				_writer.WriteKeyword(SqlKeywords.As);
+				Visit(expression.DataType);
+				_writer.WriteCloseParenthesis();
 			}
 
 			public override void Visit(SqlColumn expression)

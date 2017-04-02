@@ -5,16 +5,15 @@ namespace Popsql.Tests
 {
 	public class SqlParameterTests
 	{
-		[Fact]
-		public void Ctor_WithNullParameterName_ThrowsArgumentNull()
+		[Theory]
+		[InlineData(null)]
+		[InlineData("")]
+		[InlineData(" ")]
+		[InlineData("\t")]
+		public void Ctor_WithNullOrWhiteSpaceParameterName_ThrowsArgumentNull(string parameterName)
 		{
-			Assert.Throws<ArgumentNullException>(() => new SqlParameter(null, null));
-		}
-
-		[Fact]
-		public void Ctor_WithEmptyParameterName_ThrowsArgumentNull()
-		{
-			Assert.Throws<ArgumentNullException>(() => new SqlParameter(string.Empty, null));
+			var ex = Assert.Throws<ArgumentNullException>(() => new SqlParameter(null, null));
+			Assert.Equal(nameof(parameterName), ex.ParamName);
 		}
 
 		[Fact]

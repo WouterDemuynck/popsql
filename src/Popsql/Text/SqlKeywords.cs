@@ -125,5 +125,9 @@
 		/// Represents the SQL ONLY keyword.
 		/// </summary>
 		public static readonly SqlKeyword Only = "ONLY";
+		/// <summary>
+		/// Represents the SQL CAST keyword.
+		/// </summary>
+		public static readonly SqlKeyword Cast = "CAST";
 	}
 }

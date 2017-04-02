@@ -197,17 +197,61 @@ namespace Popsql.Tests.Text
 			Assert.Equal("select", builder.ToString());
 		}
 
-		[Fact]
-		public void WriteParameter_WithNullParameterName_ThrowsArgumentNull()
+		[Theory]
+		[MemberData(nameof(WriteDataTypeData), false)]
+		public void WriteDataType_WritesDataType(SqlDataType dataType, string expected)
 		{
-			Assert.Throws<ArgumentNullException>(() =>
+			var builder = new StringBuilder();
+			using (var writer = new TestSqlWriter(builder))
+			{
+				writer.WriteDataType(dataType);
+			}
+			Assert.Equal(expected, builder.ToString());
+		}
+
+		[Theory]
+		[MemberData(nameof(WriteDataTypeData), true)]
+		public void WriteDataType_WithWriteDataTypeInLowerCase_WritesDataTypesInLowerCase(SqlDataType dataType, string expected)
+		{
+			var builder = new StringBuilder();
+			var settings = new SqlWriterSettings
+			{
+				WriteDataTypesInLowerCase = true
+			};
+
+			using (var writer = new TestSqlWriter(builder, settings))
+			{
+				writer.WriteDataType(dataType);
+			}
+
+			Assert.Equal(expected, builder.ToString());
+		}
+
+		public static IEnumerable<object[]> WriteDataTypeData(bool lowerCase)
+		{
+			yield return new object[] { SqlDataType.BigInt(), "BIGINT".ToLowerIf(lowerCase) };
+			yield return new object[] { SqlDataType.VarChar(16), "VARCHAR(16)".ToLowerIf(lowerCase) };
+			yield return new object[] { SqlDataType.Float(9), "FLOAT(9)".ToLowerIf(lowerCase) };
+			yield return new object[] { SqlDataType.Decimal(16), "DECIMAL(16)".ToLowerIf(lowerCase) };
+			yield return new object[] { SqlDataType.Decimal(16, 6), "DECIMAL(16, 6)".ToLowerIf(lowerCase) };
+		}
+
+		[Theory]
+		[InlineData(null)]
+		[InlineData("")]
+		[InlineData(" ")]
+		[InlineData("\t")]
+		public void WriteParameter_WithNullOrWhiteSpaceParameterName_ThrowsArgumentNull(string parameterName)
+		{
+			var ex = Assert.Throws<ArgumentNullException>(() =>
 			{
 				var builder = new StringBuilder();
 				using (var writer = new TestSqlWriter(builder))
 				{
-					writer.WriteParameter(null);
+					writer.WriteParameter(parameterName);
 				}
 			});
+			Assert.Equal(nameof(parameterName), ex.ParamName);
 		}
 
 

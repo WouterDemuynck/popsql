@@ -8,6 +8,7 @@ TestResults
 # Visual Studio User Data
 *.suo
 *.user
+.idea/
 
 # NuGet Stuff
 NuGet.exe

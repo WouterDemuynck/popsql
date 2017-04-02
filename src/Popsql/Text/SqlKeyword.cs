@@ -10,7 +10,9 @@ namespace Popsql.Text
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlKeyword"/> class.
 		/// </summary>
-		/// <param name="keyword"></param>
+		/// <param name="keyword">
+		/// The <see cref="string"/> representing the SQL keyword.
+		/// </param>
 		public SqlKeyword(string keyword)
 		{
 			if (string.IsNullOrWhiteSpace(keyword)) throw new ArgumentNullException(nameof(keyword));

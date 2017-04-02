@@ -32,6 +32,14 @@ namespace Popsql.Visitors
 		void Visit(SqlBinaryExpression expression);
 
 		/// <summary>
+		/// Visits the specified <see cref="SqlCast"/>.
+		/// </summary>
+		/// <param name="expression">
+		/// The expression to visit.
+		/// </param>
+		void Visit(SqlCast expression);
+
+		/// <summary>
 		/// Visits the specified <see cref="SqlColumn"/>.
 		/// </summary>
 		/// <param name="expression">
@@ -46,6 +54,14 @@ namespace Popsql.Visitors
 		/// The expression to visit.
 		/// </param>
 		void Visit(SqlConstant expression);
+
+		/// <summary>
+		/// Visits the specified <see cref="SqlDataType"/>.
+		/// </summary>
+		/// <param name="expression">
+		/// The expression to visit.
+		/// </param>
+		void Visit(SqlDataType expression);
 
 		/// <summary>
 		/// Visits the specified <see cref="SqlDelete"/>.

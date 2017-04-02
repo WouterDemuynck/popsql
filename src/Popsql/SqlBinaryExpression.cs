@@ -32,7 +32,7 @@ namespace Popsql
         /// <summary>
         /// Returns the expression type of this expression.
         /// </summary>
-        public override sealed SqlExpressionType ExpressionType 
+        public sealed override SqlExpressionType ExpressionType 
 			=> SqlExpressionType.Binary;
 
 		/// <summary>

@@ -380,5 +380,27 @@ namespace Popsql.Tests.Visitors
 			mock.Verify(_ => _.Visit(It.IsAny<IEnumerable<SqlAssign>>()), Times.Once);
 			mock.Verify(_ => _.Visit(It.IsAny<SqlAssign>()), Times.Exactly(3));
 		}
+
+		[Fact]
+		public void VisitExpression_WithSqlCast_DispatchesVisit()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+			var visitor = mock.Object;
+
+			visitor.Visit((SqlExpression)new SqlCast(5, SqlDataType.VarChar(10)));
+			mock.Verify(_ => _.Visit(It.IsAny<SqlCast>()), Times.Once);
+		}
+
+		[Fact]
+		public void VisitExpression_WithSqlDataType_DispatchesVisit()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+			var visitor = mock.Object;
+
+			visitor.Visit((SqlExpression)SqlDataType.VarChar(10));
+			mock.Verify(_ => _.Visit(It.IsAny<SqlDataType>()), Times.Once);
+		}
 	}
 }

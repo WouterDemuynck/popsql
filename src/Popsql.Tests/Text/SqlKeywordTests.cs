@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Popsql.Text;
 using Xunit;
 
@@ -10,16 +6,15 @@ namespace Popsql.Tests.Text
 {
 	public class SqlKeywordTests
 	{
-		[Fact]
-		public void Ctor_WithNullKeyword_ThrowsArgumentNull()
+		[Theory]
+		[InlineData(null)]
+		[InlineData("")]
+		[InlineData(" ")]
+		[InlineData("\t")]
+		public void Ctor_WithNullOrWhiteSpaceKeyword_ThrowsArgumentNull(string keyword)
 		{
-			Assert.Throws<ArgumentNullException>(() => new SqlKeyword(null));
-		}
-
-		[Fact]
-		public void Ctor_WithEmptyKeyword_ThrowsArgumentNull()
-		{
-			Assert.Throws<ArgumentNullException>(() => new SqlKeyword(string.Empty));
+			var ex = Assert.Throws<ArgumentNullException>(() => new SqlKeyword(keyword));
+			Assert.Equal(nameof(keyword), ex.ParamName);
 		}
 
 		[Fact]
@@ -27,7 +22,7 @@ namespace Popsql.Tests.Text
 		{
 			var expected = "FOOBAR";
 			var keyword = new SqlKeyword(expected);
-			
+
 			Assert.Equal(expected, keyword.Keyword);
 		}
 
@@ -40,10 +35,15 @@ namespace Popsql.Tests.Text
 			Assert.Equal(expected, keyword.Keyword);
 		}
 
-		[Fact]
-		public void ImplicitConversion_WithNullKeyword_ThrowsArgumentNull()
+		[Theory]
+		[InlineData(null)]
+		[InlineData("")]
+		[InlineData(" ")]
+		[InlineData("\t")]
+		public void ImplicitConversion_WithNullOrWhiteSpaceKeyword_ThrowsArgumentNull(string keyword)
 		{
-			Assert.Throws<ArgumentNullException>(() => (SqlKeyword) (string)null);
+			var ex = Assert.Throws<ArgumentNullException>(() => (SqlKeyword)keyword);
+			Assert.Equal(nameof(keyword), ex.ParamName);
 		}
 	}
 }
