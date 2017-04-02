@@ -103,7 +103,7 @@
     <Compile Include="SqlDataTypeTests.cs" />
     <Compile Include="SqlDeleteTests.cs" />
     <Compile Include="SqlExpressionTests.cs" />
-    <Compile Include="SqlFetchFirstTests.cs" />
+    <Compile Include="SqlLimitTests.cs" />
     <Compile Include="SqlFromTests.cs" />
     <Compile Include="SqlFunctionTests.cs" />
     <Compile Include="SqlGroupByTests.cs" />
