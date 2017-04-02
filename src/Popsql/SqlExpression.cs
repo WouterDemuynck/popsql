@@ -11,6 +11,25 @@ namespace Popsql
 	public abstract class SqlExpression : ISqlVisitable
 	{
 		/// <summary>
+		/// Creates a <see cref="SqlCast"/> that represents a conversion of the specified <paramref name="value"/>
+		/// to the specified data type.
+		/// </summary>
+		/// <param name="value">
+		/// The <see cref="SqlValue"/> to convert.
+		/// </param>
+		/// <param name="dataType">
+		/// The <see cref="SqlDataType"/> to convert to.
+		/// </param>
+		/// <returns>
+		/// A <see cref="SqlCast"/> that represents a conversion of the specified <paramref name="value"/>
+		/// to the specified data type.
+		/// </returns>
+		public static SqlCast Cast(SqlValue value, SqlDataType dataType)
+		{
+			return new SqlCast(value, dataType);
+		}
+
+		/// <summary>
 		/// Creates a <see cref="SqlBinaryExpression"/> that represents a logical <b>AND</b> operation.
 		/// </summary>
 		/// <param name="left">

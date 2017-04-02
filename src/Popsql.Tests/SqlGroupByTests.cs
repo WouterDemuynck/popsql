@@ -83,5 +83,21 @@ namespace Popsql.Tests
 			mock.Verify(_ => _.Visit(It.IsAny<SqlHaving>()), Times.Never);
 			mock.Verify(_ => _.Visit(It.IsAny<SqlOrderBy>()), Times.Once);
 		}
+
+		[Fact]
+		public void Accept_WithCast_VisitsEverything()
+		{
+			var fixture = new Fixture().Customize(new AutoMoqCustomization());
+			var mock = fixture.Freeze<Mock<SqlVisitor>>();
+
+			var query = Sql
+				.Select(SqlExpression.Cast((SqlColumn)"Age", SqlDataType.BigInt()))
+				.From("User")
+				.Go();
+
+			query.Accept(mock.Object);
+
+			mock.Verify(_ => _.Visit(It.IsAny<SqlCast>()), Times.Once);
+		}
 	}
 }

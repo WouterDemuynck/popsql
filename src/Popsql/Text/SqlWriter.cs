@@ -224,9 +224,67 @@ namespace Popsql.Text
 		public void WriteKeyword(SqlKeyword keyword)
 		{
 			EnsureNotDisposed();
-			Write(Settings.WriteKeywordsInLowerCase 
-				? keyword.Keyword.ToLowerInvariant() 
+			Write(Settings.WriteKeywordsInLowerCase
+				? keyword.Keyword.ToLowerInvariant()
 				: keyword.Keyword.ToUpperInvariant());
+		}
+
+		/// <summary>
+		/// Writes the specified <see cref="SqlDataType"/> to the output stream.
+		/// </summary>
+		/// <param name="dataType">
+		/// The <see cref="SqlDataType"/> to write to the output stream.
+		/// </param>
+		public void WriteDataType(SqlDataType dataType)
+		{
+			EnsureNotDisposed();
+			Write(Settings.WriteDataTypesInLowerCase
+				? dataType.Name.Name.ToLowerInvariant()
+				: dataType.Name.Name.ToUpperInvariant());
+
+			// Write the data type parameters.
+			if (dataType.GetType() == typeof(SqlScaledDataType)) WriteDataTypeParameters((SqlScaledDataType)dataType);
+			else if (dataType.GetType() == typeof(SqlSizedDataType)) WriteDataTypeParameters((SqlSizedDataType)dataType);
+			else if (dataType.GetType() == typeof(SqlPrecisionDataType)) WriteDataTypeParameters((SqlPrecisionDataType)dataType);
+		}
+
+		private void WriteDataTypeParameters(SqlSizedDataType dataType)
+		{
+			if (dataType.Size != null)
+			{
+				WriteRaw("(");
+				ClearPendingSpace();
+				WriteValue(dataType.Size.Value);
+				WriteCloseParenthesis();
+			}
+		}
+
+		private void WriteDataTypeParameters(SqlScaledDataType dataType)
+		{
+			if (dataType.Precision != null)
+			{
+				WriteRaw("(");
+				ClearPendingSpace();
+				WriteValue(dataType.Precision.Value);
+
+				if (dataType.Scale != null)
+				{
+					WriteRaw(",");
+					WriteValue(dataType.Scale.Value);
+				}
+				WriteCloseParenthesis();
+			}
+		}
+
+		private void WriteDataTypeParameters(SqlPrecisionDataType dataType)
+		{
+			if (dataType.Precision != null)
+			{
+				WriteRaw("(");
+				ClearPendingSpace();
+				WriteValue(dataType.Precision.Value);
+				WriteCloseParenthesis();
+			}
 		}
 
 		/// <summary>

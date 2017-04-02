@@ -22,6 +22,7 @@
 		{
 			return new SqlFunction("COUNT", new[] { column }, alias);
 		}
+
 		/// <summary>
 		/// Returns a new <see cref="SqlFunction"/> representing the SQL SUM aggregate function for 
 		/// the specified <paramref name="column"/>.

@@ -26,12 +26,20 @@ namespace Popsql.Visitors
 					Visit((SqlBinaryExpression)expression);
 					break;
 
+				case SqlExpressionType.Cast:
+					Visit((SqlCast)expression);
+					break;
+
 				case SqlExpressionType.Column:
 					Visit((SqlColumn)expression);
 					break;
 
 				case SqlExpressionType.Constant:
 					Visit((SqlConstant)expression);
+					break;
+
+				case SqlExpressionType.DataType:
+					Visit((SqlDataType)expression);
 					break;
 
 				case SqlExpressionType.Delete:
@@ -172,6 +180,16 @@ namespace Popsql.Visitors
 		}
 
 		/// <summary>
+		/// Visits the specified <see cref="SqlCast"/>.
+		/// </summary>
+		/// <param name="expression">
+		/// The expression to visit.
+		/// </param>
+		public virtual void Visit(SqlCast expression)
+		{
+		}
+
+		/// <summary>
 		/// Visits the specified <see cref="SqlColumn"/>.
 		/// </summary>
 		/// <param name="expression">
@@ -188,6 +206,16 @@ namespace Popsql.Visitors
 		/// The expression to visit.
 		/// </param>
 		public virtual void Visit(SqlConstant expression)
+		{
+		}
+
+		/// <summary>
+		/// Visits the specified <see cref="SqlDataType"/>.
+		/// </summary>
+		/// <param name="expression">
+		/// The expression to visit.
+		/// </param>
+		public virtual void Visit(SqlDataType expression)
 		{
 		}
 

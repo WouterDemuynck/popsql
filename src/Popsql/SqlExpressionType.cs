@@ -116,6 +116,10 @@
 		/// <summary>
 		/// Represents a SQL data type definition.
 		/// </summary>
-		DataType
+		DataType,
+		/// <summary>
+		/// Represents a SQL CAST expression.
+		/// </summary>
+		Cast
 	}
 }

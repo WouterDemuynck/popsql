@@ -26,6 +26,19 @@
 		}
 
 		/// <summary>
+		/// Gets or sets a value indicating whether or not SQL data types are written in lower-case instead of
+		/// the default (upper-case).
+		/// </summary>
+		/// <value>
+		/// <see langword="true"/> to write SQL data types in lower-case; otherwise <see langword="false"/>
+		/// </value>
+		public bool WriteDataTypesInLowerCase
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
 		/// Gets or sets a value indicating whether or not ascending sort order (ASC) is explicitly written.
 		/// </summary>
 		/// <value>

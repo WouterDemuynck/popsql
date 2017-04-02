@@ -69,6 +69,7 @@
     <Compile Include="Grammar\ISqlValuesClause.cs" />
     <Compile Include="Grammar\ISqlWhereClause.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlCast.cs" />
     <Compile Include="SqlClause.cs" />
     <Compile Include="OwnedBy.cs" />
     <Compile Include="SqlAggregate.cs" />

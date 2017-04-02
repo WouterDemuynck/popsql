@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlTypes;
 using Xunit;
 
@@ -230,6 +231,124 @@ namespace Popsql.Tests
 			Assert.Equal(SqlDataTypeNames.Decimal, dataType.Name);
 			Assert.Equal(precision, dataType.Precision);
 			Assert.Equal(scale, dataType.Scale);
+		}
+
+		[Theory]
+		[MemberData(nameof(EqualsData), false)]
+		public void Equals_WithObject_ReturnsCorrectly(SqlDataType dataType, object other, bool expected)
+		{
+			Assert.Equal(expected, dataType.Equals(other));
+		}
+
+		[Theory]
+		[InlineData("FOOBAR")]
+		[InlineData("MARVIN")]
+		[InlineData("DATA")]
+		public void GetHashCode_ReturnsHashCodeOfNameProperty(string name)
+		{
+			var dataType = new SqlDataType(name);
+			Assert.Equal(name.GetHashCode(), dataType.GetHashCode());
+		}
+
+		[Theory]
+		[MemberData(nameof(EqualsData), true)]
+		public void Equals_WithSqlDataType_ReturnsCorrectly(SqlDataType dataType, SqlDataType other, bool expected)
+		{
+			Assert.Equal(expected, dataType.Equals(other));
+		}
+
+		public static IEnumerable<object[]> EqualsData(bool exactTypeOnly)
+		{
+			var dataType = new SqlDataType("FOOBAR");
+			if (!exactTypeOnly)
+			{
+				yield return new object[] { dataType, "FOOBAR", false };
+			}
+			yield return new object[] { dataType, (SqlDataType)null, false };
+			yield return new object[] { dataType, new SqlDataType("NONE"), false };
+			yield return new object[] { dataType, new SqlDataType("FOOBAR"), true };
+			yield return new object[] { dataType, dataType, true };
+
+			yield return new object[] { SqlDataType.Int(), SqlDataType.Int(), true };
+			yield return new object[] { SqlDataType.Int(), SqlDataType.BigInt(), false };
+			yield return new object[] { SqlDataType.VarChar(5), SqlDataType.VarChar(10), false };
+			yield return new object[] { SqlDataType.VarChar(5), SqlDataType.Char(10), false };
+			yield return new object[] { SqlDataType.VarChar(5), SqlDataType.VarChar(5), true };
+			yield return new object[] { SqlDataType.VarChar(5), SqlDataType.Float(5), false };
+			yield return new object[] { SqlDataType.VarChar(5), SqlDataType.Float(6), false };
+			yield return new object[] { SqlDataType.VarChar(5), null, false };
+			yield return new object[] { SqlDataType.Float(), SqlDataType.Float(10), false };
+			yield return new object[] { SqlDataType.Float(), new SqlPrecisionDataType("DOUBLE"), false };
+			yield return new object[] { SqlDataType.Float(), SqlDataType.Float(), true };
+			yield return new object[] { SqlDataType.Float(5), SqlDataType.Float(10), false };
+			yield return new object[] { SqlDataType.Float(5), SqlDataType.Float(5), true };
+			yield return new object[] { SqlDataType.Float(5), SqlDataType.VarChar(42), false };
+			yield return new object[] { SqlDataType.Float(5), null, false };
+			yield return new object[] { SqlDataType.Decimal(), SqlDataType.Decimal(10, 3), false };
+			yield return new object[] { SqlDataType.Decimal(), SqlDataType.Float(10), false };
+			yield return new object[] { SqlDataType.Decimal(), SqlDataType.Decimal(), true };
+			yield return new object[] { SqlDataType.Decimal(5, 3), SqlDataType.Decimal(10, 3), false };
+			yield return new object[] { SqlDataType.Decimal(5, 3), SqlDataType.Decimal(5, 3), true };
+			yield return new object[] { SqlDataType.Decimal(5, 3), SqlDataType.VarChar(42), false };
+			yield return new object[] { SqlDataType.Decimal(5, 3), SqlDataType.Decimal(5, 4), false };
+			yield return new object[] { SqlDataType.Decimal(5, 3), null, false };
+
+
+			var self = (SqlDataType)SqlDataType.VarChar(5);
+			yield return new object[] { self, self, true };
+
+			self = SqlDataType.Float(5);
+			yield return new object[] { self, self, true };
+
+			self = SqlDataType.Decimal(10, 3);
+			yield return new object[] { self, self, true };
+		}
+
+		[Theory]
+		[MemberData(nameof(GetHashCodeData))]
+		public void GetHashCode_ReturnsCorrectHashCode(SqlDataType dataType, SqlDataType other, bool expected)
+		{
+			Assert.Equal(expected, dataType.GetHashCode().Equals(other?.GetHashCode() ?? 0));
+		}
+
+		public static IEnumerable<object[]> GetHashCodeData()
+		{
+			yield return new object[] { new SqlDataType("FOOBAR"), new SqlDataType("FOOBAR"), true };
+			yield return new object[] { new SqlDataType("FOOBAR"), new SqlDataType("BARFOO"), false };
+			yield return new object[] { new SqlDataType("FOOBAR"), new SqlSizedDataType("FOOBAR", 5), false };
+			yield return new object[] { new SqlDataType("FOOBAR"), new SqlScaledDataType("FOOBAR", 5, 3), false };
+			yield return new object[] { new SqlDataType("FOOBAR"), new SqlPrecisionDataType("FOOBAR", 5), false };
+
+			yield return new object[] { new SqlSizedDataType("FOOBAR"), new SqlSizedDataType("FOOBAR"), true };
+			yield return new object[] { new SqlSizedDataType("FOOBAR", 5), new SqlSizedDataType("FOOBAR", 5), true };
+			yield return new object[] { new SqlSizedDataType("FOOBAR", 5), new SqlSizedDataType("BARFOO", 5), false };
+			yield return new object[] { new SqlSizedDataType("FOOBAR", 5), new SqlSizedDataType("FOOBAR", 6), false };
+			yield return new object[] { new SqlSizedDataType("FOOBAR"), new SqlSizedDataType("FOOBAR", 5), false };
+			yield return new object[] { new SqlSizedDataType("FOOBAR"), new SqlDataType("FOOBAR"), false };
+			yield return new object[] { new SqlSizedDataType("FOOBAR"), new SqlScaledDataType("FOOBAR", 5, 3), false };
+
+			yield return new object[] { new SqlScaledDataType("FOOBAR"), new SqlScaledDataType("FOOBAR"), true };
+			yield return new object[] { new SqlScaledDataType("FOOBAR", 5), new SqlScaledDataType("FOOBAR", 5), true };
+			yield return new object[] { new SqlScaledDataType("FOOBAR", 5, 3), new SqlScaledDataType("FOOBAR", 5, 3), true };
+			yield return new object[] { new SqlScaledDataType("FOOBAR", 5, 3), new SqlScaledDataType("BARFOO", 5, 3), false };
+			yield return new object[] { new SqlScaledDataType("FOOBAR"), new SqlDataType("BARFOO"), false };
+			yield return new object[] { new SqlScaledDataType("FOOBAR"), new SqlDataType("FOOBAR"), false };
+			yield return new object[] { new SqlScaledDataType("FOOBAR", 5), new SqlScaledDataType("BARFOO", 5), false };
+			yield return new object[] { new SqlScaledDataType("FOOBAR", 5), new SqlScaledDataType("BARFOO", 6), false };
+			yield return new object[] { new SqlScaledDataType("FOOBAR"), new SqlScaledDataType("FOOBAR", 5), false };
+			yield return new object[] { new SqlScaledDataType("FOOBAR"), new SqlScaledDataType("FOOBAR", 5, 3), false };
+			yield return new object[] { new SqlScaledDataType("FOOBAR", 5, 3), new SqlScaledDataType("FOOBAR", 6, 3), false };
+			yield return new object[] { new SqlScaledDataType("FOOBAR", 5, 3), new SqlScaledDataType("FOOBAR", 5, 4), false };
+
+			yield return new object[] { new SqlPrecisionDataType("FOOBAR"), new SqlPrecisionDataType("FOOBAR"), true };
+			yield return new object[] { new SqlPrecisionDataType("FOOBAR", 5), new SqlPrecisionDataType("FOOBAR", 5), true };
+			yield return new object[] { new SqlPrecisionDataType("FOOBAR", 5), new SqlPrecisionDataType("BARFOO", 5), false };
+			yield return new object[] { new SqlPrecisionDataType("FOOBAR", 5), new SqlPrecisionDataType("FOOBAR", 6), false };
+			yield return new object[] { new SqlPrecisionDataType("FOOBAR"), new SqlPrecisionDataType("FOOBAR", 5), false };
+			yield return new object[] { new SqlPrecisionDataType("FOOBAR"), new SqlDataType("FOOBAR"), false };
+			yield return new object[] { new SqlPrecisionDataType("FOOBAR"), new SqlSizedDataType("FOOBAR", 5), false };
+			yield return new object[] { new SqlPrecisionDataType("FOOBAR"), new SqlScaledDataType("FOOBAR", 5), false };
+			yield return new object[] { new SqlPrecisionDataType("FOOBAR"), new SqlScaledDataType("FOOBAR", 5, 3), false };
 		}
 	}
 }

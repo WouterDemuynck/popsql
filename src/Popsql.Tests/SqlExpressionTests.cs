@@ -13,10 +13,33 @@ namespace Popsql.Tests
 	public class SqlExpressionTests
 	{
 		[Fact]
+		public void Cast_WithNullValue_ConvertsToNullConstant()
+		{
+			var cast = SqlExpression.Cast(null, SqlDataType.BigInt());
+			Assert.Same(SqlConstant.Null, cast.Value);
+		}
+
+		[Fact]
+		public void Cast_WithNullDataType_ThrowsArgumentNull()
+		{
+			var ex = Assert.Throws<ArgumentNullException>(() => SqlExpression.Cast(null, null));
+			Assert.Equal("dataType", ex.ParamName);
+		}
+
+		[Fact]
+		public void Cast_WithValueAndDataType_ReturnsCast()
+		{
+			var cast = SqlExpression.Cast(5, SqlDataType.BigInt());
+			Assert.Equal(5, cast.Value);
+			Assert.Equal(SqlDataType.BigInt(), cast.DataType);
+		}
+
+		[Fact]
 		public void Equal_WithNullLeftOperand_ThrowsArgumentNull()
 		{
 			var right = new SqlConstant(5);
-			Assert.Throws<ArgumentNullException>(() => SqlExpression.Equal(null, right));
+			var ex = Assert.Throws<ArgumentNullException>(() => SqlExpression.Equal(null, right));
+			Assert.Equal("left", ex.ParamName);
 		}
 
 		[Fact]

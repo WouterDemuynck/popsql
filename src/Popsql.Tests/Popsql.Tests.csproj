@@ -97,6 +97,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlAssignTests.cs" />
     <Compile Include="SqlBinaryExpressionTests.cs" />
+    <Compile Include="SqlCastTests.cs" />
     <Compile Include="SqlConstantTests.cs" />
     <Compile Include="SqlDataTypeNameTests.cs" />
     <Compile Include="SqlDataTypeTests.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="SqlColumnTests.cs" />
     <Compile Include="SqlSetTests.cs" />
     <Compile Include="SqlSortTests.cs" />
+    <Compile Include="Text\StringExtensions.cs" />
     <Compile Include="ToCommandExtensionsTests.cs" />
     <Compile Include="ToSqlExtensionTests.MySqlDialect.cs" />
     <Compile Include="ToSqlExtensionsTests.cs" />
