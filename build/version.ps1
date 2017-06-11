@@ -47,7 +47,7 @@ $assemblyVersion = "$majorVersion.$minorVersion.$patchVersion"
 $assemblyFileVersion = $generatedVersion.ToString()
 $assemblyInfoVersion = "$packageVersion"
 $assemblyTitle = "Popsql $assemblyVersion (rev. $commitId)"
-$assemblyCopyright = "Copyright $([char]169) 2012-$([DateTime]::Now.Year) Wouter Demuynck"
+$assemblyCopyright = "Copyright $([char]0x00A9) 2012-$([DateTime]::Now.Year) Wouter Demuynck"
 
 Write-Host "Assembly Title: $assemblyTitle"
 Write-Host "Assembly Copyright: $assemblyCopyright"
@@ -56,7 +56,6 @@ Write-Host "Assembly File Version: $assemblyFileVersion"
 Write-Host "Assembly Informational Version: $assemblyInfoVersion"
 
 # Publish variables to VSTS.
-Write-Host "##vso[task.setvariable variable=Copyright;]$assemblyCopyright"
 Write-Host "##vso[task.setvariable variable=AssemblyVersion;]$assemblyVersion"
 Write-Host "##vso[task.setvariable variable=FileVersion;]$assemblyFileVersion"
 Write-Host "##vso[task.setvariable variable=PackageVersion;]$packageVersion"
