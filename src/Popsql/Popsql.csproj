@@ -24,6 +24,7 @@
   </PropertyGroup>
   
   <PropertyGroup>
+    <Title>Popsql</Title>
     <Version>$(PackageVersion)</Version>
     <Authors>Wouter Demuynck</Authors>
     <Description>Popsql is a library eliminating the need for magic SQL strings in your code.</Description>
