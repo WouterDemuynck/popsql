@@ -1,4 +1,4 @@
-![Build Status](https://wouterdemuynck.visualstudio.com/_apis/public/build/definitions/ce7d558e-a879-4475-bbba-7f7bd486b775/12/badge)
+![Build Status](https://wouterdemuynck.visualstudio.com/_apis/public/build/definitions/ce7d558e-a879-4475-bbba-7f7bd486b775/20/badge)
 
 # Popsql
 Popsql (pronounced 'popsicle') is a library eliminating the need for magic SQL strings in your code. It works by providing an API that allows you to build complex SQL expression trees from code and later render them into valid SQL text that goes right into your **ADO.NET** code or your favorite micro-ORM.
