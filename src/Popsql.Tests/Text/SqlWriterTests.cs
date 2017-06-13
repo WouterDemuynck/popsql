@@ -67,7 +67,7 @@ namespace Popsql.Tests.Text
 		[Fact]
 		public void WriteSortOrder_WithInvalidSortOrder_ThrowsInvalidEnumArgument()
 		{
-			Assert.Throws<InvalidEnumArgumentException>(() =>
+            Assert.Throws<InvalidEnumArgumentException>(() =>
 			{
 				var builder = new StringBuilder();
 				using (var writer = new SqlWriter(builder))
@@ -75,7 +75,7 @@ namespace Popsql.Tests.Text
 					writer.WriteSortOrder((SqlSortOrder)int.MaxValue);
 				}
 			});
-		}
+        }
 
 		[Fact]
 		public void WriteSortOrder_WithWriteAscendingSortOrder_WritesSortOrder()
@@ -315,7 +315,7 @@ namespace Popsql.Tests.Text
 		[Fact]
 		public void WriteOperator_WithInvalidOperator_ThrowsInvalidEnumArgument()
 		{
-			Assert.Throws<InvalidEnumArgumentException>(() =>
+            Assert.Throws<InvalidEnumArgumentException>(() =>
 			{
 				var builder = new StringBuilder();
 				using (var writer = new SqlWriter(builder))
@@ -323,7 +323,7 @@ namespace Popsql.Tests.Text
 					writer.WriteOperator((SqlBinaryOperator)int.MaxValue);
 				}
 			});
-		}
+        }
 
 		[Fact]
 		public void WriteRaw_WritesRawText()

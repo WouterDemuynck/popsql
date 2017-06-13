@@ -1,158 +1,50 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FDBD6AEF-C640-4B07-B2B0-62D5460C654C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Popsql</RootNamespace>
-    <AssemblyName>Popsql</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworks>net452;net461;netstandard1.6</TargetFrameworks>
+    
+    <PackageVersion Condition=" '$(PackageVersion)' == '' ">3.0.0</PackageVersion>
+    <AssemblyVersion Condition=" '$(AssemblyVersion)' == '' ">3.0.0.0</AssemblyVersion>
+    <FileVersion Condition=" '$(FileVersion)' == '' ">3.0.0.0</FileVersion>
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\bin\Debug\Popsql.xml</DocumentationFile>
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\bin\Release\Popsql.xml</DocumentationFile>
   </PropertyGroup>
+  
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <Version>$(PackageVersion)</Version>
+    <Authors>Wouter Demuynck</Authors>
+    <Description>Popsql is a library eliminating the need for magic SQL strings in your code.</Description>
+    <Copyright Condition=" '$(Copyright)' == '' ">Copyright © 2012-$([System.DateTime]::Now.ToString(yyyy)) $(Authors)</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/WouterDemuynck/popsql/master/LICENSE.md</PackageLicenseUrl>
+    <PackageIconUrl>https://raw.github.com/WouterDemuynck/popsql/master/res/logo.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/WouterDemuynck/popsql</PackageProjectUrl>
+    <RepositoryUrl></RepositoryUrl>
+    <PackageTags>sql orm micro-orm database</PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Popsql.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+
+  <PropertyGroup>
+    <OutputPath>..\..\bin\$(Configuration)</OutputPath>
+    <DocumentationFile>..\..\bin\$(Configuration)\Popsql.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
+    <PackageReference Include="System.Data.Common" Version="4.3.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Dialects\MySqlDialect.cs" />
-    <Compile Include="Dialects\SqlDialect.cs" />
-    <Compile Include="Dialects\SqlServerDialect.cs" />
-    <Compile Include="EnumerableExtensions.cs" />
-    <Compile Include="Grammar\ISqlDeleteClause.cs" />
-    <Compile Include="Grammar\ISqlDeleteFromClause.cs" />
-    <Compile Include="Grammar\ISqlLimitClause.cs" />
-    <Compile Include="Grammar\ISqlFromClause.cs" />
-    <Compile Include="Grammar\ISqlGo.cs" />
-    <Compile Include="Grammar\ISqlGroupByClause.cs" />
-    <Compile Include="Grammar\ISqlHavingClause.cs" />
-    <Compile Include="Grammar\ISqlInsertClause.cs" />
-    <Compile Include="Grammar\ISqlIntoClause.cs" />
-    <Compile Include="Grammar\ISqlJoinClause.cs" />
-    <Compile Include="Grammar\ISqlOrderByClause.cs" />
-    <Compile Include="Grammar\ISqlSelectClause.cs" />
-    <Compile Include="Grammar\ISqlSelectFromClause.cs" />
-    <Compile Include="Grammar\ISqlSelectWhereClause.cs" />
-    <Compile Include="Grammar\ISqlSetClause.cs" />
-    <Compile Include="Grammar\ISqlThenByClause.cs" />
-    <Compile Include="Grammar\ISqlUpdateClause.cs" />
-    <Compile Include="Grammar\ISqlValuesClause.cs" />
-    <Compile Include="Grammar\ISqlWhereClause.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlCast.cs" />
-    <Compile Include="SqlClause.cs" />
-    <Compile Include="OwnedBy.cs" />
-    <Compile Include="SqlAggregate.cs" />
-    <Compile Include="SqlDataType.cs" />
-    <Compile Include="SqlDataTypeName.cs" />
-    <Compile Include="SqlDataTypeNames.cs" />
-    <Compile Include="SqlLimit.cs" />
-    <Compile Include="SqlGroupBy.cs" />
-    <Compile Include="SqlHaving.cs" />
-    <Compile Include="SqlPrecisionDataType.cs" />
-    <Compile Include="SqlScaledDataType.cs" />
-    <Compile Include="SqlSelect.GroupByClause.cs" />
-    <Compile Include="SqlSelect.JoinClause.cs" />
-    <Compile Include="SqlSizedDataType.cs" />
-    <Compile Include="ToCommandExtensions.cs" />
-    <Compile Include="SqlUnion.cs" />
-    <Compile Include="SqlValueList.cs" />
-    <Compile Include="SqlInto.cs" />
-    <Compile Include="SqlOn.cs" />
-    <Compile Include="SqlSelect.Visitable.cs" />
-    <Compile Include="SqlSet.cs" />
-    <Compile Include="ToSqlExtensions.cs" />
-    <Compile Include="SqlUpdate.WhereClause.cs" />
-    <Compile Include="SqlUpdate.SetClause.cs" />
-    <Compile Include="SqlUpdate.UpdateClause.cs" />
-    <Compile Include="SqlDelete.FromClause.cs" />
-    <Compile Include="SqlDelete.WhereClause.cs" />
-    <Compile Include="SqlFrom.cs" />
-    <Compile Include="Sql.cs" />
-    <Compile Include="SqlAssign.cs" />
-    <Compile Include="SqlBinaryExpression.cs" />
-    <Compile Include="SqlBinaryOperator.cs" />
-    <Compile Include="SqlColumn.cs" />
-    <Compile Include="SqlConstant.cs" />
-    <Compile Include="SqlDelete.cs" />
-    <Compile Include="SqlExpression.cs" />
-    <Compile Include="SqlExpressionType.cs" />
-    <Compile Include="SqlFunction.cs" />
-    <Compile Include="SqlIdentifier.cs" />
-    <Compile Include="SqlIdentifierParser.cs" />
-    <Compile Include="SqlInsert.cs" />
-    <Compile Include="SqlInsert.InsertClause.cs" />
-    <Compile Include="SqlInsert.ValuesClause.cs" />
-    <Compile Include="SqlJoin.cs" />
-    <Compile Include="SqlJoinType.cs" />
-    <Compile Include="SqlOrderBy.cs" />
-    <Compile Include="SqlParameter.cs" />
-    <Compile Include="SqlSelect.OrderByClause.cs" />
-    <Compile Include="SqlSelect.SelectClause.cs" />
-    <Compile Include="SqlSelect.WhereClause.cs" />
-    <Compile Include="SqlSelect.cs" />
-    <Compile Include="SqlSelect.FromClause.cs" />
-    <Compile Include="SqlSort.cs" />
-    <Compile Include="SqlSortOrder.cs" />
-    <Compile Include="SqlStatement.cs" />
-    <Compile Include="SqlSubquery.cs" />
-    <Compile Include="SqlTable.cs" />
-    <Compile Include="SqlTableExpression.cs" />
-    <Compile Include="SqlUpdate.cs" />
-    <Compile Include="SqlValue.cs" />
-    <Compile Include="SqlValues.cs" />
-    <Compile Include="SqlWhere.cs" />
-    <Compile Include="Text\SqlKeyword.cs" />
-    <Compile Include="Text\SqlKeywords.cs" />
-    <Compile Include="Text\SqlWriter.cs" />
-    <Compile Include="Text\SqlWriterSettings.cs" />
-    <Compile Include="Visitors\ISqlVisitable.cs" />
-    <Compile Include="Visitors\ISqlVisitor.cs" />
-    <Compile Include="Visitors\SqlVisitor.cs" />
-    <Compile Include="Visitors\SqlVisitorExtensions.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="SqlDelete.DeleteClause.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="SqlInsert.IntoClause.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

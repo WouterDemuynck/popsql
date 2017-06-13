@@ -372,9 +372,13 @@ namespace Popsql.Text
 					break;
 
 				default:
-					throw new InvalidEnumArgumentException(nameof(@operator), (int)@operator, typeof(SqlBinaryOperator));
-			}
-		}
+#if (NET452 || NET461)
+                    throw new InvalidEnumArgumentException(nameof(@operator), (int)@operator, typeof(SqlBinaryOperator));
+#else
+                    throw new ArgumentException($"The value of argument '{nameof(@operator)}' ({(int)@operator}) is invalid for Enum type '{nameof(SqlBinaryOperator)}'.");
+#endif
+            }
+        }
 
 		/// <summary>
 		/// Writes the specified sort order to the output stream.
@@ -399,9 +403,13 @@ namespace Popsql.Text
 					break;
 
 				default:
-					throw new InvalidEnumArgumentException(nameof(sortOrder), (int)sortOrder, typeof(SqlBinaryOperator));
-			}
-		}
+#if (NET452 || NET461)
+					throw new System.ComponentModel.InvalidEnumArgumentException(nameof(sortOrder), (int)sortOrder, typeof(SqlSortOrder));
+#else
+                    throw new ArgumentException($"The value of argument '{nameof(sortOrder)}' ({(int)sortOrder}) is invalid for Enum type '{nameof(SqlSortOrder)}'.");
+#endif
+            }
+        }
 
 		/// <summary>
 		/// Writes the specified SQL value to the output stream.

@@ -56,8 +56,10 @@ Write-Host "Assembly File Version: $assemblyFileVersion"
 Write-Host "Assembly Informational Version: $assemblyInfoVersion"
 
 # Publish variables to VSTS.
-Write-Host "##vso[task.setvariable variable=packageVersion;]$packageVersion"
-Write-Host "##vso[task.setvariable variable=commitId;]$commitId"
+Write-Host "##vso[task.setvariable variable=AssemblyVersion;]$assemblyVersion"
+Write-Host "##vso[task.setvariable variable=FileVersion;]$assemblyFileVersion"
+Write-Host "##vso[task.setvariable variable=PackageVersion;]$packageVersion"
+Write-Host "##vso[task.setvariable variable=CommitId;]$commitId"
 
 # Update assembly information.
 foreach ($file in (Get-ChildItem -path $src -include 'AssemblyInfo.cs' -recurse))
